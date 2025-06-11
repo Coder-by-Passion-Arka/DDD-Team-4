@@ -1,15 +1,18 @@
-import React from 'react';
-import { BarChart3, BookOpen, Target, Settings, User, Home, Award, Clock } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { BarChart3, BookOpen, Target, Settings, User, Home, Award, Clock, Bot } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
+  const location = useLocation();
+
   const menuItems = [
-    { icon: Home, label: 'Dashboard', active: true },
-    { icon: BookOpen, label: 'Assignments', active: false },
-    { icon: Target, label: 'Evaluations', active: false },
-    { icon: BarChart3, label: 'Analytics', active: false },
-    { icon: Award, label: 'Achievements', active: false },
-    { icon: User, label: 'Profile', active: false },
-    { icon: Settings, label: 'Settings', active: false }
+    { icon: Home, label: 'Dashboard', path: '/' },
+    { icon: BookOpen, label: 'Assignments', path: '/assignments' },
+    { icon: Target, label: 'Evaluations', path: '/evaluations' },
+    { icon: BarChart3, label: 'Analytics', path: '/analytics' },
+    { icon: Award, label: 'Achievements', path: '/achievements' },
+    { icon: User, label: 'Profile', path: '/profile' },
+    { icon: Settings, label: 'Settings', path: '/settings' },
+    { icon: Bot, label: 'Chatbot', path: '/chatbot' }, // ✅ New Chatbot item
   ];
 
   return (
@@ -26,19 +29,23 @@ const Sidebar: React.FC = () => {
         </div>
 
         <nav className="space-y-2">
-          {menuItems.map((item, index) => (
-            <button
-              key={index}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                item.active
-                  ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-500'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-              }`}
-            >
-              <item.icon className={`w-5 h-5 ${item.active ? 'text-blue-600' : ''}`} />
-              <span className="font-medium">{item.label}</span>
-            </button>
-          ))}
+          {menuItems.map((item, index) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <Link to={item.path} key={index}>
+                <button
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    isActive
+                      ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-500'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  }`}
+                >
+                  <item.icon className={`w-5 h-5 ${isActive ? 'text-blue-600' : ''}`} />
+                  <span className="font-medium">{item.label}</span>
+                </button>
+              </Link>
+            );
+          })}
         </nav>
       </div>
 
