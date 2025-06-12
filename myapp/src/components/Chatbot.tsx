@@ -1,21 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 
-// Type for the expected OpenRouter API response
-type OpenRouterResponse = {
-  choices: {
-    message: {
-      content: string;
-    };
-  }[];
-};
-
 const Chatbot: React.FC = () => {
   const [messages, setMessages] = useState<{ user: string; bot: string }[]>([]);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Load your API key from .env file (VITE_OPENROUTER_API_KEY=your_key)
   const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY;
 
   const scrollToBottom = () => {
@@ -30,11 +20,11 @@ const Chatbot: React.FC = () => {
     if (!input.trim()) return;
 
     const userMessage = input.trim();
-    setMessages((prev) => [...prev, { user: userMessage, bot: '...' }]);
+    setMessages([...messages, { user: userMessage, bot: '...' }]);
     setInput('');
-    console.log("API KEY:", apiKey);
+
     try {
-      const response = await axios.post<OpenRouterResponse>(
+      const response = await axios.post(
         'https://openrouter.ai/api/v1/chat/completions',
         {
           model: 'mistralai/mixtral-8x7b-instruct',
@@ -56,23 +46,18 @@ const Chatbot: React.FC = () => {
         updated[updated.length - 1].bot = botReply;
         return updated;
       });
-    } catch (error: unknown) {
-  let errorMessage = 'Unknown error';
-  if (error && typeof error === 'object' && 'message' in error) {
-    errorMessage = (error as { message: string }).message;
-  }
-
-  console.error('❌ Error fetching response:', error);
-  setMessages((prev) => {
-    const updated = [...prev];
-    updated[updated.length - 1].bot = '⚠️ Failed to fetch: ' + errorMessage;
-    return updated;
-  });
-}
+    } catch (error) {
+      console.error('Fetch error:', error);
+      setMessages((prev) => {
+        const updated = [...prev];
+        updated[updated.length - 1].bot = '⚠️ Failed to fetch response.';
+        return updated;
+      });
+    }
   };
 
   return (
-    <div className="ml-64 min-h-screen bg-gradient-to-b from-indigo-50 to-white p-8">
+    <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white p-8">
       <h2 className="text-3xl font-bold text-gray-800 mb-6">AI Chatbot Assistant</h2>
 
       <div className="bg-white border border-gray-200 rounded-xl shadow-md p-6 max-w-3xl h-[70vh] overflow-y-auto space-y-6">
@@ -102,11 +87,13 @@ const Chatbot: React.FC = () => {
           placeholder="Ask something..."
         />
         <button
-          onClick={handleSend}
-          className="bg-blue-600 text-white font-semibold px-6 py-2 rounded-r-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200"
-        >
-          Send
-        </button>
+  onClick={handleSend}
+  className="bg-blue-600 text-white font-semibold px-6 py-2 rounded-r-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200"
+  style={{ backgroundColor: '#2563eb' }} // force background blue-600
+>
+  Send
+</button>
+
       </div>
     </div>
   );
