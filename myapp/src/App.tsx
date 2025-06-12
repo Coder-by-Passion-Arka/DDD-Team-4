@@ -10,7 +10,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import SideBar from "./components/SideBar";
 import Breadcrumb from "./components/Breadcrumb";
 import Dashboard from "./pages/Dashboard";
-import Assignments from "./components/Assignments";
+import Assignments from "./pages/Assignments";
 import Evaluations from "./pages/Evaluations";
 import Analytics from "./pages/Analytics";
 import Achievements from "./pages/Achievements";
