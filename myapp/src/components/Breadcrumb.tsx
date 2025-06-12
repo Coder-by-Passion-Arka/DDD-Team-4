@@ -1,37 +1,33 @@
-import React from 'react';
-import { useLocation, Link } from 'react-router-dom';
-
-const labelMap: Record<string, string> = {
-  dashboard: 'Dashboard',
-  assignments: 'Assignments',
-  evaluations: 'Evaluations',
-  analytics: 'Analytics',
-  achievements: 'Achievements',
-  profile: 'Profile',
-  settings: 'Settings',
-};
+import React, { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+import Sidebar from './Sidebar';
+import ThemeToggle from './ThemeToggle';
+import FloatingChatbot from './FloatingChatbot';
 
 const Breadcrumb: React.FC = () => {
-  const location = useLocation();
-  const paths = location.pathname.split('/').filter(Boolean);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   return (
-    <nav className="md:hidden flex items-center px-4 py-2 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 text-sm font-medium sticky top-0 z-20">
-      <Link to="/dashboard" className="text-blue-600 dark:text-blue-400 hover:underline">Home</Link>
-      {paths.map((segment, idx) => {
-        const path = '/' + paths.slice(0, idx + 1).join('/');
-        return (
-          <span key={path} className="flex items-center">
-            <span className="mx-2 text-gray-400">/</span>
-            {idx === paths.length - 1 ? (
-              <span className="text-gray-900 dark:text-white">{labelMap[segment] || segment}</span>
-            ) : (
-              <Link to={path} className="text-blue-600 dark:text-blue-400 hover:underline">{labelMap[segment] || segment}</Link>
-            )}
-          </span>
-        );
-      })}
-    </nav>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 transition-all duration-500">
+      <Sidebar 
+        isCollapsed={sidebarCollapsed}
+        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+      />
+      
+      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
+        <div className="absolute top-6 right-6 z-10">
+          <ThemeToggle />
+        </div>
+        
+        <main className="p-8 pt-20">
+          <div className="max-w-7xl mx-auto">
+            <Outlet />
+          </div>
+        </main>
+      </div>
+
+      <FloatingChatbot />
+    </div>
   );
 };
 

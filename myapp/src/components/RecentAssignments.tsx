@@ -1,182 +1,184 @@
 import React from 'react';
-import { Clock, CheckCircle, AlertCircle, FileText, Calendar } from 'lucide-react';
+import { 
+  Calendar, 
+  Clock, 
+  CheckCircle, 
+  AlertCircle, 
+  Users, 
+  FileText,
+  ArrowRight 
+} from 'lucide-react';
 
 interface Assignment {
   id: string;
   title: string;
-  subject: string;
-  status: 'completed' | 'pending' | 'overdue';
+  course: string;
   dueDate: string;
-  type: 'evaluate' | 'submit';
+  status: 'pending' | 'in-progress' | 'completed' | 'overdue';
+  peersCount: number;
+  submissionsReceived: number;
 }
 
 const RecentAssignments: React.FC = () => {
-  const [showAll, setShowAll] = React.useState(false);
   const assignments: Assignment[] = [
     {
-      id: "1",
-      title: "React Component Analysis",
-      subject: "Web Development",
-      status: "pending",
-      dueDate: "2024-01-15",
-      type: "evaluate",
+      id: '1',
+      title: 'Data Structures Implementation',
+      course: 'CS 301',
+      dueDate: '2024-01-15',
+      status: 'pending',
+      peersCount: 5,
+      submissionsReceived: 3
     },
     {
-      id: "2",
-      title: "Database Design Project",
-      subject: "Database Systems",
-      status: "completed",
-      dueDate: "2024-01-12",
-      type: "submit",
+      id: '2',
+      title: 'UI/UX Design Analysis',
+      course: 'DES 205',
+      dueDate: '2024-01-12',
+      status: 'in-progress',
+      peersCount: 4,
+      submissionsReceived: 4
     },
     {
-      id: "3",
-      title: "Algorithm Implementation",
-      subject: "Data Structures",
-      status: "overdue",
-      dueDate: "2024-01-10",
-      type: "evaluate",
+      id: '3',
+      title: 'Machine Learning Project',
+      course: 'CS 401',
+      dueDate: '2024-01-10',
+      status: 'completed',
+      peersCount: 6,
+      submissionsReceived: 6
     },
     {
-      id: "4",
-      title: "UI/UX Design Review",
-      subject: "Design Principles",
-      status: "pending",
-      dueDate: "2024-01-18",
-      type: "evaluate",
-    },
-    {
-      id: "5",
-      title: "API Documentation",
-      subject: "Software Engineering",
-      status: "completed",
-      dueDate: "2024-01-08",
-      type: "submit",
-    },
-    {
-      id: "6",
-      title: "API Documentation",
-      subject: "Software Engineering",
-      status: "completed",
-      dueDate: "2024-01-08",
-      type: "submit",
-    },
-    {
-      id: "7",
-      title: "API Documentation",
-      subject: "Software Engineering",
-      status: "completed",
-      dueDate: "2024-01-08",
-      type: "submit",
-    },
-    {
-      id: "8",
-      title: "API Documentation",
-      subject: "Software Engineering",
-      status: "completed",
-      dueDate: "2024-01-08",
-      type: "submit",
-    },
+      id: '4',
+      title: 'Database Design Review',
+      course: 'CS 350',
+      dueDate: '2024-01-08',
+      status: 'overdue',
+      peersCount: 3,
+      submissionsReceived: 2
+    }
   ];
 
-  const getStatusIcon = (status: string) => {
+  const getStatusConfig = (status: Assignment['status']) => {
     switch (status) {
-      case "completed":
-        return <CheckCircle className="w-5 h-5 text-emerald-600" />;
-      case "overdue":
-        return <AlertCircle className="w-5 h-5 text-red-600" />;
+      case 'completed':
+        return {
+          icon: CheckCircle,
+          color: 'text-emerald-600 dark:text-emerald-400',
+          bg: 'bg-emerald-50 dark:bg-emerald-900/20',
+          border: 'border-emerald-200 dark:border-emerald-800',
+          label: 'Completed'
+        };
+      case 'in-progress':
+        return {
+          icon: Clock,
+          color: 'text-blue-600 dark:text-blue-400',
+          bg: 'bg-blue-50 dark:bg-blue-900/20',
+          border: 'border-blue-200 dark:border-blue-800',
+          label: 'In Progress'
+        };
+      case 'overdue':
+        return {
+          icon: AlertCircle,
+          color: 'text-red-600 dark:text-red-400',
+          bg: 'bg-red-50 dark:bg-red-900/20',
+          border: 'border-red-200 dark:border-red-800',
+          label: 'Overdue'
+        };
       default:
-        return <Clock className="w-5 h-5 text-amber-600" />;
+        return {
+          icon: FileText,
+          color: 'text-amber-600 dark:text-amber-400',
+          bg: 'bg-amber-50 dark:bg-amber-900/20',
+          border: 'border-amber-200 dark:border-amber-800',
+          label: 'Pending'
+        };
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    const badges = {
-      completed: "bg-emerald-100 text-emerald-800",
-      pending: "bg-amber-100 text-amber-800",
-      overdue: "bg-red-100 text-red-800",
-    };
-    return badges[status as keyof typeof badges] || badges.pending;
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric' 
+    });
   };
-
-  const getTypeBadge = (type: string) => {
-    return type === "evaluate"
-      ? "bg-blue-100 text-blue-800"
-      : "bg-purple-100 text-purple-800";
-  };
-
-  const sortedAssignments = assignments.sort((a, b) => {
-    const order = { overdue: 0, pending: 1, completed: 2 };
-    return order[a.status] - order[b.status];
-  });
-
-  const displayedAssignments = showAll
-    ? sortedAssignments
-    : sortedAssignments.slice(0, 5);
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
-            <FileText className="w-5 h-5 text-white" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+            <Calendar className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-              Recent Assignments
-            </h3>
-            <p className="text-gray-600 dark:text-white">
-              Your latest evaluation tasks
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Assignments</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Peer evaluation tasks</p>
           </div>
         </div>
-        <button
-          className="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors"
-          onClick={() => setShowAll(!showAll)}
-        >
-          {showAll ? "Show Less" : "View All"}
+        <button className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium text-sm flex items-center space-x-1 hover:space-x-2 transition-all duration-200">
+          <span>View all</span>
+          <ArrowRight className="w-4 h-4" />
         </button>
       </div>
 
       <div className="space-y-4">
-        {displayedAssignments.map((assignment) => (
-          <div
-            key={assignment.id}
-            className="flex items-center justify-between p-4 border hover:border-gray-400 rounded-xl hover:bg-gray-50 transition-colors dark:hover:bg-slate-600 dar:bg-slate-700 dark:text-white"
-          >
-            <div className="flex items-center space-x-4">
-              {getStatusIcon(assignment.status)}
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-1">
-                  {assignment.title}
-                </h4>
-                <p className="text-sm text-gray-600">{assignment.subject}</p>
-              </div>
-            </div>
+        {assignments.map((assignment) => {
+          const statusConfig = getStatusConfig(assignment.status);
+          const StatusIcon = statusConfig.icon;
 
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <Calendar className="w-4 h-4" />
-                <span>{assignment.dueDate}</span>
+          return (
+            <div 
+              key={assignment.id}
+              className="p-4 rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-md dark:hover:shadow-gray-900/30 transition-all duration-200 cursor-pointer group"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-start space-x-3">
+                    <div className={`w-8 h-8 rounded-lg ${statusConfig.bg} ${statusConfig.border} border flex items-center justify-center mt-0.5`}>
+                      <StatusIcon className={`w-4 h-4 ${statusConfig.color}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
+                        {assignment.title}
+                      </h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{assignment.course}</p>
+                      
+                      <div className="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400">
+                        <div className="flex items-center space-x-1">
+                          <Calendar className="w-3 h-3" />
+                          <span>Due {formatDate(assignment.dueDate)}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Users className="w-3 h-3" />
+                          <span>{assignment.submissionsReceived}/{assignment.peersCount} peers</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className={`px-2 py-1 rounded-full text-xs font-medium ${statusConfig.bg} ${statusConfig.color} border ${statusConfig.border}`}>
+                  {statusConfig.label}
+                </div>
               </div>
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-medium ${getTypeBadge(
-                  assignment.type
-                )}`}
-              >
-                {assignment.type === "evaluate" ? "Evaluate" : "Submit"}
-              </span>
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(
-                  assignment.status
-                )}`}
-              >
-                {assignment.status.charAt(0).toUpperCase() +
-                  assignment.status.slice(1)}
-              </span>
+
+              {assignment.submissionsReceived < assignment.peersCount && (
+                <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    <span>Progress</span>
+                    <span>{assignment.submissionsReceived} of {assignment.peersCount} evaluations</span>
+                  </div>
+                  <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5">
+                    <div 
+                      className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full transition-all duration-500"
+                      style={{ width: `${(assignment.submissionsReceived / assignment.peersCount) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

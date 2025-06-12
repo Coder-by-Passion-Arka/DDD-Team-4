@@ -1,23 +1,5 @@
-import React, { useState } from "react";
-import { Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import React, { useState } from 'react';
+import { BarChart3, TrendingUp } from 'lucide-react';
 
 interface ProgressData {
   day: string;
@@ -30,92 +12,131 @@ interface ProgressChartProps {
 }
 
 const ProgressChart: React.FC<ProgressChartProps> = ({ data }) => {
-  const [view, setView] = useState<"submission" | "evaluation">("submission");
+  const [activeView, setActiveView] = useState<'submissions' | 'evaluations'>('submissions');
+  
+  const maxSubmissions = Math.max(...data.map(d => d.submissions));
+  const maxEvaluations = Math.max(...data.map(d => d.evaluations));
+  const maxValue = activeView === 'submissions' ? maxSubmissions : maxEvaluations;
 
-  const chartData = {
-    labels: data.map((item) => item.day),
-    datasets: [
-      {
-        label: view === "submission" ? "Submissions" : "Evaluations",
-        data: data.map((item) =>
-          view === "submission" ? item.submissions : item.evaluations
-        ),
-        backgroundColor:
-          view === "submission"
-            ? "rgba(59, 130, 246, 0.8)"
-            : "rgba(16, 185, 129, 0.8)",
-        borderColor:
-          view === "submission"
-            ? "rgba(59, 130, 246, 1)"
-            : "rgba(16, 185, 129, 1)",
-        borderWidth: 1,
-      },
-    ],
+  const totalSubmissions = data.reduce((sum, d) => sum + d.submissions, 0);
+  const totalEvaluations = data.reduce((sum, d) => sum + d.evaluations, 0);
+
+  const getBarHeight = (value: number) => {
+    return (value / maxValue) * 100;
   };
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-      title: {
-        display: true,
-        text:
-          view === "submission"
-            ? "Daily Submissions Progress"
-            : "Daily Evaluations Progress",
-      },
-      tooltip: {
-        mode: "index" as const,
-        intersect: false,
-      },
-    },
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: "Day",
-        },
-      },
-      y: {
-        title: {
-          display: true,
-          text:
-            view === "submission"
-              ? "Number of Submissions"
-              : "Number of Evaluations",
-        },
-        beginAtZero: true,
-      },
-    },
+  const getBarColor = () => {
+    return activeView === 'submissions' 
+      ? 'from-blue-500 to-blue-600' 
+      : 'from-purple-500 to-purple-600';
+  };
+
+  const getActiveData = (item: ProgressData) => {
+    return activeView === 'submissions' ? item.submissions : item.evaluations;
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-      <div className="flex justify-end mb-4">
-        <button
-          className={`px-4 py-2 rounded-l-md ${
-            view === "submission"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200 text-gray-700"
-          }`}
-          onClick={() => setView("submission")}
-        >
-          Submissions
-        </button>
-        <button
-          className={`px-4 py-2 rounded-r-md ${
-            view === "evaluation"
-              ? "bg-emerald-500 text-white"
-              : "bg-gray-200 text-gray-700"
-          }`}
-          onClick={() => setView("evaluation")}
-        >
-          Evaluations
-        </button>
+    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+            <BarChart3 className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Weekly Progress</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              {activeView === 'submissions' ? 'Assignment Submissions' : 'Peer Evaluations'}
+            </p>
+          </div>
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+            <button
+              onClick={() => setActiveView('submissions')}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
+                activeView === 'submissions'
+                  ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+              }`}
+            >
+              Submissions
+            </button>
+            <button
+              onClick={() => setActiveView('evaluations')}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
+                activeView === 'evaluations'
+                  ? 'bg-white dark:bg-gray-600 text-purple-600 dark:text-purple-400 shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+              }`}
+            >
+              Evaluations
+            </button>
+          </div>
+        </div>
       </div>
-      <Bar data={chartData} options={options} />
+
+      {/* Stats Summary */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+          <div className="flex items-center space-x-2">
+            <TrendingUp className="w-4 h-4 text-blue-500" />
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Total {activeView}</span>
+          </div>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+            {activeView === 'submissions' ? totalSubmissions : totalEvaluations}
+          </p>
+        </div>
+        <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+          <div className="flex items-center space-x-2">
+            <BarChart3 className="w-4 h-4 text-emerald-500" />
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Daily Average</span>
+          </div>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+            {Math.round((activeView === 'submissions' ? totalSubmissions : totalEvaluations) / 7)}
+          </p>
+        </div>
+      </div>
+
+      {/* Bar Chart */}
+      <div className="space-y-4">
+        <div className="flex items-end justify-between h-48 px-2">
+          {data.map((item, index) => {
+            const value = getActiveData(item);
+            const height = getBarHeight(value);
+            
+            return (
+              <div key={item.day} className="flex flex-col items-center space-y-2 flex-1">
+                <div className="relative w-full max-w-12 h-40 flex items-end">
+                  <div 
+                    className={`w-full bg-gradient-to-t ${getBarColor()} rounded-t-lg transition-all duration-1000 ease-out hover:opacity-80 cursor-pointer relative group`}
+                    style={{ 
+                      height: `${height}%`,
+                      animationDelay: `${index * 100}ms`
+                    }}
+                  >
+                    {/* Value label on hover */}
+                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      {value}
+                    </div>
+                  </div>
+                </div>
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{item.day}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div className="flex items-center justify-center mt-6 pt-6 border-t border-gray-100 dark:border-gray-700">
+        <div className="flex items-center space-x-2">
+          <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${getBarColor()}`}></div>
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            {activeView === 'submissions' ? 'Submissions' : 'Evaluations'} this week
+          </span>
+        </div>
+      </div>
     </div>
   );
 };
