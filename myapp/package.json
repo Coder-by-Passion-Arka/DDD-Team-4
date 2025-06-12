@@ -10,12 +10,26 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
     "axios": "^1.6.2",
     "framer-motion": "^12.17.0",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.6.2"
+=======
+    "@tailwindcss/vite": "^4.1.8",
+    "axios": "^1.9.0",
+    "chart.js": "^4.4.9",
+    "cors": "^2.8.5",
+    "framer-motion": "^12.17.0",
+    "lucide-react": "^0.514.0",
+    "react": "^19.1.0",
+    "react-chartjs-2": "^5.3.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.2",
+    "tailwindcss": "^4.1.8"
+>>>>>>> d6e1411c17d54c081318dcf725191dd2b99baa2b
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",

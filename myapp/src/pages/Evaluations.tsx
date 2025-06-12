@@ -32,4 +32,8 @@ const Evaluation: React.FC = () => {
   );
 };
 
+<<<<<<< HEAD
 export default Evaluation;
+=======
+export default Evaluation;
+>>>>>>> d6e1411c17d54c081318dcf725191dd2b99baa2b
