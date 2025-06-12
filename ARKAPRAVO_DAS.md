@@ -1,5 +1,11 @@
 ## This is a README file of Arkapravo Das through which I give a overview of my Daily Work
 
+## Day 2 ( 12/06/2025 ):
+    -- Successfully integrated Dark Mode. 
+    -- Made the design mobile responsive.
+    -- Added pages (earlier filled with dummy data), with real data.
+    -- Made the Designing more streamlined and fluid
+
 ## Day 1 ( 11/06/2025 ):
 
     -- Today we made our very own Dashboard using React & Tailwind. Our aim make a starting point for adding more features into this project as the days pass by.
