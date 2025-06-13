@@ -82,8 +82,6 @@ const AssignmentPage: React.FC = () => {
   );
 };
 
-<<<<<<< HEAD
+
 export default AssignmentPage;
-=======
-export default AssignmentPage;
->>>>>>> d6e1411c17d54c081318dcf725191dd2b99baa2b
+
