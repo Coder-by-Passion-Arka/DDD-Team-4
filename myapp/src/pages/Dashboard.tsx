@@ -74,7 +74,7 @@ const Dashboard: React.FC = () => {
         <div className="lg:col-span-2">
           <ProgressChart data={dailyProgress} />
         </div>
-        <div>
+        <div id="streak-section" className="transition-all duration-300 rounded-2xl">
           <StreakCounter currentStreak={12} bestStreak={28} />
         </div>
       </div>
