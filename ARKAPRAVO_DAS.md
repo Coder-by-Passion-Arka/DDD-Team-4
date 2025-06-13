@@ -1,5 +1,11 @@
 ## This is a README file of Arkapravo Das through which I give a overview of my Daily Work
 
+## Day 3 ( 13/06/2025 ):
+    -- Fully Mobile Responsive Design. 
+    -- Improved Color Scheme.
+    -- Implemented full analytics page with Chart.js on dummy data.
+    -- Made simple backend which will be improved in the future.
+
 ## Day 2 ( 12/06/2025 ):
     -- Successfully integrated Dark Mode. 
     -- Made the design mobile responsive.
