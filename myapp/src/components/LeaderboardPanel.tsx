@@ -118,7 +118,7 @@ const LeaderboardPanel: React.FC<LeaderboardPanelProps> = ({ isOpen, onClose }) 
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <Trophy className="w-5 h-5 text-yellow-500" />;
+        return <Trophy className="w-5 h-5 text-yellow-500 " />;
       case 2:
         return <Medal className="w-5 h-5 text-gray-400" />;
       case 3:

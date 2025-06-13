@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,8 +9,8 @@ import {
   Title,
   Tooltip,
   Legend,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
+} from "chart.js/auto";
+import { Line, Pie } from "react-chartjs-2";
 
 // Register the custom color schema for the chart
 const colorSchema = {
@@ -35,26 +36,29 @@ ChartJS.register(
   Legend
 );
 
+// Data for Line Graph //
 const data = {
   labels: ["January", "February", "March", "April", "May", "June", "July"],
   datasets: [
     {
-      label: "Revenue",
+      // Color Blue Line
+      label: "Reviewed ",
       data: [0, 200, 120, 600, 800, 1800, 2800],
       borderColor: colorSchema.blue,
-      backgroundColor: colorSchema.transperant,
+      backgroundColor: "rgba(100, 156, 245, 0.2)",
       tension: 0.4,
-      pointBackgroundColor: colorSchema.orange,
-      pointBorderColor: colorSchema.orange,
+      pointBackgroundColor: colorSchema.blue,
+      pointBorderColor: colorSchema.white,
       fill: true,
     },
     {
-      label: "Expenses",
-      data: [8000, 9000, 9500, 10000, 10500, 11000, 12000],
-      borderColor: "#f59e42",
-      backgroundColor: "rgba(245,158,66,0.2)",
+      // Color Orange Line
+      label: "Evaluated",
+      data: [850, 400, 950, 1500, 2500, 3000, 12000],
+      borderColor: colorSchema.orange,
+      backgroundColor: "rgba(247, 191, 106, 0.2)",
       tension: 0.4,
-      pointBackgroundColor: colorSchema.transperant,
+      pointBackgroundColor: colorSchema.orange,
       pointBorderColor: colorSchema.white,
       fill: true,
     },
@@ -73,8 +77,8 @@ const options = {
     },
     title: {
       display: true,
-      text: "Monthly Revenue vs Expenses",
-      color: "#1e293b",
+      text: "Monthly Reviews and Evaluations",
+      color: colorSchema.white,
       font: { size: 22, weight: "bold" },
     },
     tooltip: {
@@ -85,19 +89,78 @@ const options = {
   scales: {
     x: {
       ticks: { color: "#64748b", font: { size: 14 } },
-      grid: { color: "rgba(100,116,139,0.1)" },
+      grid: { color: "#64748b" },
     },
     y: {
       ticks: { color: "#64748b", font: { size: 14 } },
-      grid: { color: "rgba(100,116,139,0.1)" },
+      grid: { color: "#64748b" },
     },
   },
 };
 
+// Dummy Data for Pie Chart //
+const Data = [
+  { year: 2016, userGain: 800 },
+  { year: 2017, userGain: 456 },
+  { year: 2018, userGain: 1234 },
+  { year: 2019, userGain: 900 },
+  { year: 2020, userGain: 1500 },
+];
+
+const chartData = {
+  labels: Data.map((data) => data.year.toString()),
+  datasets: [
+    {
+      label: "Users Gained ",
+      data: Data.map((data) => data.userGain),
+      backgroundColor: [
+        "rgba(75,192,192,0.6)",
+        "rgba(250, 164, 77, 0.6)",
+        "rgba(192, 108, 245, 0.5)",
+        "#f3ba2f",
+        "#2a71d0",
+      ],
+      borderColor: "#64748b",
+      borderWidth: 2,
+    },
+  ],
+};
+
+type PieChartProps = {
+  chartData: typeof chartData;
+};
+
+function PieChart({ chartData }: PieChartProps) {
+  return (
+    <div className="chart-container">
+      <h2 style={{ textAlign: "center" }}>Pie Chart</h2>
+      <Pie
+        data={chartData}
+        options={{
+          plugins: {
+            title: {
+              display: true,
+              text: "Users Gained between 2016-2020",
+            },
+          },
+        }}
+      />
+    </div>
+  );
+}
+
 const Analytics: React.FC = () => (
-  <div className="p-8 bg-white dark:bg-slate-800 text-xl dark:text-white border-2 border-blue-300/90 rounded-xl shadow-lg hover:shadow-blue-900 transition-all duration-300 m-[0.3rem]">
-    <Line data={data} options={options} />
-  </div>
+  <>
+    <div className="p-8 bg-white dark:bg-slate-800 text-xl dark:text-white border-2 border-blue-300/90 rounded-xl shadow-lg hover:shadow-blue-900 transition-all duration-300 m-[0.3rem]">
+      <h2 className="text-center"> Line Chart</h2>
+      <Line data={data} options={options} />
+    </div>
+
+    <div className="p-8 bg-white dark:bg-slate-800 text-xl dark:text-white border-2 border-blue-300/90 rounded-xl shadow-lg hover:shadow-blue-900 transition-all duration-300 m-[0.3rem]
+    max-h-2xl max-w-2xl">
+      <PieChart chartData={chartData} />
+    </div>
+  </>
 );
 
 export default Analytics;
