@@ -81,7 +81,7 @@ const SettingsPage: React.FC = () => {
     // Simulate data export
     const data = {
       profile: 'User profile data...',
-      assignments: 'Assignment history...',
+      assignments:  'Assignment history...',
       evaluations: 'Evaluation records...'
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -96,27 +96,27 @@ const SettingsPage: React.FC = () => {
   const ToggleSwitch: React.FC<{ enabled: boolean; onChange: (enabled: boolean) => void }> = ({ enabled, onChange }) => (
     <button
       onClick={() => onChange(!enabled)}
-      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${
+      className={`relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full transition-colors duration-200 ${
         enabled ? 'bg-indigo-600' : 'bg-gray-300 dark:bg-gray-600'
       }`}
     >
       <span
-        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
-          enabled ? 'translate-x-6' : 'translate-x-1'
+        className={`inline-block h-3 w-3 sm:h-4 sm:w-4 transform rounded-full bg-white transition-transform duration-200 ${
+          enabled ? 'translate-x-5 sm:translate-x-6' : 'translate-x-1'
         }`}
       />
     </button>
   );
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-4 sm:space-y-0">
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-3">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-2 sm:mb-3">
             Settings
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
+          <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-300">
             Customize your experience and manage your account preferences
           </p>
         </div>
@@ -124,7 +124,7 @@ const SettingsPage: React.FC = () => {
         <button
           onClick={handleSaveSettings}
           disabled={saveStatus === 'saving'}
-          className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white rounded-xl transition-colors duration-200"
+          className="flex items-center justify-center space-x-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white rounded-xl transition-colors duration-200 w-full sm:w-auto"
         >
           {saveStatus === 'saving' ? (
             <RefreshCw className="w-4 h-4 animate-spin" />
@@ -139,24 +139,24 @@ const SettingsPage: React.FC = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8">
         {/* Notification Settings */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-              <Bell className="w-5 h-5 text-white" />
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700">
+          <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+              <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Manage your notification preferences</p>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Notifications</h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Manage your notification preferences</p>
             </div>
           </div>
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900 dark:text-white">Email Notifications</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Receive updates via email</p>
+                <p className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">Email Notifications</p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Receive updates via email</p>
               </div>
               <ToggleSwitch
                 enabled={settings.emailNotifications}
@@ -166,8 +166,8 @@ const SettingsPage: React.FC = () => {
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900 dark:text-white">Push Notifications</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Browser push notifications</p>
+                <p className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">Push Notifications</p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Browser push notifications</p>
               </div>
               <ToggleSwitch
                 enabled={settings.pushNotifications}
@@ -177,8 +177,8 @@ const SettingsPage: React.FC = () => {
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900 dark:text-white">Assignment Reminders</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Reminders for upcoming assignments</p>
+                <p className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">Assignment Reminders</p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Reminders for upcoming assignments</p>
               </div>
               <ToggleSwitch
                 enabled={settings.assignmentReminders}
@@ -188,8 +188,8 @@ const SettingsPage: React.FC = () => {
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900 dark:text-white">Evaluation Deadlines</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Notifications for evaluation deadlines</p>
+                <p className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">Evaluation Deadlines</p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Notifications for evaluation deadlines</p>
               </div>
               <ToggleSwitch
                 enabled={settings.evaluationDeadlines}
@@ -199,8 +199,8 @@ const SettingsPage: React.FC = () => {
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900 dark:text-white">Weekly Reports</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Weekly progress summaries</p>
+                <p className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">Weekly Reports</p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Weekly progress summaries</p>
               </div>
               <ToggleSwitch
                 enabled={settings.weeklyReports}
@@ -211,26 +211,26 @@ const SettingsPage: React.FC = () => {
         </div>
 
         {/* Privacy Settings */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-white" />
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700">
+          <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
+              <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Privacy</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Control your privacy settings</p>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Privacy</h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Control your privacy settings</p>
             </div>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Profile Visibility
               </label>
               <select
                 value={settings.profileVisibility}
                 onChange={(e) => handleSettingChange('profileVisibility', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               >
                 <option value="public">Public</option>
                 <option value="peers">Peers Only</option>
@@ -240,8 +240,8 @@ const SettingsPage: React.FC = () => {
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900 dark:text-white">Show Email Address</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Display email on your profile</p>
+                <p className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">Show Email Address</p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Display email on your profile</p>
               </div>
               <ToggleSwitch
                 enabled={settings.showEmail}
@@ -251,8 +251,8 @@ const SettingsPage: React.FC = () => {
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900 dark:text-white">Show Phone Number</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Display phone on your profile</p>
+                <p className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">Show Phone Number</p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Display phone on your profile</p>
               </div>
               <ToggleSwitch
                 enabled={settings.showPhone}
@@ -262,8 +262,8 @@ const SettingsPage: React.FC = () => {
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900 dark:text-white">Allow Peer Contact</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Let peers contact you directly</p>
+                <p className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">Allow Peer Contact</p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Let peers contact you directly</p>
               </div>
               <ToggleSwitch
                 enabled={settings.allowPeerContact}
@@ -274,26 +274,26 @@ const SettingsPage: React.FC = () => {
         </div>
 
         {/* Appearance Settings */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
-              <Palette className="w-5 h-5 text-white" />
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700">
+          <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+              <Palette className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Appearance</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Customize the look and feel</p>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Appearance</h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Customize the look and feel</p>
             </div>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Theme
               </label>
               <select
                 value={settings.theme}
                 onChange={(e) => handleSettingChange('theme', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               >
                 <option value="light">Light</option>
                 <option value="dark">Dark</option>
@@ -302,13 +302,13 @@ const SettingsPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Language
               </label>
               <select
                 value={settings.language}
                 onChange={(e) => handleSettingChange('language', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               >
                 <option value="en">English</option>
                 <option value="es">Spanish</option>
@@ -318,13 +318,13 @@ const SettingsPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Timezone
               </label>
               <select
                 value={settings.timezone}
                 onChange={(e) => handleSettingChange('timezone', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               >
                 <option value="America/New_York">Eastern Time</option>
                 <option value="America/Chicago">Central Time</option>
@@ -337,22 +337,22 @@ const SettingsPage: React.FC = () => {
         </div>
 
         {/* Security Settings */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-white" />
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700">
+          <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
+              <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Security</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Manage your account security</p>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Security</h3>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Manage your account security</p>
             </div>
           </div>
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900 dark:text-white">Two-Factor Authentication</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Add an extra layer of security</p>
+                <p className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">Two-Factor Authentication</p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Add an extra layer of security</p>
               </div>
               <ToggleSwitch
                 enabled={settings.twoFactorEnabled}
@@ -361,13 +361,13 @@ const SettingsPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Session Timeout (minutes)
               </label>
               <select
                 value={settings.sessionTimeout}
                 onChange={(e) => handleSettingChange('sessionTimeout', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               >
                 <option value="15">15 minutes</option>
                 <option value="30">30 minutes</option>
@@ -381,20 +381,20 @@ const SettingsPage: React.FC = () => {
       </div>
 
       {/* Password Change Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700">
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
-            <Shield className="w-5 h-5 text-white" />
+      <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700">
+        <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
+            <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Change Password</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Update your account password</p>
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Change Password</h3>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Update your account password</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Current Password
             </label>
             <div className="relative">
@@ -402,7 +402,7 @@ const SettingsPage: React.FC = () => {
                 type={showPassword ? 'text' : 'password'}
                 value={passwords.current}
                 onChange={(e) => handlePasswordChange('current', e.target.value)}
-                className="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               />
               <button
                 type="button"
@@ -419,26 +419,26 @@ const SettingsPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               New Password
             </label>
             <input
               type={showPassword ? 'text' : 'password'}
               value={passwords.new}
               onChange={(e) => handlePasswordChange('new', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Confirm New Password
             </label>
             <input
               type={showPassword ? 'text' : 'password'}
               value={passwords.confirm}
               onChange={(e) => handlePasswordChange('confirm', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             />
           </div>
         </div>
@@ -447,7 +447,7 @@ const SettingsPage: React.FC = () => {
           <button
             onClick={handlePasswordUpdate}
             disabled={!passwords.current || !passwords.new || !passwords.confirm}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white rounded-lg transition-colors duration-200"
+            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white rounded-lg transition-colors duration-200 text-sm"
           >
             Update Password
           </button>
@@ -455,38 +455,38 @@ const SettingsPage: React.FC = () => {
       </div>
 
       {/* Data Management */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700">
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-500 to-gray-600 flex items-center justify-center">
-            <Globe className="w-5 h-5 text-white" />
+      <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700">
+        <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-gray-500 to-gray-600 flex items-center justify-center">
+            <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Data Management</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Export or delete your data</p>
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Data Management</h3>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Export or delete your data</p>
           </div>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4">
           <button
             onClick={handleExportData}
-            className="flex items-center justify-center space-x-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors duration-200"
+            className="flex items-center justify-center space-x-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors duration-200 text-sm"
           >
             <Download className="w-4 h-4" />
             <span>Export My Data</span>
           </button>
 
-          <button className="flex items-center justify-center space-x-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200">
+          <button className="flex items-center justify-center space-x-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200 text-sm">
             <Trash2 className="w-4 h-4" />
             <span>Delete Account</span>
           </button>
         </div>
 
-        <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+        <div className="mt-4 p-3 sm:p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
           <div className="flex items-start space-x-2">
-            <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5" />
+            <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600 dark:text-amber-400 mt-0.5" />
             <div>
-              <p className="text-sm font-medium text-amber-800 dark:text-amber-200">Data Export Notice</p>
-              <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
+              <p className="text-xs sm:text-sm font-medium text-amber-800 dark:text-amber-200">Data Export Notice</p>
+              <p className="text-xs sm:text-sm text-amber-700 dark:text-amber-300 mt-1">
                 Your exported data will include your profile information, assignment history, and evaluation records. 
                 Account deletion is permanent and cannot be undone.
               </p>

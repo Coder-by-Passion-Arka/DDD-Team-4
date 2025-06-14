@@ -30,16 +30,16 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-3">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-2 sm:mb-3">
           Evaluation Dashboard
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300">
+        <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-300">
           Track your peer evaluation progress and assignments with real-time insights
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <StatsCard
           title="Total Submitted"
           value={stats.submitted}
@@ -70,7 +70,7 @@ const Dashboard: React.FC = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
         <div className="lg:col-span-2">
           <ProgressChart data={dailyProgress} />
         </div>
