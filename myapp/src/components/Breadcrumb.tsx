@@ -156,7 +156,7 @@ const Breadcrumb: React.FC = () => {
       )}
       
       <div className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'} ml-0`}>
-        <main className="p-4 sm:p-6 lg:p-8 pt-20 lg:pt-20">
+        <main className="p-4 sm:p-6 lg:p-8 pt-24 sm:pt-24 lg:pt-20">
           <div className="max-w-7xl mx-auto">
             <Outlet />
           </div>
