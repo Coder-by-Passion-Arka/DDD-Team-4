@@ -1,10 +1,12 @@
 ## This is a README file of Arkapravo Das through which I give a overview of my Daily Work
 
-## Day 4 ( 14/06/2025 )
 
-    -- Made a MongoDb cluster with dummy json data
+## Day 5 ( 16/06/2025 )
+
+    -- Built API endpoint and middlewares to safely authenticate the user.
     -- Mock Backend for data retrival and CRUD operations
-    -- Improved the folder structure for more efficient team collaborations
+    -- Modified the Backend significantly but still now production-ready
+    -- Sight modifications in App Navigation and Workdflow
 
 ## Day 3 ( 13/06/2025 ):
 
