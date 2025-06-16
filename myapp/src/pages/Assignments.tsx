@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, User } from 'lucide-react';
+import SkillSuggestionModal from '../components/SkillSuggestionModal';
+import { useSkillSuggestion } from '../hooks/useSkillSuggestion';
 
 interface Assignment {
   id: number;
@@ -7,39 +9,70 @@ interface Assignment {
   subject: string;
   date: string;
   assignedBy: string;
+  description?: string;
+  tags?: string[];
 }
 
 const AssignmentPage: React.FC = () => {
+  // Mock user skills - in real app, this would come from user context/profile
+  const [userSkills, setUserSkills] = useState<string[]>([
+    'JavaScript', 'React', 'Node.js', 'Python'
+  ]);
+
   const [submittedAssignments, setSubmittedAssignments] = useState<Assignment[]>([
     { 
       id: 1,
-      title: 'Math Homework 1',
-      subject: 'Mathematics', 
+      title: 'React Dashboard Development',
+      subject: 'Web Development', 
       date: '2025-06-10',
-      assignedBy: 'Dr. Sarah Johnson'
+      assignedBy: 'Dr. Sarah Johnson',
+      description: 'Build a responsive dashboard using React, TypeScript, and Tailwind CSS',
+      tags: ['react', 'typescript', 'tailwind', 'dashboard']
     },
     { 
       id: 2,
-      title: 'Essay on Climate Change', 
-      subject: 'English', 
+      title: 'Machine Learning Classification Project', 
+      subject: 'Data Science', 
       date: '2025-06-09',
-      assignedBy: 'Prof. Michael Chen'
+      assignedBy: 'Prof. Michael Chen',
+      description: 'Implement a classification algorithm using Python and scikit-learn',
+      tags: ['python', 'machine-learning', 'scikit-learn', 'classification']
     },
   ]);
 
   const [checkedAssignments, setCheckedAssignments] = useState<Assignment[]>([
     { 
       id: 3, 
-      title: 'Physics Lab Report', 
-      subject: 'Physics', 
+      title: 'Docker Containerization Lab', 
+      subject: 'DevOps', 
       date: '2025-06-05',
-      assignedBy: 'Dr. Emily Rodriguez'
+      assignedBy: 'Dr. Emily Rodriguez',
+      description: 'Containerize a Node.js application using Docker and Docker Compose',
+      tags: ['docker', 'nodejs', 'containerization', 'devops']
     },
   ]);
+
+  // Skill suggestion hook
+  const skillSuggestion = useSkillSuggestion({
+    userSkills,
+    onSkillsAdded: (newSkills) => {
+      setUserSkills(prev => [...prev, ...newSkills]);
+      console.log('Added skills to profile:', newSkills);
+      // Here you would typically update the user's profile in your backend
+    }
+  });
 
   const handleMarkAsChecked = (assignment: Assignment) => {
     setSubmittedAssignments(prev => prev.filter(item => item.id !== assignment.id));
     setCheckedAssignments(prev => [...prev, assignment]);
+    
+    // Trigger skill suggestion after marking as checked (simulating assignment completion)
+    skillSuggestion.triggerSkillSuggestion({
+      id: assignment.id.toString(),
+      title: assignment.title,
+      description: assignment.description,
+      tags: assignment.tags
+    });
   };
 
   const handleMarkAsUnchecked = (assignment: Assignment) => {
@@ -88,12 +121,29 @@ const AssignmentPage: React.FC = () => {
                     <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
                       {assignment.subject} — {assignment.date}
                     </p>
+                    {assignment.description && (
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        {assignment.description}
+                      </p>
+                    )}
                     <div className="flex items-center space-x-1 mt-1">
                       <User className="w-3 h-3 text-gray-500 dark:text-gray-400" />
                       <p className="text-xs text-gray-500 dark:text-gray-400">
                         Assigned by: {assignment.assignedBy}
                       </p>
                     </div>
+                    {assignment.tags && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {assignment.tags.map((tag, index) => (
+                          <span
+                            key={index}
+                            className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded-full text-xs"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <button
                     onClick={() => handleMarkAsChecked(assignment)}
@@ -135,12 +185,29 @@ const AssignmentPage: React.FC = () => {
                     <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
                       {assignment.subject} — {assignment.date}
                     </p>
+                    {assignment.description && (
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        {assignment.description}
+                      </p>
+                    )}
                     <div className="flex items-center space-x-1 mt-1">
                       <User className="w-3 h-3 text-gray-500 dark:text-gray-400" />
                       <p className="text-xs text-gray-500 dark:text-gray-400">
                         Assigned by: {assignment.assignedBy}
                       </p>
                     </div>
+                    {assignment.tags && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {assignment.tags.map((tag, index) => (
+                          <span
+                            key={index}
+                            className="px-2 py-1 bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 rounded-full text-xs"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2">
                     <span className="text-green-700 font-semibold text-sm dark:text-green-300 text-center sm:text-left flex-1">
@@ -160,6 +227,15 @@ const AssignmentPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Skill Suggestion Modal */}
+      <SkillSuggestionModal
+        isOpen={skillSuggestion.isModalOpen}
+        onClose={skillSuggestion.handleCloseModal}
+        suggestedSkills={skillSuggestion.currentSuggestion?.suggestedSkills || []}
+        assignmentTitle={skillSuggestion.currentSuggestion?.assignmentTitle || ''}
+        onAddSkills={skillSuggestion.handleAddSkills}
+      />
     </div>
   );
 };
