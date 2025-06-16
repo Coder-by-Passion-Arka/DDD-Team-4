@@ -15,3 +15,8 @@
 14-06-2025:
 --> Made page more responsive.
 --> Solved few frontend issues in different screens.
+
+16-06-2025:
+--> Added skill suggestion, detection systems.
+--> Enhanced user profile.
+--> Made adding skills automatic based on the assignments checked. 
