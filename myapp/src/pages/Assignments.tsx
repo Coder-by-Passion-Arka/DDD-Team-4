@@ -1,32 +1,50 @@
 import React, { useState } from 'react';
+import { ArrowLeft, User } from 'lucide-react';
 
 interface Assignment {
   id: number;
   title: string;
   subject: string;
   date: string;
+  assignedBy: string;
 }
 
 const AssignmentPage: React.FC = () => {
   const [submittedAssignments, setSubmittedAssignments] = useState<Assignment[]>([
-    { id: 1,
+    { 
+      id: 1,
       title: 'Math Homework 1',
-      subject: 'Mathematics', date: '2025-06-10' 
+      subject: 'Mathematics', 
+      date: '2025-06-10',
+      assignedBy: 'Dr. Sarah Johnson'
     },
-    { id: 2,
+    { 
+      id: 2,
       title: 'Essay on Climate Change', 
       subject: 'English', 
-      date: '2025-06-09' 
+      date: '2025-06-09',
+      assignedBy: 'Prof. Michael Chen'
     },
   ]);
 
   const [checkedAssignments, setCheckedAssignments] = useState<Assignment[]>([
-    { id: 3, title: 'Physics Lab Report', subject: 'Physics', date: '2025-06-05' },
+    { 
+      id: 3, 
+      title: 'Physics Lab Report', 
+      subject: 'Physics', 
+      date: '2025-06-05',
+      assignedBy: 'Dr. Emily Rodriguez'
+    },
   ]);
 
   const handleMarkAsChecked = (assignment: Assignment) => {
     setSubmittedAssignments(prev => prev.filter(item => item.id !== assignment.id));
     setCheckedAssignments(prev => [...prev, assignment]);
+  };
+
+  const handleMarkAsUnchecked = (assignment: Assignment) => {
+    setCheckedAssignments(prev => prev.filter(item => item.id !== assignment.id));
+    setSubmittedAssignments(prev => [...prev, assignment]);
   };
 
   return (
@@ -61,7 +79,7 @@ const AssignmentPage: React.FC = () => {
               {submittedAssignments.map((assignment) => (
                 <li
                   key={assignment.id}
-                  className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 sm:p-4 border rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 hover:dark:bg-gray-700/90 transition duration-200 space-y-3 sm:space-y-0"
+                  className="flex flex-col p-3 sm:p-4 border rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 hover:dark:bg-gray-700/90 transition duration-200 space-y-3"
                 >
                   <div className="flex-1">
                     <h3 className="font-medium dark:text-white text-sm sm:text-base">
@@ -70,10 +88,16 @@ const AssignmentPage: React.FC = () => {
                     <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
                       {assignment.subject} — {assignment.date}
                     </p>
+                    <div className="flex items-center space-x-1 mt-1">
+                      <User className="w-3 h-3 text-gray-500 dark:text-gray-400" />
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Assigned by: {assignment.assignedBy}
+                      </p>
+                    </div>
                   </div>
                   <button
                     onClick={() => handleMarkAsChecked(assignment)}
-                    className="bg-blue-500 px-3 py-2 rounded hover:bg-blue-600 text-sm text-white transition-colors duration-200 w-full sm:w-auto"
+                    className="bg-blue-500 px-3 py-2 rounded hover:bg-blue-600 text-sm text-white transition-colors duration-200 w-full"
                   >
                     Mark as Checked
                   </button>
@@ -102,7 +126,7 @@ const AssignmentPage: React.FC = () => {
               {checkedAssignments.map((assignment) => (
                 <li
                   key={assignment.id}
-                  className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 sm:p-4 border rounded-lg bg-green-50 dark:bg-green-900/30 dark:border-green-500/50 space-y-2 sm:space-y-0"
+                  className="flex flex-col p-3 sm:p-4 border rounded-lg bg-green-50 dark:bg-green-900/30 dark:border-green-500/50 space-y-3"
                 >
                   <div className="flex-1">
                     <h3 className="font-medium dark:text-white text-sm sm:text-base">
@@ -111,10 +135,25 @@ const AssignmentPage: React.FC = () => {
                     <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
                       {assignment.subject} — {assignment.date}
                     </p>
+                    <div className="flex items-center space-x-1 mt-1">
+                      <User className="w-3 h-3 text-gray-500 dark:text-gray-400" />
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Assigned by: {assignment.assignedBy}
+                      </p>
+                    </div>
                   </div>
-                  <span className="text-green-700 font-semibold text-sm dark:text-green-300 text-center sm:text-right">
-                    Checked
-                  </span>
+                  <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                    <span className="text-green-700 font-semibold text-sm dark:text-green-300 text-center sm:text-left flex-1">
+                      ✅ Checked
+                    </span>
+                    <button
+                      onClick={() => handleMarkAsUnchecked(assignment)}
+                      className="flex items-center justify-center space-x-1 bg-gray-500 hover:bg-gray-600 px-3 py-2 rounded text-sm text-white transition-colors duration-200 w-full sm:w-auto"
+                    >
+                      <ArrowLeft className="w-3 h-3" />
+                      <span>Move Back</span>
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
