@@ -9,6 +9,8 @@ import AnalyticsPage from './pages/Analytics';
 import AchievementsPage from './pages/Achievements';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
             <Route path="achievements" element={<AchievementsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="settings" element={<SettingsPage />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
           </Route>
         </Routes>
       </Router>
