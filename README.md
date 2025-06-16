@@ -2,7 +2,7 @@
 "We’re excited to embark on this amazing project, where we aim to leverage dashboard-style interfaces to make learning more engaging, enjoyable, and enriching. By using intuitive, interactive dashboards, we can transform the learning experience, making it more immersive and motivating for learners."
 
 ## Overview
-The version -0 was completed using simple Google Sheets and Google App Scripts.
+The version-0 was completed using simple Google Sheets and Google App Scripts.
 
 **Dopamine Driving through Dashboard** is a unified visualisation platform developed at the **Dhananjaya Lab for Education Design (DLED)**. The primary goal of this project is to design and deliver intuitive dashboards for all ongoing and future projects within the lab, enabling data-driven insights and dopamine-rich user experiences.
 
