@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { ArrowLeft, User } from 'lucide-react';
-import SkillSuggestionModal from '../components/SkillSuggestionModal';
-import { useSkillSuggestion } from '../hooks/useSkillSuggestion';
+import React, { useState } from "react";
+import { ArrowLeft, User, Layers } from "lucide-react";
+import SkillSuggestionModal from "../components/SkillSuggestionModal";
+import { useSkillSuggestion } from "../hooks/useSkillSuggestion";
 
 interface Assignment {
   id: number;
@@ -16,39 +16,47 @@ interface Assignment {
 const AssignmentPage: React.FC = () => {
   // Mock user skills - in real app, this would come from user context/profile
   const [userSkills, setUserSkills] = useState<string[]>([
-    'JavaScript', 'React', 'Node.js', 'Python'
+    "JavaScript",
+    "React",
+    "Node.js",
+    "Python",
   ]);
 
-  const [submittedAssignments, setSubmittedAssignments] = useState<Assignment[]>([
-    { 
+  const [submittedAssignments, setSubmittedAssignments] = useState<
+    Assignment[]
+  >([
+    {
       id: 1,
-      title: 'React Dashboard Development',
-      subject: 'Web Development', 
-      date: '2025-06-10',
-      assignedBy: 'Dr. Sarah Johnson',
-      description: 'Build a responsive dashboard using React, TypeScript, and Tailwind CSS',
-      tags: ['react', 'typescript', 'tailwind', 'dashboard']
+      title: "React Dashboard Development",
+      subject: "Web Development",
+      date: "2025-06-10",
+      assignedBy: "Dr. Sarah Johnson",
+      description:
+        "Build a responsive dashboard using React, TypeScript, and Tailwind CSS",
+      tags: ["react", "typescript", "tailwind", "dashboard"],
     },
-    { 
+    {
       id: 2,
-      title: 'Machine Learning Classification Project', 
-      subject: 'Data Science', 
-      date: '2025-06-09',
-      assignedBy: 'Prof. Michael Chen',
-      description: 'Implement a classification algorithm using Python and scikit-learn',
-      tags: ['python', 'machine-learning', 'scikit-learn', 'classification']
+      title: "Machine Learning Classification Project",
+      subject: "Data Science",
+      date: "2025-06-09",
+      assignedBy: "Prof. Michael Chen",
+      description:
+        "Implement a classification algorithm using Python and scikit-learn",
+      tags: ["python", "machine-learning", "scikit-learn", "classification"],
     },
   ]);
 
   const [checkedAssignments, setCheckedAssignments] = useState<Assignment[]>([
-    { 
-      id: 3, 
-      title: 'Docker Containerization Lab', 
-      subject: 'DevOps', 
-      date: '2025-06-05',
-      assignedBy: 'Dr. Emily Rodriguez',
-      description: 'Containerize a Node.js application using Docker and Docker Compose',
-      tags: ['docker', 'nodejs', 'containerization', 'devops']
+    {
+      id: 3,
+      title: "Docker Containerization Lab",
+      subject: "DevOps",
+      date: "2025-06-05",
+      assignedBy: "Dr. Emily Rodriguez",
+      description:
+        "Containerize a Node.js application using Docker and Docker Compose",
+      tags: ["docker", "nodejs", "containerization", "devops"],
     },
   ]);
 
@@ -56,37 +64,45 @@ const AssignmentPage: React.FC = () => {
   const skillSuggestion = useSkillSuggestion({
     userSkills,
     onSkillsAdded: (newSkills) => {
-      setUserSkills(prev => [...prev, ...newSkills]);
-      console.log('Added skills to profile:', newSkills);
+      setUserSkills((prev) => [...prev, ...newSkills]);
+      console.log("Added skills to profile:", newSkills);
       // Here you would typically update the user's profile in your backend
-    }
+    },
   });
 
   const handleMarkAsChecked = (assignment: Assignment) => {
-    setSubmittedAssignments(prev => prev.filter(item => item.id !== assignment.id));
-    setCheckedAssignments(prev => [...prev, assignment]);
-    
+    setSubmittedAssignments((prev) =>
+      prev.filter((item) => item.id !== assignment.id)
+    );
+    setCheckedAssignments((prev) => [...prev, assignment]);
+
     // Trigger skill suggestion after marking as checked (simulating assignment completion)
     skillSuggestion.triggerSkillSuggestion({
       id: assignment.id.toString(),
       title: assignment.title,
       description: assignment.description,
-      tags: assignment.tags
+      tags: assignment.tags,
     });
   };
 
   const handleMarkAsUnchecked = (assignment: Assignment) => {
-    setCheckedAssignments(prev => prev.filter(item => item.id !== assignment.id));
-    setSubmittedAssignments(prev => [...prev, assignment]);
+    setCheckedAssignments((prev) =>
+      prev.filter((item) => item.id !== assignment.id)
+    );
+    setSubmittedAssignments((prev) => [...prev, assignment]);
   };
 
   return (
     <div className="p-4 sm:p-6 bg-gray-100 min-h-screen bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 border-2 dark:border-gray-500/20 rounded-xl">
       {/* Header */}
       <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-2 sm:mb-3 text-center">
-          📚 Assignments Dashboard
-        </h1>
+        <div className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-2 sm:mb-3 text-center ">
+          <span>
+            <Layers className="w-8 h-8 
+            text-green-400 dark:text-green-500/80 inline-block" />{" "}
+            Assignments Dashboard
+          </span>
+        </div>
         <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-300 text-center">
           Manage your submitted and reviewed assignments
         </p>
@@ -232,8 +248,12 @@ const AssignmentPage: React.FC = () => {
       <SkillSuggestionModal
         isOpen={skillSuggestion.isModalOpen}
         onClose={skillSuggestion.handleCloseModal}
-        suggestedSkills={skillSuggestion.currentSuggestion?.suggestedSkills || []}
-        assignmentTitle={skillSuggestion.currentSuggestion?.assignmentTitle || ''}
+        suggestedSkills={
+          skillSuggestion.currentSuggestion?.suggestedSkills || []
+        }
+        assignmentTitle={
+          skillSuggestion.currentSuggestion?.assignmentTitle || ""
+        }
         onAddSkills={skillSuggestion.handleAddSkills}
       />
     </div>

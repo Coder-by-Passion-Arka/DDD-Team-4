@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import {BookOpenCheck  } from "lucide-react";
 
 const evaluations = [
   { subject: 'Mathematics', score: 92, grade: 'A+', feedback: 'Excellent problem-solving skills.' },
@@ -12,14 +13,14 @@ const Evaluation: React.FC = () => {
     <div className="p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-blue-50 to-purple-100 dark:from-purple-600 dark:to-slate-800 min-h-screen rounded-xl">
       {/* Header */}
       <div className="mb-6 sm:mb-8 lg:mb-10">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-indigo-800 dark:text-blue-300 mb-2 sm:mb-3">
-          📊 Evaluation Report
-        </h1>
+        <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-indigo-800 dark:text-blue-300 mb-2 sm:mb-3">
+          <BookOpenCheck  className="w-6 h-6 sm:w-7 sm:h-7 inline-block mr-2"/> Evaluation Report
+        </div>
         <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-300 text-center">
           Review your academic performance and feedback
         </p>
       </div>
-
+      {/* Performance Cards */}
       <div className="grid gap-4 sm:gap-6 max-w-5xl mx-auto">
         {evaluations.map((evaluation, idx) => (
           <motion.div
@@ -36,18 +37,27 @@ const Evaluation: React.FC = () => {
                 </h2>
                 <div className="space-y-1 sm:space-y-2">
                   <p className="text-sm sm:text-base text-gray-600 dark:text-white">
-                    Grade: <span className="font-semibold text-lg">{evaluation.grade}</span>
+                    Grade:{" "}
+                    <span className="font-semibold text-lg">
+                      {evaluation.grade}
+                    </span>
                   </p>
                   <p className="text-sm sm:text-base text-gray-600 dark:text-white">
-                    Score: <span className="font-semibold text-lg">{evaluation.score}/100</span>
+                    Score:{" "}
+                    <span className="font-semibold text-lg">
+                      {evaluation.score}/100
+                    </span>
                   </p>
                 </div>
               </div>
-              
+
               {/* Score Circle */}
               <div className="flex-shrink-0 self-center sm:self-start">
                 <div className="relative w-16 h-16 sm:w-20 sm:h-20">
-                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                  <svg
+                    className="w-full h-full transform -rotate-90"
+                    viewBox="0 0 36 36"
+                  >
                     <path
                       className="text-gray-200 dark:text-gray-600"
                       stroke="currentColor"
@@ -73,10 +83,11 @@ const Evaluation: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-600">
               <p className="text-sm sm:text-base text-gray-700 italic dark:text-white">
-                <span className="font-medium">Feedback:</span> "{evaluation.feedback}"
+                <span className="font-medium">Feedback:</span> "
+                {evaluation.feedback}"
               </p>
             </div>
           </motion.div>

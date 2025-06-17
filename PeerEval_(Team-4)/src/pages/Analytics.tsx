@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { ChartNoAxesCombined } from "lucide-react";
 
 import {
   Chart as ChartJS,
@@ -151,14 +152,25 @@ function PieChart({ chartData }: PieChartProps) {
 
 const Analytics: React.FC = () => (
   <>
-    <div className="p-8 bg-white dark:bg-slate-800 text-xl dark:text-white border-2 border-blue-300/90 rounded-xl shadow-lg hover:shadow-blue-900 transition-all duration-300 m-[0.3rem]">
-      <h2 className="text-center"> Line Chart</h2>
-      <Line data={data} options={options} />
-    </div>
+    <div className="analytics-container mb-6 sm:mb-8 lg:mb-10">
+      <div
+        className="analytics-heading sm:text-3xl lg:text-4xl font-bold
+      m-2 text-center text-wrap text-blue-800 dark:text-blue-300"
+      >
+        <ChartNoAxesCombined className=" sm:w-7 sm:h-7 inline-block m-2"/>
+        <span>Student Analytics</span>
+      </div>
+      <div className="p-8 bg-white dark:bg-slate-800 text-xl dark:text-white border-2 border-blue-300/90 rounded-xl shadow-lg hover:shadow-blue-900 transition-all duration-300 m-[0.3rem]">
+        <h2 className="text-center"> Line Chart</h2>
+        <Line data={data} options={options} />
+      </div>
 
-    <div className="p-8 bg-white dark:bg-slate-800 text-xl dark:text-white border-2 border-blue-300/90 rounded-xl shadow-lg hover:shadow-blue-900 transition-all duration-300 m-[0.3rem]
-    max-h-2xl max-w-2xl">
-      <PieChart chartData={chartData} />
+      <div
+        className="p-8 bg-white dark:bg-slate-800 text-xl dark:text-white border-2 border-blue-300/90 rounded-xl shadow-lg hover:shadow-blue-900 transition-all duration-300 m-[0.3rem]
+    max-h-2xl max-w-2xl"
+      >
+        <PieChart chartData={chartData} />
+      </div>
     </div>
   </>
 );
