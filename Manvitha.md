@@ -19,4 +19,8 @@
 16-06-2025:
 --> Added skill suggestion, detection systems.
 --> Enhanced user profile.
---> Made adding skills automatic based on the assignments checked. 
+--> Made adding skills automatic based on the assignments checked.
+
+17-06-2025:
+--> Started backend
+--> Started designing the badges pages and solving related issues.
