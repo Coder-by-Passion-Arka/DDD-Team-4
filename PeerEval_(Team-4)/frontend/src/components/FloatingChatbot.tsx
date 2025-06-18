@@ -28,7 +28,7 @@ const FloatingChatbot: React.FC = () => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-
+  const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -77,7 +77,7 @@ const FloatingChatbot: React.FC = () => {
         },
         {
           headers: {
-            Authorization: `Bearer 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`,
+            Authorization: `Bearer ${apiKey}`,
             'Content-Type': 'application/json',
             'HTTP-Referer': window.location.origin,
             'X-Title': 'Peer Evaluation Assistant',
