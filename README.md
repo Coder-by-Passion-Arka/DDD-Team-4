@@ -16,3 +16,32 @@ This project is built using the **MERN stack**:
 
 ## Folder Structure (DDD-Aligned)
 
+ DDD-Team-4/
+├── backend/
+│   ├── models/
+│   ├── routes/
+│   ├── controllers/
+│   ├── config/
+│   ├── utils/
+│   ├── server.js
+│   └── package.json
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── App.js
+│   │   └── index.js
+│   ├── public/
+│   ├── package.json
+│   └── README.md
+│
+├── docs/
+│   ├── api/
+│   ├── architecture/
+│   └── user-guides/
+│
+├── .gitignore
+├── README.md
+└── other config files
