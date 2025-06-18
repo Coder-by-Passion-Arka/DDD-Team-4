@@ -24,3 +24,7 @@
 17-06-2025:
 --> Started backend
 --> Started designing the badges pages and solving related issues.
+
+18-06-2025:
+--> Designed batches section in the dashboard.
+--> Included segregration of batches by streak, evaluations etc...
