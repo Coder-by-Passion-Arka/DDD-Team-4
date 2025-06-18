@@ -9,6 +9,8 @@ import StatsCard from '../components/StatsCard';
 import ProgressChart from '../components/ProgressChart';
 import StreakCounter from '../components/StreakCounter';
 import RecentAssignments from '../components/RecentAssignments';
+import BadgesSection from '../components/BadgesSection';
+import { mockUserBadges, calculateTotalTrailTokens } from '../data/badgesData';
 
 const Dashboard: React.FC = () => {
   const stats = {
@@ -27,6 +29,8 @@ const Dashboard: React.FC = () => {
     { day: 'Sat', submissions: 2, evaluations: 1 },
     { day: 'Sun', submissions: 3, evaluations: 2 },
   ];
+
+  const totalTrailTokens = calculateTotalTrailTokens(mockUserBadges);
 
   return (
     <>
@@ -77,6 +81,14 @@ const Dashboard: React.FC = () => {
         <div id="streak-section" className="transition-all duration-300 rounded-2xl">
           <StreakCounter currentStreak={12} bestStreak={28} />
         </div>
+      </div>
+
+      {/* Badges Section */}
+      <div className="mb-6 sm:mb-8">
+        <BadgesSection 
+          userBadges={mockUserBadges} 
+          totalTrailTokens={totalTrailTokens}
+        />
       </div>
 
       <RecentAssignments />
