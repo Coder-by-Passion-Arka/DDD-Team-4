@@ -16,13 +16,14 @@ This project integrates with [OpenRouter.ai](https://openrouter.ai), an API gate
 
 ### 📁 Step 2: Add API Key to Your `.env` File
 
-Create a `.env` file at the root of the project (if it doesn’t exist), and paste:
+Create a `.env` file at the frontend folder of the project , and paste:
 
-```env
 OPENROUTER_API_KEY=sk-or-your-generated-key-here
 
+---
 
-# Daily Work Log
+
+### Daily Work Log
 
 ## 17-06-2025
 Structured the MongoDB database model and defined key schemas with relationships to handle backend data efficiently.
