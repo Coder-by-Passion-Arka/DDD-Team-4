@@ -10,6 +10,8 @@ import ProgressChart from '../components/ProgressChart';
 import StreakCounter from '../components/StreakCounter';
 import RecentAssignments from '../components/RecentAssignments';
 import BadgesSection from '../components/BadgesSection';
+import DailyGoals from '../components/DailyGoals';
+
 import { mockUserBadges, calculateTotalTrailTokens } from '../data/badgesData';
 
 const Dashboard: React.FC = () => {
@@ -81,6 +83,9 @@ const Dashboard: React.FC = () => {
         <div id="streak-section" className="transition-all duration-300 rounded-2xl">
           <StreakCounter currentStreak={12} bestStreak={28} />
         </div>
+      </div>
+      <div className="mb-6 sm:mb-8">
+        <DailyGoals />
       </div>
 
       {/* Badges Section */}
