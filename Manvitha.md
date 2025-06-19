@@ -28,3 +28,6 @@
 18-06-2025:
 --> Designed batches section in the dashboard.
 --> Included segregration of batches by streak, evaluations etc...
+
+19-06-2025:
+--> Started working on backend.
