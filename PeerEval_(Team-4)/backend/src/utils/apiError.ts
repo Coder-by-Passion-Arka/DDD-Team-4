@@ -1,24 +1,20 @@
-// This file is responsible for handling API errors using the standardized Error class of Node.js
+// This file is responsible for handling API errors using the starndardized Error Class of Node.js //
 
 class ApiError extends Error {
-  statusCode: number;
-  data: any;
-  success: boolean;
-  error: any[];
-
+  // Error is a built-in class in Node.js that represents an error //
   constructor(
-    message: string = "An unexpected error occurred!!!",
-    statusCode: number = 500,
-    error: any[] = [],
-    stack?: string
+    message = "An unexpected error occurred!!!",
+    statusCode = 500,
+    error = [],
+    stack = new Error().stack // Error stack is a built-in property of Error object which holds the call stack of the error //
   ) {
     super(message);
-
     this.statusCode = statusCode;
     this.data = null;
     this.message = message;
     this.success = false;
     this.error = error;
+    this.stack = stack; // Setting the stack property of the error to the stack of the current Error object
 
     if (stack) {
       this.stack = stack;

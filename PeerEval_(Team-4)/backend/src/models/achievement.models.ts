@@ -1,15 +1,6 @@
-import mongoose, { Document, Schema, model } from 'mongoose';
+import mongoose from "mongoose";
 
-// 1. Define a TypeScript interface for the Achievement document
-export interface IAchievement extends Document {
-  title: string;
-  description: string;
-  date: Date;
-  achievementHolder: mongoose.Types.ObjectId;
-}
-
-// 2. Create a Mongoose schema using the interface
-const achievementSchema: Schema<IAchievement> = new Schema({
+const achivementsSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -28,11 +19,8 @@ const achievementSchema: Schema<IAchievement> = new Schema({
   },
   achievementHolder: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
+    ref: "User",
   },
 });
 
-// 3. Export the model with typing
-const Achievement = model<IAchievement>('Achievement', achievementSchema);
-export default Achievement;
+export default mongoose.model("Achievement", achivementsSchema);

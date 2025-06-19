@@ -32,6 +32,13 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.0.3",
+    "cookies": "^0.9.1",
+    "cookies-parser": "^1.2.0",
+    "dotenv": "^16.5.0",
+    "nodemon": "^3.1.10",
+    "express-async-handler": "^1.2.0",
+    "multer": "^2.0.1",
+    "express-fileupload": "^1.5.1",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3"

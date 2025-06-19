@@ -1,41 +1,11 @@
-import mongoose, { Schema, Document, Types, model } from "mongoose";
+import mongoose from "mongoose";
 
-// 1. Define enums and types
-type ThemeOption = "dark" | "light" | "system";
-type WeekDay =
-  | "Monday"
-  | "Tuesday"
-  | "Wednesday"
-  | "Thursday"
-  | "Friday"
-  | "Saturday"
-  | "Sunday";
-
-// 2. Define interface for the document
-export interface IPreference extends Document {
-  preferenceHolder: Types.ObjectId;
-  defaultTheme: ThemeOption;
-  workingHours: {
-    startTime: string;
-    endTime: string;
-    daysOfWeek: WeekDay[];
-    isFlexible: boolean;
-  };
-  notifications: {
-    emailNotifications: boolean;
-    pushNotifications: boolean;
-    soundNotifications: boolean;
-    messageNotifications: boolean;
-  };
-}
-
-// 3. Define the schema
-const preferenceSchema = new Schema<IPreference>({
+const preferenceSchema = new mongoose.Schema({
   preferenceHolder: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
-    unique: true, // One preference per user
+    unique: true, // Each user has one preference document
   },
   defaultTheme: {
     type: String,
@@ -44,7 +14,7 @@ const preferenceSchema = new Schema<IPreference>({
   },
   workingHours: {
     startTime: {
-      type: String,
+      type: String, // Use String (e.g., "09:00") instead of Date for time of day
       required: true,
       default: "09:00",
     },
@@ -95,6 +65,4 @@ const preferenceSchema = new Schema<IPreference>({
   },
 });
 
-// 4. Export the model
-const Preference = model<IPreference>("Preference", preferenceSchema);
-export default Preference;
+export default mongoose.model("Preference", preferenceSchema);

@@ -1,22 +1,20 @@
 import express from "express";
-import server from "./server";
-import connectDB from "./db/index";
+import server from "./server.js";
+import connectDB from "./db/index.js";
 import dotenv from "dotenv";
 
-// Load environment variables
-dotenv.config({ path: "./.env" });
+dotenv.config({
+  path: "./.env",
+});
 
-// Get the port from environment variables or default to 5000
-const port: number = parseInt(process.env.PORT || "5000", 10);
-
-// Connect to MongoDB and start server
+// Connect to dummy MongoDB Cluster //
 connectDB()
   .then(() => {
     server.listen(port, () => {
-      console.log(`✅ Server is running at http://localhost:${port}`);
+      console.log("Connected to MongoDB successfully."); // If successful, print this message.  //
     });
   })
-  .catch((error: any) => {
-    console.error(`❌ Failed to connect to MongoDB: ${error.message}`);
+  .catch((error) => {
+    console.error(`Failed to connect to MongoDB: ${error.message}`);
     process.exit(1);
   });

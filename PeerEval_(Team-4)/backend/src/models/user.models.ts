@@ -1,61 +1,12 @@
-import mongoose, { Document, Schema, Model, model } from "mongoose";
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-// ----------------------
-// 1. Interfaces
-// ----------------------
-
-interface ISocialMediaProfile {
-  platform: string;
-  profileLink: string;
-}
-
-interface IAcademicInfo {
-  universityName?: string;
-  degree?: string;
-  major?: string;
-  grade?: number;
-  graduationYear?: Date;
-  startDate?: Date;
-  endDate?: Date;
-}
-
-interface IUserLocation {
-  homeAddress: string;
-  currentAddress: string;
-}
-
-interface IUserPhoneNumber {
-  number: string;
-  countryCode: string;
-}
-
-export interface IUser extends Document {
-  userName: string;
-  userEmail: string;
-  userPhoneNumber: IUserPhoneNumber;
-  userLocation: IUserLocation;
-  userBio?: string;
-  userProfileImage?: string;
-  userAcademicInformation?: IAcademicInfo;
-  userSkills?: string[];
-  userSocialMediaProfiles?: ISocialMediaProfile[];
-  userJoiningDate?: Date;
-  userLastLogin?: Date;
-  userPassword: string;
-
-  isPasswordCorrect(trialPassword: string): Promise<boolean>;
-  generateAccessToken(): string;
-}
-
-// ----------------------
-// 2. Schema Definition
-// ----------------------
-
-const userSchema = new Schema<IUser>({
+// This is the User schema for the User model //
+const userSchema = new mongoose.Schema({
   userName: {
     type: String,
+    unique: false,
     required: true,
     minlength: 2,
     maxlength: 50,
@@ -68,18 +19,17 @@ const userSchema = new Schema<IUser>({
     maxlength: 100,
   },
   userPhoneNumber: {
-    number: {
-      type: String,
-      required: true,
-      minlength: 10,
-      maxlength: 15,
-    },
+    type: String,
+    required: true,
+    unique: true,
+    minlength: 10,
+    maxlength: 15,
     countryCode: {
       type: String,
       required: true,
       minlength: 2,
       maxlength: 3,
-    },
+    }, // Need to add some more meta data for country codes
   },
   userLocation: {
     homeAddress: {
@@ -97,56 +47,80 @@ const userSchema = new Schema<IUser>({
   },
   userBio: {
     type: String,
+    required: false,
     minlength: 10,
     maxlength: 500,
   },
   userProfileImage: {
+    // Have to fill this with schema for image //
     type: String,
+    required: false,
   },
   userAcademicInformation: {
     universityName: {
       type: String,
+      required: false,
       minlength: 10,
       maxlength: 50,
+      degree: {
+        type: String,
+        required: false,
+        minlength: 5,
+        maxlength: 50,
+        major: {
+          type: String,
+          required: true,
+          minlength: 5,
+          maxlength: 50,
+        },
+        grade: {
+          type: Number,
+          required: true,
+          minlength: 1,
+          maxlength: 3,
+        },
+        graduationYear: Date,
+        startDate: Date,
+        endDate: Date,
+      },
     },
-    degree: {
-      type: String,
-      minlength: 5,
-      maxlength: 50,
-    },
-    major: {
-      type: String,
-      minlength: 5,
-      maxlength: 50,
-    },
-    grade: {
-      type: Number,
-      min: 0,
-      max: 10,
-    },
-    graduationYear: Date,
-    startDate: Date,
-    endDate: Date,
   },
   userSkills: {
-    type: [String],
+    type: Array,
+    required: false,
     minlength: 1,
     maxlength: 100,
+    skills: {
+      type: String,
+      required: false,
+      minlength: 5,
+      maxlength: 50,
+    },
   },
-  userSocialMediaProfiles: [
-    {
+  userSocialMediaProfiles: {
+    type: Array,
+    required: false,
+    minlength: 1,
+    maxlength: 5,
+    socialMediaProfiles: {
+      type: String,
+      required: false,
+      minlength: 5,
+      maxlength: 50,
       platform: {
         type: String,
+        required: true,
         minlength: 5,
         maxlength: 50,
       },
       profileLink: {
         type: String,
+        required: true,
         minlength: 10,
         maxlength: 100,
       },
     },
-  ],
+  },
   userJoiningDate: Date,
   userLastLogin: Date,
   userPassword: {
@@ -155,42 +129,54 @@ const userSchema = new Schema<IUser>({
     minlength: 12,
     maxlength: 20,
   },
+  refreshToken: {
+    type: String,
+    required: false,
+    minlength: 10,
+    maxlength: 100,
+    expires: Date.months(6), // Longer time or Shorter time can be decided
+  },
 });
 
-// ----------------------
-// 3. Methods
-// ----------------------
-
+// Hook to hash the pasword before saving  using bcrypt //
 userSchema.pre("save", async function (next) {
-  const user = this as IUser;
-
+  // Hash the password before saving it to the database
+  const user = this;
+  // Check if password is modified and hashing it, if so.
   if (user.isModified("userPassword")) {
     user.userPassword = await bcrypt.hash(user.userPassword, 12);
   }
+  // Continue to next middleware or save the user to the database.
   next();
 });
 
-userSchema.methods.isPasswordCorrect = async function (
-  trialPassword: string
-): Promise<boolean> {
+// To authenticate a new user login we have to check if the entered password matches the hashed password in the database.
+userSchema.methods.isPasswordCorrect = async function (trialPassword) {
+  // Compare the hashed password from the database with the given password.
   return await bcrypt.compare(trialPassword, this.userPassword);
 };
 
-userSchema.methods.generateAccessToken = function (): string {
+// Generate Access Token using JWT
+userSchema.methods.generateAccessToken = function () {
+  // Generate a JWT token using the user's email and a secret key.
   return jwt.sign(
     {
       email: this.userEmail,
       id: this._id,
       userName: this.userName,
     },
-    process.env.JWT_SECRET || "secret",
+    process.env.JWT_SECRET || "generate_secret", // Replace with your custom secret key before deployment
     { expiresIn: "1h" }
   );
 };
 
-// ----------------------
-// 4. Export Model
-// ----------------------
+// Generate Refresh Token using JWT
+userSchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
+    { id: this._id },
+    process.env.JWT_SECRET || "refresh_secret",
+    { expiresIn: "7d" }
+  );
+};
 
-const User: Model<IUser> = model<IUser>("User", userSchema);
-export default User;
+export default mongoose.model("User", userSchema);

@@ -1,18 +1,6 @@
-import mongoose, { Schema, Document, Types, model } from "mongoose";
+import mongoose from "mongoose";
 
-// 1. Define the TypeScript interface for the Evaluation document
-export interface IEvaluation extends Document {
-  courseId: Types.ObjectId;
-  assignmentId: Types.ObjectId;
-  grade: number;
-  asignedOn: Date;
-  deadline?: Date;
-  studentsEnrolled: Types.ObjectId[];
-  submittedBy: Types.ObjectId[];
-}
-
-// 2. Define the Evaluation schema
-const evaluationSchema = new Schema<IEvaluation>({
+const evaluationSchema = new mongoose.Schema({
   courseId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Course",
@@ -33,9 +21,7 @@ const evaluationSchema = new Schema<IEvaluation>({
     type: Date,
     required: true,
   },
-  deadline: {
-    type: Date,
-  },
+  deadline: Date,
   studentsEnrolled: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -52,6 +38,4 @@ const evaluationSchema = new Schema<IEvaluation>({
   ],
 });
 
-// 3. Export the model
-const Evaluation = model<IEvaluation>("Evaluation", evaluationSchema);
-export default Evaluation;
+export default mongoose.model("Evaluation", evaluationSchema);

@@ -1,10 +1,10 @@
 import { Router } from "express";
-import healthCheck from "../controllers/healthCheck.controller";
+import healthCheck from "../controllers/healthCheck.controller.js";
 
-// Create a new Router instance
-const router: Router = Router();
+// Make a new Router instance
+const router = Router();
 
 // Route the healthCheck endpoint to the healthCheck controller
-router.get("/", healthCheck);
+router.route("/").get(healthCheck);
 
 export default router;

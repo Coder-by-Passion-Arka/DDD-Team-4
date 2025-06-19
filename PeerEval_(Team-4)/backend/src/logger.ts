@@ -1,20 +1,15 @@
-// Creating Winston Logger for logging. This helps log errors, warnings, and other important events to console and file.
+// Creatig Winston Logger for logging. This helps us to log errors, warnings, and other important events to a file. //
 
-import { createLogger, format, transports, Logger } from "winston";
+import { createLogger, format, transports } from "winston";
+const { combine, timestamp, colorize, json } = format;
 
-const { combine, timestamp, colorize, json, printf } = format;
-
-// Console log format with color and timestamp
-const consoleLogFormat = combine(
-  colorize(),
-  timestamp(),
-  printf(({ level, message, timestamp }) => {
+const consoleLogFormat = format.combine(
+  format.colorize(),
+  format.printf(({ level, message, timestamp }) => {
     return `${timestamp} [${level}] ${message}`;
   })
 );
-
-// Create the logger instance
-const logger: Logger = createLogger({
+const logger = createLogger({
   level: "info",
   format: combine(colorize(), timestamp(), json()),
   transports: [
