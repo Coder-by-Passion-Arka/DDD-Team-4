@@ -18,30 +18,76 @@ This project is built using the **MERN stack**:
 
  DDD-Team-4/
 ├── backend/
-│   ├── models/
-│   ├── routes/
-│   ├── controllers/
-│   ├── config/
-│   ├── utils/
-│   ├── server.js
-│   └── package.json
+│   ├── src/
+│   │   ├── models/
+│   │   │   ├── achievement.models.js
+│   │   │   ├── assignment.models.js
+│   │   │   ├── dailyActivities.models.js
+│   │   │   ├── evaluation.models.js
+│   │   │   ├── preferences.models.js
+│   │   │   ├── submission.models.js
+│   │   │   └── user.models.js 
+│   │   ├── routes/
+│   │   │   ├── auth.routes.js
+│   │   │   └── healthCheck.routes.js
+│   │   ├── db/
+│   │   │   └── index.js
+│   │   ├── controllers/
+│   │   │   ├── healthCheck.controller.js
+│   │   │   └── user.controller.js
+│   │   ├── utils/
+│   │   │   ├── apiError.js
+│   │   │   └── apiResponse.js
+│   │   ├── services/
+│   │   ├── middlewares/
+│   │   │   ├── auth.middleware.js
+│   │   │   ├── errorHandling.middlewares.js
+│   │   │   └── multer.middlewares.js
+│   │   ├── config/
+│   │   │   ├── server.js
+│   │   ├── app.js
+│   │   ├── logger.js
+│   │   ├── .env
+│   │   ├── error.log
+│   │   ├── package.json
+│   │   └── package-lock.json
 │
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
+│   │   │   ├── Breadcrumb.tsx
+│   │   │   ├── FloatingChatbot.tsx
+│   │   │   ├── LeaderboardModal.tsx
+│   │   │   ├── LeaderboardPanel.tsx
+│   │   │   ├── ProgressChart.tsx
+│   │   │   ├── RecentAssignments.tsx
+│   │   │   ├── Sidebar.tsx
+│   │   │   ├── SkillSuggestionModal.tsx
+│   │   │   ├── StatsCard.tsx
+│   │   │   ├── StreakCounter.tsx
+│   │   │   ├── ThemeToggle.tsx
 │   │   ├── pages/
-│   │   ├── services/
-│   │   ├── App.js
-│   │   └── index.js
-│   ├── public/
+│   │   │   ├── Achievements.tsx
+│   │   │   ├── Analytics.tsx
+│   │   │   ├── Assignments.tsx
+│   │   │   ├── Dashboard.tsx
+│   │   │   ├── Evaluation.tsx
+│   │   │   ├── GoToStudentProfile.tsx
+│   │   │   ├── Login.tsx
+│   │   │   ├── ProfilePage.tsx
+│   │   │   ├── Register.tsx
+│   │   │   ├── SettingsPage.tsx
+│   │   ├── contexts/
+│   │   │   ├── ThemeContext.tsx
+│   │   ├── hooks/
+│   │   │   ├── useSkillSuggestion.ts
+│   │   ├── main.tsx
+│   │   ├── App.tsx
+│   │   └── index.css
+│   ├── index.html
 │   ├── package.json
-│   └── README.md
-│
-├── docs/
-│   ├── api/
-│   ├── architecture/
-│   └── user-guides/
-│
+│   ├── package-lock.json
+│   └── tailwind.config
 ├── .gitignore
 ├── README.md
 └── other config files

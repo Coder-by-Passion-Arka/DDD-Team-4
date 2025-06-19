@@ -1,7 +1,27 @@
 ## This is a README file of Arkapravo Das through which I give a overview of my Daily Work
 
+## Day 7 ( 19/06/2025 )
 
-## Day 5 ( 16/06/2025 )
+    -- Almost completed the backend of the application
+    -- Integrated backend with user login and authentication
+    -- Updated the config files and Docs
+    -- Added Middlewares to secure the application and hadle Api calls.
+
+## Day 6 ( 18/06/2025 )
+
+    -- Improved the Schemas of models
+    -- Debugged application errors 
+    -- Redesigned the Database
+    -- Sight modifications in App Navigation and Workflow
+
+## Day 5 ( 17/06/2025 )
+
+    -- Updated the User Interface along with Application flow
+    -- Made Simple User Registration and Login Pages
+    -- Modified the Backend significantly but still now production-ready
+    -- Secured routes with JWT Authentication
+
+## Day 4 ( 16/06/2025 )
 
     -- Built API endpoint and middlewares to safely authenticate the user.
     -- Mock Backend for data retrival and CRUD operations
