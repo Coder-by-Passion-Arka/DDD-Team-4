@@ -1,33 +1,42 @@
-11-06-2025:
---> Designed the basic dashboard
---> Integrated componenets like streak, sidebar, cards showing assignment development, recent assignments, graphs of progress etc...
+## 📅 Development Log
 
-12-06-2025:
---> Created profile and setting pages.
---> Implemented dark and light modes.
---> Solved git conflicts.
+### ✅ 11-06-2025
+- Designed the basic dashboard layout.
+- Integrated core components:
+  - Streak tracker
+  - Sidebar navigation
+  - Assignment progress cards
+  - Recent assignments section
+  - Progress graphs
 
-13-06-2025:
---> Designed small icon for the chatbot for efficient usage of it.
---> Added leaderboard component with leaderboard model and leaderboard panel.
---> Added a small streak icon to be more user-friendly.
+### ✅ 12-06-2025
+- Created **Profile** and **Settings** pages.
+- Implemented **Dark** and **Light** mode toggle.
+- Resolved Git conflicts.
 
-14-06-2025:
---> Made page more responsive.
---> Solved few frontend issues in different screens.
+### ✅ 13-06-2025
+- Designed a compact **chatbot icon** for better usability.
+- Added **Leaderboard**:
+  - Leaderboard model
+  - Leaderboard panel component
+- Added **Streak icon** for enhanced user interaction.
 
-16-06-2025:
---> Added skill suggestion, detection systems.
---> Enhanced user profile.
---> Made adding skills automatic based on the assignments checked.
+### ✅ 14-06-2025
+- Improved responsiveness across multiple screen sizes.
+- Fixed various frontend UI issues on different devices.
 
-17-06-2025:
---> Started backend
---> Started designing the badges pages and solving related issues.
+### ✅ 16-06-2025
+- Integrated **skill suggestion and detection system**.
+- Enhanced **user profile** section.
+- Enabled **automatic skill updates** based on assignment evaluations.
 
-18-06-2025:
---> Designed batches section in the dashboard.
---> Included segregration of batches by streak, evaluations etc...
+### ✅ 17-06-2025
+- Started backend development.
+- Began designing **Badges** page and resolving related issues.
 
-19-06-2025:
---> Started working on backend.
+### ✅ 18-06-2025
+- Completed **Badges** section on the dashboard.
+- Segregated badges based on:
+  - Streaks
+  - Evaluations
+  - Other metrics
