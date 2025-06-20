@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { Trophy, Flame, Menu, X } from 'lucide-react';
+import { Trophy, Flame, Menu, X, Gamepad2 } from 'lucide-react';
 import Sidebar from './Sidebar';
 import ThemeToggle from './ThemeToggle';
 import FloatingChatbot from './FloatingChatbot';
 import LeaderboardPanel from './LeaderboardPanel';
+import GameModal from './GameModal';
 
 const Breadcrumb: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
+  const [isGameModalOpen, setIsGameModalOpen] = useState(false);
   const navigate = useNavigate();
   
   // Current user's streak - this could come from props or context in a real app
@@ -84,6 +86,15 @@ const Breadcrumb: React.FC = () => {
                 </div>
               </button>
 
+              {/* Games Button */}
+              <button
+                onClick={() => setIsGameModalOpen(true)}
+                className="relative p-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-all duration-200"
+                aria-label="Open games"
+              >
+                <Gamepad2 className="w-4 h-4 text-purple-500" />
+              </button>
+
               {/* Leaderboard Button */}
               <button
                 onClick={() => setIsLeaderboardOpen(true)}
@@ -122,6 +133,20 @@ const Breadcrumb: React.FC = () => {
           {/* Streak tooltip */}
           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
             {currentStreak} day streak - Click to view details
+          </div>
+        </button>
+
+        {/* Games Button */}
+        <button
+          onClick={() => setIsGameModalOpen(true)}
+          className="relative p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
+          aria-label="Open games"
+        >
+          <Gamepad2 className="w-6 h-6 text-purple-500 group-hover:text-purple-600 transition-colors duration-200" />
+          
+          {/* Games tooltip */}
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+            Play games
           </div>
         </button>
 
@@ -167,6 +192,10 @@ const Breadcrumb: React.FC = () => {
       <LeaderboardPanel 
         isOpen={isLeaderboardOpen} 
         onClose={() => setIsLeaderboardOpen(false)} 
+      />
+      <GameModal 
+        isOpen={isGameModalOpen} 
+        onClose={() => setIsGameModalOpen(false)} 
       />
     </div>
   );
