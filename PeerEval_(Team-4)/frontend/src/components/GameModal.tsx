@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Gamepad2, Trophy, Star, Clock, Target } from 'lucide-react';
-import TreasureHunt from './games/TreasureHunt';
+// import TreasureHunt from './games/TreasureHunt';
 import RockPaperScissors from './games/RockPaperScissors';
 import MemoryMatch from './games/MemoryMatch';
 import Minesweeper from './games/Minesweeper';
@@ -20,7 +20,7 @@ interface GameModalProps {
 
 type GameType =
   | 'menu'
-  | 'treasure'
+  // | 'treasure'
   | 'rps'
   | 'memory'
   | 'minesweeper'
@@ -43,15 +43,15 @@ const GameModal: React.FC<GameModalProps> = ({ isOpen, onClose }) => {
   });
 
   const games = [
-    {
-      id: 'treasure' as GameType,
-      name: 'Treasure Hunt',
-      description: 'Follow clues to find hidden treasures',
-      icon: '🗺️',
-      difficulty: 'Medium',
-      color: 'from-amber-500 to-orange-600',
-      estimatedTime: '5-10 min',
-    },
+    // {
+    //   id: 'treasure' as GameType,
+    //   name: 'Treasure Hunt',
+    //   description: 'Follow clues to find hidden treasures',
+    //   icon: '🗺️',
+    //   difficulty: 'Medium',
+    //   color: 'from-amber-500 to-orange-600',
+    //   estimatedTime: '5-10 min',
+    // },
     {
       id: 'rps' as GameType,
       name: 'Rock Paper Scissors',
@@ -172,8 +172,8 @@ const GameModal: React.FC<GameModalProps> = ({ isOpen, onClose }) => {
 
   const renderGame = () => {
     switch (currentGame) {
-      case 'treasure':
-        return <TreasureHunt onBack={handleBackToMenu} onComplete={handleGameComplete} />;
+      // case 'treasure':
+      //   return <TreasureHunt onBack={handleBackToMenu} onComplete={handleGameComplete} />;
       case 'rps':
         return <RockPaperScissors onBack={handleBackToMenu} onComplete={handleGameComplete} />;
       case 'memory':
