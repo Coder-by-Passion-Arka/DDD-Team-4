@@ -12,6 +12,8 @@ import SnakeGame from './games/SnakeGame';
 import MazeEscape from './games/MazeEscape';
 import SimonSays from './games/SimonSays';
 import TicTacToeTSX from './games/TicTacToeTSX';
+import SortingGame from './games/SortingGame';
+
 
 interface GameModalProps {
   isOpen: boolean;
@@ -31,7 +33,8 @@ type GameType =
   | 'snake'
   | 'maze'
   | 'simon'
-  | 'tictactoe';
+  | 'tictactoe'
+  | 'sorting';
 
 const GameModal: React.FC<GameModalProps> = ({ isOpen, onClose }) => {
   const [currentGame, setCurrentGame] = useState<GameType>('menu');
@@ -151,6 +154,15 @@ const GameModal: React.FC<GameModalProps> = ({ isOpen, onClose }) => {
       color: 'from-gray-500 to-gray-600',
       estimatedTime: '2-5 min',
     },
+    {
+      id: 'sorting' as GameType,
+      name: 'Sorting Challenge: CS Edition',
+      description: 'Drag and drop CS concepts into the correct categories',
+      icon: '🧠',
+      difficulty: 'Medium',
+      color: 'from-green-400 to-green-600',
+      estimatedTime: '3-10 min',
+    },
   ];
 
   const handleGameSelect = (gameId: GameType) => {
@@ -196,6 +208,9 @@ const GameModal: React.FC<GameModalProps> = ({ isOpen, onClose }) => {
         return <SimonSays onBack={handleBackToMenu} onComplete={handleGameComplete} />;
       case 'tictactoe':
         return <TicTacToeTSX onBack={handleBackToMenu} onComplete={handleGameComplete} />;
+      case 'sorting':
+        return <SortingGame onBack={handleBackToMenu} onComplete={handleGameComplete} />;
+
       default:
         return null;
     }
