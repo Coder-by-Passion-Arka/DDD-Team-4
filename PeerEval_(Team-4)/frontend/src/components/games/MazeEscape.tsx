@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 
 const mazeRows = 10;
@@ -75,7 +74,12 @@ const generateMaze = (): Cell[][] => {
   return maze;
 };
 
-const MazeEscape: React.FC = () => {
+interface MazeEscapeProps {
+  onBack: () => void;
+  onComplete: (won: boolean, score: number) => void;
+}
+
+const MazeEscape: React.FC<MazeEscapeProps> = ({ onBack, onComplete }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [maze, setMaze] = useState<Cell[][]>(generateMaze());
   const [player, setPlayer] = useState<Position>({ x: 0, y: 0 });
@@ -83,7 +87,10 @@ const MazeEscape: React.FC = () => {
 
   useEffect(() => {
     drawMaze();
-  }, [player, maze]);
+    if (gameWon) {
+      onComplete && onComplete(true, 100);
+    }
+  }, [player, maze, gameWon]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => handleMove(e.key);
@@ -185,7 +192,9 @@ const MazeEscape: React.FC = () => {
       ></canvas>
 
       {gameWon && (
-        <p className="text-green-400 text-xl font-medium animate-pulse mb-4">You escaped the maze!</p>
+        <p className="text-green-400 text-xl font-medium animate-pulse mb-4">
+          You escaped the maze!
+        </p>
       )}
 
       <div className="flex gap-2 flex-wrap justify-center mb-4">
@@ -220,6 +229,12 @@ const MazeEscape: React.FC = () => {
         className="px-6 py-2 bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 rounded-full text-white text-lg shadow-lg transition-all"
       >
         Restart Game
+      </button>
+      <button
+        onClick={onBack}
+        className="mt-4 px-6 py-2 bg-gray-600 hover:bg-gray-700 rounded-full text-white text-lg shadow-lg transition-all"
+      >
+        Back to Games
       </button>
     </div>
   );

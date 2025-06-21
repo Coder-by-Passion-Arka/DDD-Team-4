@@ -1,5 +1,4 @@
-
-import React,  {useState } from "react";
+import React, { useState } from "react";
 
 const colors = ["green", "red", "yellow", "blue"];
 const colorMap: Record<string, string> = {
@@ -9,7 +8,12 @@ const colorMap: Record<string, string> = {
   blue: "bg-blue-500",
 };
 
-const SimonSays: React.FC = () => {
+interface SimonSaysProps {
+  onBack: () => void;
+  onComplete: (won: boolean, score: number) => void;
+}
+
+const SimonSays: React.FC<SimonSaysProps> = ({ onBack, onComplete }) => {
   const [sequence, setSequence] = useState<string[]>([]);
   const [playerIndex, setPlayerIndex] = useState(0);
   const [isPlayerTurn, setIsPlayerTurn] = useState(false);
@@ -72,6 +76,7 @@ const SimonSays: React.FC = () => {
       setMessage("Wrong color! You lose at Level " + level);
       setGameStarted(false);
       setIsPlayerTurn(false);
+      onComplete && onComplete(false, level);
     }
   };
 
@@ -111,6 +116,12 @@ const SimonSays: React.FC = () => {
           </button>
         )}
       </div>
+      <button
+        onClick={onBack}
+        className="mt-6 px-6 py-2 bg-gray-600 hover:bg-gray-700 rounded-full text-white text-lg shadow-lg transition-all"
+      >
+        Back to Games
+      </button>
     </div>
   );
 };

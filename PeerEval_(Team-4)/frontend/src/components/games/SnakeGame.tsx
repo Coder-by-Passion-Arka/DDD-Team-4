@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 
 const canvasSize = 400;
@@ -23,7 +22,12 @@ interface Position {
   y: number;
 }
 
-const SnakeGame: React.FC = () => {
+interface SnakeGameProps {
+  onBack: () => void;
+  onComplete: (won: boolean, score: number) => void;
+}
+
+const SnakeGame: React.FC<SnakeGameProps> = ({ onBack, onComplete }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [snake, setSnake] = useState<Position[]>([{ x: 10, y: 10 }]);
   const [direction, setDirection] = useState<Position>({ x: 0, y: 0 });
@@ -40,7 +44,7 @@ const SnakeGame: React.FC = () => {
         update();
         draw(context);
       }
-    }, 200); // Slowed down from 150ms to 200ms
+    }, 200);
 
     window.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -82,6 +86,7 @@ const SnakeGame: React.FC = () => {
     ) {
       setGameOver(true);
       setStarted(false);
+      onComplete && onComplete(false, newSnake.length * 10);
       return;
     }
 
@@ -153,6 +158,12 @@ const SnakeGame: React.FC = () => {
         className="px-6 py-2 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full text-white text-lg shadow-lg transition-all"
       >
         Reset Game
+      </button>
+      <button
+        onClick={onBack}
+        className="mt-4 px-6 py-2 bg-gray-600 hover:bg-gray-700 rounded-full text-white text-lg shadow-lg transition-all"
+      >
+        Back to Games
       </button>
     </div>
   );

@@ -1,7 +1,11 @@
-
 import React, { useState } from "react";
 
-const TicTacToeTSX: React.FC = () => {
+interface TicTacToeTSXProps {
+  onBack: () => void;
+  onComplete: (won: boolean, score: number) => void;
+}
+
+const TicTacToeTSX: React.FC<TicTacToeTSXProps> = ({ onBack, onComplete }) => {
   const initialGrid: ("" | "x" | "o")[] = Array(9).fill("");
   const [grid, setGrid] = useState(initialGrid);
   const [, setTurn] = useState<"x" | "o">("x");
@@ -45,6 +49,7 @@ const TicTacToeTSX: React.FC = () => {
         setIsLocked(true);
         setTimeout(() => {
           setMessage(isPlayer ? "You win!" : "You lose!");
+          onComplete && onComplete(isPlayer, isPlayer ? 100 : 0);
         }, 200);
         return true;
       }
@@ -52,7 +57,10 @@ const TicTacToeTSX: React.FC = () => {
 
     if (newGrid.every((cell) => cell !== "")) {
       setIsLocked(true);
-      setTimeout(() => setMessage("It's a draw!"), 200);
+      setTimeout(() => {
+        setMessage("It's a draw!");
+        onComplete && onComplete(false, 0);
+      }, 200);
       return true;
     }
 
@@ -104,6 +112,12 @@ const TicTacToeTSX: React.FC = () => {
         className="mt-6 px-6 py-2 bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 rounded-full text-white text-lg shadow-lg transition-all"
       >
         Restart Game
+      </button>
+      <button
+        onClick={onBack}
+        className="mt-4 px-6 py-2 bg-gray-600 hover:bg-gray-700 rounded-full text-white text-lg shadow-lg transition-all"
+      >
+        Back to Games
       </button>
     </div>
   );

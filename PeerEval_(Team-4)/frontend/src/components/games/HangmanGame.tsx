@@ -72,7 +72,12 @@ const HangmanDrawing = ({ wrongGuesses }: { wrongGuesses: number }) => {
   );
 };
 
-const HangmanGame = () => {
+interface HangmanGameProps {
+  onBack: () => void;
+  onComplete: (won: boolean, score: number) => void;
+}
+
+const HangmanGame: React.FC<HangmanGameProps> = ({ onBack, onComplete }) => {
   const [word, setWord] = useState('');
   const [guesses, setGuesses] = useState<string[]>([]);
   const [wrongGuesses, setWrongGuesses] = useState(0);
@@ -89,6 +94,14 @@ const HangmanGame = () => {
   useEffect(() => {
     initializeGame();
   }, []);
+
+  useEffect(() => {
+    if (status === 'won') {
+      onComplete && onComplete(true, 100);
+    } else if (status === 'lost') {
+      onComplete && onComplete(false, 0);
+    }
+  }, [status, onComplete]);
 
   const handleGuess = (char: string) => {
     if (status !== 'playing' || guesses.includes(char)) return;
@@ -155,6 +168,12 @@ const HangmanGame = () => {
             <span>Play Again</span>
           </button>
         )}
+        <button
+          onClick={onBack}
+          className="mt-4 flex items-center space-x-2 px-4 py-2 rounded-full bg-gray-600 hover:bg-gray-700 text-white transition-colors"
+        >
+          Back to Games
+        </button>
       </div>
     </div>
   );

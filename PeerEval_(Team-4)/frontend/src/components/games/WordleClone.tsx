@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 
 const WORD_LIST = ["react", "train", "flame", "brush", "ghost", "plant", "glide", "jumps"];
@@ -6,7 +5,12 @@ const MAX_ATTEMPTS = 6;
 
 const getRandomWord = () => WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
 
-const WordleClone: React.FC = () => {
+interface WordleCloneProps {
+  onBack: () => void;
+  onComplete: (won: boolean, score: number) => void;
+}
+
+const WordleClone: React.FC<WordleCloneProps> = ({ onBack, onComplete }) => {
   const [targetWord, setTargetWord] = useState<string>(getRandomWord());
   const [guesses, setGuesses] = useState<string[]>([]);
   const [currentGuess, setCurrentGuess] = useState<string>("");
@@ -22,9 +26,11 @@ const WordleClone: React.FC = () => {
     if (guess === targetWord) {
       setMessage("🎉 You guessed the word!");
       setGameOver(true);
+      onComplete && onComplete(true, 100);
     } else if (guesses.length + 1 === MAX_ATTEMPTS) {
       setMessage(`You lose! The word was "${targetWord}".`);
       setGameOver(true);
+      onComplete && onComplete(false, 0);
     }
 
     setCurrentGuess("");
@@ -93,6 +99,12 @@ const WordleClone: React.FC = () => {
         className="px-6 py-2 bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 rounded-full text-white text-lg shadow-lg transition-all"
       >
         Reset Game
+      </button>
+      <button
+        onClick={onBack}
+        className="mt-4 px-6 py-2 bg-gray-600 hover:bg-gray-700 rounded-full text-white text-lg shadow-lg transition-all"
+      >
+        Back to Games
       </button>
     </div>
   );

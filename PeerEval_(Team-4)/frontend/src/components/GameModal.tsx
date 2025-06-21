@@ -5,13 +5,33 @@ import RockPaperScissors from './games/RockPaperScissors';
 import MemoryMatch from './games/MemoryMatch';
 import Minesweeper from './games/Minesweeper';
 import SlidingPuzzle from './games/SlidingPuzzle';
+import HangmanGame from './games/HangmanGame';
+import NumberGuessingGame from './games/NumberGuessingGame';
+import WordleClone from './games/WordleClone';
+import SnakeGame from './games/SnakeGame';
+import MazeEscape from './games/MazeEscape';
+import SimonSays from './games/SimonSays';
+import TicTacToeTSX from './games/TicTacToeTSX';
 
 interface GameModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-type GameType = 'menu' | 'treasure' | 'rps' | 'memory' | 'minesweeper' | 'sliding';
+type GameType =
+  | 'menu'
+  | 'treasure'
+  | 'rps'
+  | 'memory'
+  | 'minesweeper'
+  | 'sliding'
+  | 'hangman'
+  | 'numberguess'
+  | 'wordle'
+  | 'snake'
+  | 'maze'
+  | 'simon'
+  | 'tictactoe';
 
 const GameModal: React.FC<GameModalProps> = ({ isOpen, onClose }) => {
   const [currentGame, setCurrentGame] = useState<GameType>('menu');
@@ -30,7 +50,7 @@ const GameModal: React.FC<GameModalProps> = ({ isOpen, onClose }) => {
       icon: '🗺️',
       difficulty: 'Medium',
       color: 'from-amber-500 to-orange-600',
-      estimatedTime: '5-10 min'
+      estimatedTime: '5-10 min',
     },
     {
       id: 'rps' as GameType,
@@ -39,7 +59,7 @@ const GameModal: React.FC<GameModalProps> = ({ isOpen, onClose }) => {
       icon: '✂️',
       difficulty: 'Easy',
       color: 'from-blue-500 to-blue-600',
-      estimatedTime: '2-5 min'
+      estimatedTime: '2-5 min',
     },
     {
       id: 'memory' as GameType,
@@ -48,7 +68,7 @@ const GameModal: React.FC<GameModalProps> = ({ isOpen, onClose }) => {
       icon: '🧠',
       difficulty: 'Medium',
       color: 'from-purple-500 to-purple-600',
-      estimatedTime: '3-8 min'
+      estimatedTime: '3-8 min',
     },
     {
       id: 'minesweeper' as GameType,
@@ -57,7 +77,7 @@ const GameModal: React.FC<GameModalProps> = ({ isOpen, onClose }) => {
       icon: '💣',
       difficulty: 'Hard',
       color: 'from-red-500 to-red-600',
-      estimatedTime: '5-15 min'
+      estimatedTime: '5-15 min',
     },
     {
       id: 'sliding' as GameType,
@@ -66,8 +86,71 @@ const GameModal: React.FC<GameModalProps> = ({ isOpen, onClose }) => {
       icon: '🧩',
       difficulty: 'Medium',
       color: 'from-emerald-500 to-emerald-600',
-      estimatedTime: '3-10 min'
-    }
+      estimatedTime: '3-10 min',
+    },
+    {
+      id: 'hangman' as GameType,
+      name: 'Hangman',
+      description: 'Guess the tech word before you run out of tries',
+      icon: '🎯',
+      difficulty: 'Medium',
+      color: 'from-pink-500 to-pink-600',
+      estimatedTime: '3-8 min',
+    },
+    {
+      id: 'numberguess' as GameType,
+      name: 'Number Guessing',
+      description: 'Guess the secret number between 1 and 100',
+      icon: '🔢',
+      difficulty: 'Easy',
+      color: 'from-cyan-500 to-cyan-600',
+      estimatedTime: '2-5 min',
+    },
+    {
+      id: 'wordle' as GameType,
+      name: 'Wordle Clone',
+      description: 'Guess the 5-letter word in 6 tries',
+      icon: '📝',
+      difficulty: 'Medium',
+      color: 'from-lime-500 to-lime-600',
+      estimatedTime: '3-8 min',
+    },
+    {
+      id: 'snake' as GameType,
+      name: 'Snake',
+      description: 'Eat food and grow your snake',
+      icon: '🐍',
+      difficulty: 'Medium',
+      color: 'from-green-500 to-green-600',
+      estimatedTime: '3-10 min',
+    },
+    {
+      id: 'maze' as GameType,
+      name: 'Maze Escape',
+      description: 'Navigate the maze to escape',
+      icon: '🌀',
+      difficulty: 'Hard',
+      color: 'from-indigo-500 to-indigo-600',
+      estimatedTime: '5-15 min',
+    },
+    {
+      id: 'simon' as GameType,
+      name: 'Simon Says',
+      description: 'Repeat the color sequence',
+      icon: '🟩',
+      difficulty: 'Medium',
+      color: 'from-yellow-500 to-yellow-600',
+      estimatedTime: '3-8 min',
+    },
+    {
+      id: 'tictactoe' as GameType,
+      name: 'Tic Tac Toe',
+      description: 'Classic Xs and Os game',
+      icon: '⭕',
+      difficulty: 'Easy',
+      color: 'from-gray-500 to-gray-600',
+      estimatedTime: '2-5 min',
+    },
   ];
 
   const handleGameSelect = (gameId: GameType) => {
@@ -99,6 +182,20 @@ const GameModal: React.FC<GameModalProps> = ({ isOpen, onClose }) => {
         return <Minesweeper onBack={handleBackToMenu} onComplete={handleGameComplete} />;
       case 'sliding':
         return <SlidingPuzzle onBack={handleBackToMenu} onComplete={handleGameComplete} />;
+      case 'hangman':
+        return <HangmanGame onBack={handleBackToMenu} onComplete={handleGameComplete} />;
+      case 'numberguess':
+        return <NumberGuessingGame onBack={handleBackToMenu} onComplete={handleGameComplete} />;
+      case 'wordle':
+        return <WordleClone onBack={handleBackToMenu} onComplete={handleGameComplete} />;
+      case 'snake':
+        return <SnakeGame onBack={handleBackToMenu} onComplete={handleGameComplete} />;
+      case 'maze':
+        return <MazeEscape onBack={handleBackToMenu} onComplete={handleGameComplete} />;
+      case 'simon':
+        return <SimonSays onBack={handleBackToMenu} onComplete={handleGameComplete} />;
+      case 'tictactoe':
+        return <TicTacToeTSX onBack={handleBackToMenu} onComplete={handleGameComplete} />;
       default:
         return null;
     }

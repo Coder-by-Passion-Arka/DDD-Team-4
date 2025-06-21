@@ -1,7 +1,11 @@
-
 import React, { useState } from "react";
 
-const NumberGuessingGame: React.FC = () => {
+interface NumberGuessingGameProps {
+  onBack: () => void;
+  onComplete: (won: boolean, score: number) => void;
+}
+
+const NumberGuessingGame: React.FC<NumberGuessingGameProps> = ({ onBack, onComplete }) => {
   const [secretNumber, setSecretNumber] = useState<number>(Math.floor(Math.random() * 100) + 1);
   const [guess, setGuess] = useState<string>("");
   const [message, setMessage] = useState<string>("");
@@ -20,6 +24,7 @@ const NumberGuessingGame: React.FC = () => {
     if (numericGuess === secretNumber) {
       setMessage("🎉 You guessed it right!");
       setGameOver(true);
+      onComplete && onComplete(true, 100);
     } else if (numericGuess < secretNumber) {
       setMessage("Too low. Try again.");
     } else {
@@ -76,6 +81,12 @@ const NumberGuessingGame: React.FC = () => {
         className="px-6 py-2 bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 rounded-full text-white text-lg shadow-lg transition-all"
       >
         Reset Game
+      </button>
+      <button
+        onClick={onBack}
+        className="mt-4 px-6 py-2 bg-gray-600 hover:bg-gray-700 rounded-full text-white text-lg shadow-lg transition-all"
+      >
+        Back to Games
       </button>
     </div>
   );
