@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { ArrowLeft} from 'lucide-react';
 
 const colors = ["green", "red", "yellow", "blue"];
 const colorMap: Record<string, string> = {
@@ -82,46 +83,65 @@ const SimonSays: React.FC<SimonSaysProps> = ({ onBack, onComplete }) => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-950 text-white p-6">
-      <h1 className="text-4xl font-bold mb-4">Simon Says</h1>
-      <p className="text-xl mb-2">{message}</p>
-      {gameStarted && <p className="text-lg mb-4">Level: {level}</p>}
+      <div className="w-full max-w-2xl">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+        <button
+          onClick={onBack}
+          className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>Back to Games</span>
+        </button>
+        </div>
+        {/* Game Card */}
+        <div className="bg-gradient-to-br from-white via-indigo-100 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 rounded-2xl p-4 sm:p-6 shadow-xl dark:shadow-gray-900/40 border border-gray-200 dark:border-gray-700 mb-6">
+          <h1 className="text-4xl font-bold mb-4">Simon Says</h1>
+          <p className="text-xl mb-2">{message}</p>
+          {gameStarted && <p className="text-lg mb-4">Level: {level}</p>}
 
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        {colors.map((color) => (
-          <button
-            key={color}
-            onClick={() => handlePlayerInput(color)}
-            className={`w-32 h-32 rounded-lg shadow-lg border-2 border-white transition-all duration-200 focus:outline-none ${
-              colorMap[color]
-            } ${activeColor === color ? "brightness-150 scale-105" : ""}`}
-          ></button>
-        ))}
-      </div>
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            {colors.map((color) => (
+              <button
+                key={color}
+                onClick={() => handlePlayerInput(color)}
+                className={`w-32 h-32 rounded-lg shadow-lg border-2 border-white transition-all duration-200 focus:outline-none ${
+                  colorMap[color]
+                } ${activeColor === color ? "brightness-150 scale-105" : ""}`}
+              ></button>
+            ))}
+          </div>
 
-      <div className="flex space-x-4">
-        {!gameStarted && (
-          <button
-            onClick={startGame}
-            className="px-6 py-2 text-lg font-medium bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white rounded-full shadow-lg"
-          >
-            Start Game
-          </button>
-        )}
-        {gameStarted && (
-          <button
-            onClick={stopGame}
-            className="px-6 py-2 text-lg font-medium bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white rounded-full shadow-lg"
-          >
-            Stop Game
-          </button>
-        )}
+          <div className="flex space-x-4">
+            {!gameStarted && (
+              <button
+                onClick={startGame}
+                className="px-6 py-2 text-lg font-medium bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white rounded-full shadow-lg"
+              >
+                Start Game
+              </button>
+            )}
+            {gameStarted && (
+              <button
+                onClick={stopGame}
+                className="px-6 py-2 text-lg font-medium bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white rounded-full shadow-lg"
+              >
+                Stop Game
+              </button>
+            )}
+          </div>
+        </div>
+        {/* How to Play / Tips */}
+        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
+          <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
+            🟩 How to Play
+          </h4>
+          <p className="text-sm text-blue-700 dark:text-blue-300">
+            Repeat the color sequence shown. Each round adds a new color. How long
+            can you remember the pattern?
+          </p>
+        </div>
       </div>
-      <button
-        onClick={onBack}
-        className="mt-6 px-6 py-2 bg-gray-600 hover:bg-gray-700 rounded-full text-white text-lg shadow-lg transition-all"
-      >
-        Back to Games
-      </button>
     </div>
   );
 };

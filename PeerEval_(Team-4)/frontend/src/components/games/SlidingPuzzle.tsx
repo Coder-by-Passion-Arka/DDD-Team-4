@@ -24,7 +24,7 @@ const SlidingPuzzle: React.FC<SlidingPuzzleProps> = ({ onBack, onComplete }) => 
   }, []);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: ReturnType<typeof setInterval>;
     if (gameStatus === 'playing' && gameStarted) {
       timer = setInterval(() => {
         setTimeElapsed(prev => prev + 1);

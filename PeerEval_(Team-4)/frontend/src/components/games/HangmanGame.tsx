@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Target, AlertTriangle, CheckCircle, Clock, RefreshCw } from 'lucide-react';
+import {  ArrowLeft, Target, AlertTriangle, CheckCircle, Clock, RefreshCw } from 'lucide-react';
 
 const wordHints: { [key: string]: string } = {
   code: 'Instructions written to perform tasks',
@@ -126,54 +126,70 @@ const HangmanGame: React.FC<HangmanGameProps> = ({ onBack, onComplete }) => {
   const hint = wordHints[word];
 
   return (
-    <div className="bg-gradient-to-br from-white via-indigo-100 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 rounded-2xl p-4 sm:p-6 shadow-xl dark:shadow-gray-900/40 border border-gray-200 dark:border-gray-700">
-      <div className="flex items-center space-x-3 mb-4 sm:mb-6">
-        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center">
-          <Target className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-        </div>
-        <div>
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Tech Hangman</h3>
-          <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">Guess the tech term!</p>
-        </div>
-      </div>
-
-      <div className="flex flex-col items-center space-y-4">
-        <HangmanDrawing wrongGuesses={wrongGuesses} />
-        <p className="text-2xl font-mono tracking-widest text-blue-800 dark:text-blue-300">{displayWord}</p>
-        <p className="text-sm text-purple-600 dark:text-purple-400">Wrong guesses: {wrongGuesses}/6</p>
-        <div className="text-sm italic text-gray-800 dark:text-gray-300">Hint: {hint}</div>
-        <div className="grid grid-cols-7 gap-2">
-          {'abcdefghijklmnopqrstuvwxyz'.split('').map((char) => (
-            <button
-              key={char}
-              onClick={() => handleGuess(char)}
-              disabled={guesses.includes(char) || status !== 'playing'}
-              className="w-8 h-8 text-sm rounded-full font-semibold bg-pink-100 dark:bg-pink-700 hover:bg-pink-300 dark:hover:bg-pink-500 text-gray-900 dark:text-white disabled:opacity-30"
-            >
-              {char}
-            </button>
-          ))}
-        </div>
-        <div className={`flex items-center space-x-2 mt-4 px-3 py-1.5 rounded-xl border ${statusConfig.border} ${statusConfig.bg}`}>
-          <StatusIcon className={`w-4 h-4 ${statusConfig.color}`} />
-          <span className={`text-sm font-medium ${statusConfig.color}`}>{statusConfig.label}</span>
-        </div>
-
-        {status !== 'playing' && (
-          <button
-            onClick={initializeGame}
-            className="mt-4 flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-lime-400 to-green-500 text-white hover:from-lime-500 hover:to-green-600 transition-colors"
-          >
-            <RefreshCw className="w-4 h-4" />
-            <span>Play Again</span>
-          </button>
-        )}
+    <div className="max-w-2xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
         <button
           onClick={onBack}
-          className="mt-4 flex items-center space-x-2 px-4 py-2 rounded-full bg-gray-600 hover:bg-gray-700 text-white transition-colors"
+          className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
         >
-          Back to Games
+          <ArrowLeft className="w-5 h-5" />
+          <span>Back to Games</span>
         </button>
+      </div>
+      {/* Game Card */}
+      <div className="bg-gradient-to-br from-white via-indigo-100 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 rounded-2xl p-4 sm:p-6 shadow-xl dark:shadow-gray-900/40 border border-gray-200 dark:border-gray-700 mb-6">
+        <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center">
+            <Target className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+          </div>
+          <div>
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Tech Hangman</h3>
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">Guess the tech term!</p>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center space-y-4">
+          <HangmanDrawing wrongGuesses={wrongGuesses} />
+          <p className="text-2xl font-mono tracking-widest text-blue-800 dark:text-blue-300">{displayWord}</p>
+          <p className="text-sm text-purple-600 dark:text-purple-400">Wrong guesses: {wrongGuesses}/6</p>
+          <div className="text-sm italic text-gray-800 dark:text-gray-300">Hint: {hint}</div>
+          <div className="grid grid-cols-7 gap-2">
+            {'abcdefghijklmnopqrstuvwxyz'.split('').map((char) => (
+              <button
+                key={char}
+                onClick={() => handleGuess(char)}
+                disabled={guesses.includes(char) || status !== 'playing'}
+                className="w-8 h-8 text-sm rounded-full font-semibold bg-pink-100 dark:bg-pink-700 hover:bg-pink-300 dark:hover:bg-pink-500 text-gray-900 dark:text-white disabled:opacity-30"
+              >
+                {char}
+              </button>
+            ))}
+          </div>
+          <div className={`flex items-center space-x-2 mt-4 px-3 py-1.5 rounded-xl border ${statusConfig.border} ${statusConfig.bg}`}>
+            <StatusIcon className={`w-4 h-4 ${statusConfig.color}`} />
+            <span className={`text-sm font-medium ${statusConfig.color}`}>{statusConfig.label}</span>
+          </div>
+
+          {status !== 'playing' && (
+            <button
+              onClick={initializeGame}
+              className="mt-4 flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-lime-400 to-green-500 text-white hover:from-lime-500 hover:to-green-600 transition-colors"
+            >
+              <RefreshCw className="w-4 h-4" />
+              <span>Play Again</span>
+            </button>
+          )}
+        </div>
+      </div>
+      {/* How to Play / Tips */}
+      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
+        <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
+          🎯 How to Play
+        </h4>
+        <p className="text-sm text-blue-700 dark:text-blue-300">
+          Guess the tech word by clicking letters. You have 6 wrong guesses before you lose. Use the hint if you get stuck!
+        </p>
       </div>
     </div>
   );

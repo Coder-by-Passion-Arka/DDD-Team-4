@@ -33,7 +33,7 @@ const Minesweeper: React.FC<MinesweeperProps> = ({ onBack, onComplete }) => {
   }, []);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: ReturnType<typeof setInterval>;
     if (gameStatus === 'playing') {
       timer = setInterval(() => {
         setTimeElapsed(prev => prev + 1);

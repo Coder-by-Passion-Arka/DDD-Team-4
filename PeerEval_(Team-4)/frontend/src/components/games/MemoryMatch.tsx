@@ -30,7 +30,7 @@ const MemoryMatch: React.FC<MemoryMatchProps> = ({ onBack, onComplete }) => {
   }, []);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: number;
     if (gameStatus === 'playing') {
       timer = setInterval(() => {
         setTimeElapsed(prev => prev + 1);
