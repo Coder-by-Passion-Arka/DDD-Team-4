@@ -47,3 +47,6 @@
 ### ✅ 20-06-2025
 - Designed gaming section.
 - It includes games like Hang Man, Maze escape, memory match, mine sweeper, number guessing game, rock paper scissor, simon says, sliding puzzle, Snake game, tic tac toe, wordleclone.
+
+### ✅ 21-06-2025
+- Intergrated Games .
