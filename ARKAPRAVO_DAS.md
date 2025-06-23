@@ -1,16 +1,43 @@
 ## This is a README file of Arkapravo Das through which I give a overview of my Daily Work
 
+## Day 11 ( 24/06/2025 )
+
+    -- Updating simple Aggregation pipelines for showcasing Data statistics and realtime Performance monitoring
+    -- Added Google and GitHub authentication
+    -- Started working on the Documentation
+    -- Refined the Games pannel and added more classical games.
+
+## Day 10 ( 23/06/2025 )
+
+    -- Filled the MongoDB cluster with Fake Data to monitor performance
+    -- Integrated backend with user login and authentication
+    -- Updated the config files and Docs
+    -- Added Middlewares to secure the application and hadle API calls.
+
+## Day 9 ( 21/06/2025 )
+
+    -- Filled the MongoDB cluster with Fake Data to monitor performance
+    -- Setup effificent error logging for robust debugging as the project grows in size
+    -- Completed maximum part of the Backend server, controllersn middlewares and routes
+    -- Added role-based dashboard features (in cacoon phase).
+
+## Day 8 ( 20/06/2025 )
+
+    -- Started working on badges and games for the dashboard
+    -- Modified the Folder Structure for easier configuration
+    -- Converted the backend files from TypeScript to JavaScript (to make the implementation easier)
+
 ## Day 7 ( 19/06/2025 )
 
     -- Almost completed the backend of the application
     -- Integrated backend with user login and authentication
     -- Updated the config files and Docs
-    -- Added Middlewares to secure the application and hadle Api calls.
+    -- Added Middlewares to secure the application and hadle API calls.
 
 ## Day 6 ( 18/06/2025 )
 
     -- Improved the Schemas of models
-    -- Debugged application errors 
+    -- Debugged application errors
     -- Redesigned the Database
     -- Sight modifications in App Navigation and Workflow
 
