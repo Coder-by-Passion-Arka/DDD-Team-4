@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowLeft} from 'lucide-react';
-
+import { ArrowLeft, Flame, Move3D, Clock, RefreshCw } from "lucide-react";
 
 const canvasSize = 400;
 const scale = 20;
@@ -17,7 +16,6 @@ const getRandomFood = (snake: { x: number; y: number }[]): { x: number; y: numbe
   } while (snake.some(segment => segment.x === food.x && segment.y === food.y));
   return food;
 };
-
 
 interface Position {
   x: number;
@@ -36,6 +34,9 @@ const SnakeGame: React.FC<SnakeGameProps> = ({ onBack, onComplete }) => {
   const [food, setFood] = useState<Position>(getRandomFood([{ x: 10, y: 10 }]));
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [started, setStarted] = useState<boolean>(false);
+  const [moves, setMoves] = useState<number>(0);
+  const [time, setTime] = useState<number>(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const context = canvasRef.current?.getContext("2d");
@@ -88,11 +89,13 @@ const SnakeGame: React.FC<SnakeGameProps> = ({ onBack, onComplete }) => {
     ) {
       setGameOver(true);
       setStarted(false);
+      if (intervalRef.current) clearInterval(intervalRef.current);
       onComplete && onComplete(false, newSnake.length * 10);
       return;
     }
 
     newSnake.unshift(head);
+    setMoves((prev) => prev + 1);
 
     if (head.x === food.x && head.y === food.y) {
       setFood(getRandomFood(newSnake));
@@ -123,63 +126,91 @@ const SnakeGame: React.FC<SnakeGameProps> = ({ onBack, onComplete }) => {
     setFood(getRandomFood(initialSnake));
     setGameOver(false);
     setStarted(false);
+    setMoves(0);
+    setTime(0);
+    if (intervalRef.current) clearInterval(intervalRef.current);
   };
 
   const handleStart = () => {
     setStarted(true);
     setDirection({ x: 1, y: 0 });
+    intervalRef.current = setInterval(() => {
+      setTime((prev) => prev + 1);
+    }, 1000);
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-950 text-white p-6">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-white via-indigo-100 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-white p-6">
       <div className="w-full max-w-2xl">
-        {/* Header */}
+        {/* Header: Back + Reset */}
         <div className="flex items-center justify-between mb-6">
-        <button
-          onClick={onBack}
-          className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span>Back to Games</span>
-        </button>
+          <button
+            onClick={onBack}
+            className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Back to Games</span>
+          </button>
+
+          <button
+            onClick={handleReset}
+            className="flex items-center space-x-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white text-sm font-medium transition"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>Reset</span>
+          </button>
         </div>
-        {/* Game Card */}
-        <div className="bg-gradient-to-br from-white via-indigo-100 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 rounded-2xl p-4 sm:p-6 shadow-xl dark:shadow-gray-900/40 border border-gray-200 dark:border-gray-700 mb-6">
-          <h1 className="text-4xl font-bold mb-4">Snake Game</h1>
+
+        {/* Score / Moves / Time */}
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 text-center border border-green-200 dark:border-green-800">
+            <Flame className="w-6 h-6 text-green-600 dark:text-green-400 mx-auto mb-2" />
+            <p className="text-lg font-bold text-green-800 dark:text-green-200">{snake.length * 10}</p>
+            <p className="text-sm text-green-600 dark:text-green-400">Score</p>
+          </div>
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-4 text-center border border-yellow-200 dark:border-yellow-800">
+            <Move3D className="w-6 h-6 text-yellow-600 dark:text-yellow-400 mx-auto mb-2" />
+            <p className="text-lg font-bold text-yellow-800 dark:text-yellow-200">{moves}</p>
+            <p className="text-sm text-yellow-600 dark:text-yellow-400">Moves</p>
+          </div>
+          <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-xl p-4 text-center border border-indigo-200 dark:border-indigo-800">
+            <Clock className="w-6 h-6 text-indigo-600 dark:text-indigo-400 mx-auto mb-2" />
+            <p className="text-lg font-bold text-indigo-800 dark:text-indigo-200">{time}s</p>
+            <p className="text-sm text-indigo-600 dark:text-indigo-400">Time</p>
+          </div>
+        </div>
+
+        {/* Game Area */}
+        <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 sm:p-6 shadow-xl border border-gray-200 dark:border-gray-700 mb-6">
+          <h1 className="text-4xl font-bold mb-4 text-center text-gray-900 dark:text-white">Snake Game</h1>
           <canvas
             ref={canvasRef}
             width={canvasSize}
             height={canvasSize}
-            className="border-4 border-blue-600 rounded-lg shadow-lg mb-6"
+            className="border-4 border-blue-600 rounded-lg shadow-lg mx-auto block mb-6"
           ></canvas>
 
           {gameOver && (
-            <p className="text-red-400 text-2xl font-semibold mb-4 animate-bounce">
+            <p className="text-red-400 text-2xl font-semibold mb-4 text-center animate-bounce">
               Game Over! Press reset to play again.
             </p>
           )}
 
           {!started && !gameOver && (
-            <button
-              onClick={handleStart}
-              className="mb-4 px-6 py-2 bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 rounded-full text-white text-lg shadow-lg transition-all"
-            >
-              Start Game
-            </button>
+            <div className="flex justify-center mb-4">
+              <button
+                onClick={handleStart}
+                className="px-6 py-2 bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 rounded-full text-white text-lg shadow-lg transition-all"
+              >
+                Start Game
+              </button>
+            </div>
           )}
-
-          <button
-            onClick={handleReset}
-            className="px-6 py-2 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full text-white text-lg shadow-lg transition-all"
-          >
-            Reset Game
-          </button>
         </div>
-        {/* How to Play / Tips */}
+
+        {/* Instructions */}
         <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
-          <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
-            🐍 How to Play
-          </h4>
+          <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">🐍 How to Play</h4>
           <p className="text-sm text-blue-700 dark:text-blue-300">
             Use arrow keys to control the snake. Eat food to grow. Avoid hitting the walls or yourself!
           </p>
