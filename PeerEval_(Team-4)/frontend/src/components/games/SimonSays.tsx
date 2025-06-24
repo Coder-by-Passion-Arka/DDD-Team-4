@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { ArrowLeft} from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { ArrowLeft, RefreshCw, Clock, Target, MousePointerClick } from 'lucide-react';
 
 const colors = ["green", "red", "yellow", "blue"];
 const colorMap: Record<string, string> = {
@@ -22,6 +22,18 @@ const SimonSays: React.FC<SimonSaysProps> = ({ onBack, onComplete }) => {
   const [gameStarted, setGameStarted] = useState(false);
   const [message, setMessage] = useState("Click start to play!");
   const [level, setLevel] = useState(0);
+  const [moves, setMoves] = useState(0);
+  const [time, setTime] = useState(0);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (gameStarted) {
+      timer = setInterval(() => setTime((prev) => prev + 1), 1000);
+    } else {
+      clearInterval(timer);
+    }
+    return () => clearInterval(timer);
+  }, [gameStarted]);
 
   const playSequence = async (seq: string[]) => {
     setIsPlayerTurn(false);
@@ -41,6 +53,8 @@ const SimonSays: React.FC<SimonSaysProps> = ({ onBack, onComplete }) => {
     setSequence(newSequence);
     setPlayerIndex(0);
     setLevel(1);
+    setMoves(0);
+    setTime(0);
     setGameStarted(true);
     setMessage("Watch the sequence");
     playSequence(newSequence);
@@ -51,6 +65,8 @@ const SimonSays: React.FC<SimonSaysProps> = ({ onBack, onComplete }) => {
     setSequence([]);
     setPlayerIndex(0);
     setLevel(0);
+    setMoves(0);
+    setTime(0);
     setMessage("Game stopped. Click start to play again.");
   };
 
@@ -66,6 +82,7 @@ const SimonSays: React.FC<SimonSaysProps> = ({ onBack, onComplete }) => {
 
   const handlePlayerInput = (color: string) => {
     if (!isPlayerTurn || !gameStarted) return;
+    setMoves((prev) => prev + 1);
     if (color === sequence[playerIndex]) {
       if (playerIndex + 1 === sequence.length) {
         setMessage("Good job! Next round...");
@@ -82,25 +99,56 @@ const SimonSays: React.FC<SimonSaysProps> = ({ onBack, onComplete }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-950 text-white p-6">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-white to-slate-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white p-6">
       <div className="w-full max-w-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-        <button
-          onClick={onBack}
-          className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span>Back to Games</span>
-        </button>
-        </div>
-        {/* Game Card */}
-        <div className="bg-gradient-to-br from-white via-indigo-100 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 rounded-2xl p-4 sm:p-6 shadow-xl dark:shadow-gray-900/40 border border-gray-200 dark:border-gray-700 mb-6">
-          <h1 className="text-4xl font-bold mb-4">Simon Says</h1>
-          <p className="text-xl mb-2">{message}</p>
-          {gameStarted && <p className="text-lg mb-4">Level: {level}</p>}
+        <div className="flex items-center justify-between mb-4">
+          <button
+            onClick={onBack}
+            className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Back to Games</span>
+          </button>
 
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <button
+            onClick={gameStarted ? stopGame : startGame}
+            className={`flex items-center space-x-2 px-4 py-1.5 rounded-full ${
+              gameStarted
+                ? "bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700"
+                : "bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600"
+            } text-white text-sm font-medium transition`}
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>{gameStarted ? "Stop" : "Start"}</span>
+          </button>
+        </div>
+
+        {/* Game Card */}
+        <div className="bg-gradient-to-br from-white to-slate-100 dark:from-gray-900 dark:to-gray-800 rounded-2xl p-4 sm:p-6 shadow-xl dark:shadow-gray-900/40 border border-gray-200 dark:border-gray-700 mb-6 text-center">
+          <h1 className="text-4xl font-extrabold text-purple-700 dark:text-purple-300 mb-4">🧠 Simon Says</h1>
+          <p className="text-xl mb-1">{message}</p>
+          {gameStarted && (
+            <div className="grid grid-cols-3 gap-4 text-sm text-center text-gray-900 dark:text-white mb-6">
+              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-3 border border-blue-200 dark:border-blue-800">
+                <Clock className="w-5 h-5 mx-auto mb-1 text-blue-600 dark:text-blue-400" />
+                <div className="font-bold">{time}s</div>
+                <div className="text-xs">Time</div>
+              </div>
+              <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-3 border border-purple-200 dark:border-purple-800">
+                <Target className="w-5 h-5 mx-auto mb-1 text-purple-600 dark:text-purple-400" />
+                <div className="font-bold">{level}</div>
+                <div className="text-xs">Level</div>
+              </div>
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-3 border border-yellow-200 dark:border-yellow-800">
+                <MousePointerClick className="w-5 h-5 mx-auto mb-1 text-yellow-600 dark:text-yellow-400" />
+                <div className="font-bold">{moves}</div>
+                <div className="text-xs">Moves</div>
+              </div>
+            </div>
+          )}
+
+          <div className="grid grid-cols-2 gap-4 mb-6 place-items-center">
             {colors.map((color) => (
               <button
                 key={color}
@@ -111,28 +159,10 @@ const SimonSays: React.FC<SimonSaysProps> = ({ onBack, onComplete }) => {
               ></button>
             ))}
           </div>
-
-          <div className="flex space-x-4">
-            {!gameStarted && (
-              <button
-                onClick={startGame}
-                className="px-6 py-2 text-lg font-medium bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white rounded-full shadow-lg"
-              >
-                Start Game
-              </button>
-            )}
-            {gameStarted && (
-              <button
-                onClick={stopGame}
-                className="px-6 py-2 text-lg font-medium bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white rounded-full shadow-lg"
-              >
-                Stop Game
-              </button>
-            )}
-          </div>
         </div>
+
         {/* How to Play / Tips */}
-        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
+        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800 text-center">
           <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
             🟩 How to Play
           </h4>

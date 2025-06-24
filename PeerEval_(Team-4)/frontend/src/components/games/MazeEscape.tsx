@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { ArrowLeft, RefreshCw } from "lucide-react";
 
 const mazeRows = 10;
 const mazeCols = 10;
@@ -163,9 +164,12 @@ const MazeEscape: React.FC<MazeEscapeProps> = ({ onBack, onComplete }) => {
     let newY = y;
 
     if ((direction === "ArrowUp" || direction === "up") && !cell.top) newY--;
-    if ((direction === "ArrowDown" || direction === "down") && !cell.bottom) newY++;
-    if ((direction === "ArrowLeft" || direction === "left") && !cell.left) newX--;
-    if ((direction === "ArrowRight" || direction === "right") && !cell.right) newX++;
+    if ((direction === "ArrowDown" || direction === "down") && !cell.bottom)
+      newY++;
+    if ((direction === "ArrowLeft" || direction === "left") && !cell.left)
+      newX--;
+    if ((direction === "ArrowRight" || direction === "right") && !cell.right)
+      newX++;
 
     if (newX !== x || newY !== y) {
       setPlayer({ x: newX, y: newY });
@@ -182,30 +186,41 @@ const MazeEscape: React.FC<MazeEscapeProps> = ({ onBack, onComplete }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-950 text-white p-6">
-      <div className="w-full max-w-2xl">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-white via-indigo-100 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-white p-6">
+      <div className="w-full max-w-2xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
             className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
           >
-            <span className="material-icons">arrow_back</span>
+            <ArrowLeft className="w-5 h-5" />
             <span>Back to Games</span>
           </button>
+
+          <button
+            onClick={handleRestart}
+            className="flex items-center space-x-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white text-sm font-medium transition"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>Restart</span>
+          </button>
         </div>
+
         {/* Game Card */}
         <div className="bg-gradient-to-br from-white via-indigo-100 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 rounded-2xl p-4 sm:p-6 shadow-xl dark:shadow-gray-900/40 border border-gray-200 dark:border-gray-700 mb-6">
           <h1 className="text-4xl font-bold mb-4">Maze Escape</h1>
-          <canvas
-            ref={canvasRef}
-            width={mazeCols * cellSize}
-            height={mazeRows * cellSize}
-            className="border-4 border-blue-600 rounded-lg shadow-lg mb-4"
-          ></canvas>
+          <div className="flex justify-center">
+            <canvas
+              ref={canvasRef}
+              width={mazeCols * cellSize}
+              height={mazeRows * cellSize}
+              className="border-4 border-blue-600 rounded-lg shadow-lg mb-4"
+            ></canvas>
+          </div>
 
           {gameWon && (
-            <p className="text-green-400 text-xl font-medium animate-pulse mb-4">
+            <p className="text-green-400 text-xl font-medium animate-pulse mb-4 text-center">
               You escaped the maze!
             </p>
           )}
@@ -236,21 +251,16 @@ const MazeEscape: React.FC<MazeEscapeProps> = ({ onBack, onComplete }) => {
               Right
             </button>
           </div>
-
-          <button
-            onClick={handleRestart}
-            className="px-6 py-2 bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 rounded-full text-white text-lg shadow-lg transition-all"
-          >
-            Restart Game
-          </button>
         </div>
+
         {/* How to Play / Tips */}
         <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
           <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
             🌀 How to Play
           </h4>
           <p className="text-sm text-blue-700 dark:text-blue-300">
-            Use arrow keys or the on-screen buttons to navigate the maze. Reach the yellow square to escape!
+            Use arrow keys or the on-screen buttons to navigate the maze. Reach
+            the yellow square to escape!
           </p>
         </div>
       </div>

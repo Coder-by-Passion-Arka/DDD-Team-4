@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import {  ArrowLeft, Target, AlertTriangle, CheckCircle, Clock, RefreshCw } from 'lucide-react';
+import {
+  ArrowLeft,
+  Target,
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  RefreshCw,
+  Trophy,
+} from 'lucide-react';
 
 const wordHints: { [key: string]: string } = {
   code: 'Instructions written to perform tasks',
@@ -21,7 +29,7 @@ const wordHints: { [key: string]: string } = {
   wifi: 'Wireless internet access technology',
   ping: 'Checks network latency',
   git: 'Version control system',
-  port: 'Communication endpoint in networking'
+  port: 'Communication endpoint in networking',
 };
 
 const words = Object.keys(wordHints);
@@ -31,9 +39,9 @@ const getStatusConfig = (status: string) => {
     case 'won':
       return {
         icon: CheckCircle,
-        bg: 'bg-green-100 dark:bg-green-900/20',
-        color: 'text-green-600 dark:text-green-400',
-        border: 'border-green-200 dark:border-green-800',
+        bg: 'bg-emerald-50 dark:bg-emerald-900/20',
+        color: 'text-emerald-600 dark:text-emerald-400',
+        border: 'border-emerald-200 dark:border-emerald-800',
         label: 'Won',
       };
     case 'lost':
@@ -55,22 +63,20 @@ const getStatusConfig = (status: string) => {
   }
 };
 
-const HangmanDrawing = ({ wrongGuesses }: { wrongGuesses: number }) => {
-  return (
-    <svg width="120" height="160" className="text-purple-700 dark:text-purple-300">
-      <line x1="10" y1="150" x2="110" y2="150" stroke="currentColor" strokeWidth="4" />
-      <line x1="30" y1="150" x2="30" y2="10" stroke="currentColor" strokeWidth="4" />
-      <line x1="30" y1="10" x2="80" y2="10" stroke="currentColor" strokeWidth="4" />
-      <line x1="80" y1="10" x2="80" y2="30" stroke="currentColor" strokeWidth="4" />
-      {wrongGuesses > 0 && <circle cx="80" cy="40" r="10" stroke="currentColor" strokeWidth="3" fill="none" />}
-      {wrongGuesses > 1 && <line x1="80" y1="50" x2="80" y2="90" stroke="currentColor" strokeWidth="3" />}
-      {wrongGuesses > 2 && <line x1="80" y1="60" x2="60" y2="80" stroke="currentColor" strokeWidth="3" />}
-      {wrongGuesses > 3 && <line x1="80" y1="60" x2="100" y2="80" stroke="currentColor" strokeWidth="3" />}
-      {wrongGuesses > 4 && <line x1="80" y1="90" x2="65" y2="120" stroke="currentColor" strokeWidth="3" />}
-      {wrongGuesses > 5 && <line x1="80" y1="90" x2="95" y2="120" stroke="currentColor" strokeWidth="3" />}
-    </svg>
-  );
-};
+const HangmanDrawing = ({ wrongGuesses }: { wrongGuesses: number }) => (
+  <svg width="120" height="160" className="text-purple-700 dark:text-purple-300">
+    <line x1="10" y1="150" x2="110" y2="150" stroke="currentColor" strokeWidth="4" />
+    <line x1="30" y1="150" x2="30" y2="10" stroke="currentColor" strokeWidth="4" />
+    <line x1="30" y1="10" x2="80" y2="10" stroke="currentColor" strokeWidth="4" />
+    <line x1="80" y1="10" x2="80" y2="30" stroke="currentColor" strokeWidth="4" />
+    {wrongGuesses > 0 && <circle cx="80" cy="40" r="10" stroke="currentColor" strokeWidth="3" fill="none" />}
+    {wrongGuesses > 1 && <line x1="80" y1="50" x2="80" y2="90" stroke="currentColor" strokeWidth="3" />}
+    {wrongGuesses > 2 && <line x1="80" y1="60" x2="60" y2="80" stroke="currentColor" strokeWidth="3" />}
+    {wrongGuesses > 3 && <line x1="80" y1="60" x2="100" y2="80" stroke="currentColor" strokeWidth="3" />}
+    {wrongGuesses > 4 && <line x1="80" y1="90" x2="65" y2="120" stroke="currentColor" strokeWidth="3" />}
+    {wrongGuesses > 5 && <line x1="80" y1="90" x2="95" y2="120" stroke="currentColor" strokeWidth="3" />}
+  </svg>
+);
 
 interface HangmanGameProps {
   onBack: () => void;
@@ -82,36 +88,56 @@ const HangmanGame: React.FC<HangmanGameProps> = ({ onBack, onComplete }) => {
   const [guesses, setGuesses] = useState<string[]>([]);
   const [wrongGuesses, setWrongGuesses] = useState(0);
   const [status, setStatus] = useState('playing');
-
-  const initializeGame = () => {
-    const randomWord = words[Math.floor(Math.random() * words.length)].toLowerCase();
-    setWord(randomWord);
-    setGuesses([]);
-    setWrongGuesses(0);
-    setStatus('playing');
-  };
+  const [timeElapsed, setTimeElapsed] = useState(0);
+  const [score, setScore] = useState(0);
+  const [gameStarted, setGameStarted] = useState(false);
 
   useEffect(() => {
     initializeGame();
   }, []);
 
   useEffect(() => {
-    if (status === 'won') {
-      onComplete && onComplete(true, 100);
-    } else if (status === 'lost') {
-      onComplete && onComplete(false, 0);
+    let timer: NodeJS.Timeout;
+    if (status === 'playing' && gameStarted) {
+      timer = setInterval(() => setTimeElapsed((t) => t + 1), 1000);
     }
-  }, [status, onComplete]);
+    return () => clearInterval(timer);
+  }, [status, gameStarted]);
+
+  useEffect(() => {
+    if (status === 'won') {
+      const baseScore = 1000;
+      const timeBonus = Math.max(0, 300 - timeElapsed);
+      const guessPenalty = wrongGuesses * 50;
+      const finalScore = baseScore + timeBonus - guessPenalty;
+      setScore(finalScore);
+      onComplete(true, finalScore);
+    } else if (status === 'lost') {
+      onComplete(false, 0);
+    }
+  }, [status]);
+
+  const initializeGame = () => {
+    const randomWord = words[Math.floor(Math.random() * words.length)];
+    setWord(randomWord);
+    setGuesses([]);
+    setWrongGuesses(0);
+    setStatus('playing');
+    setTimeElapsed(0);
+    setScore(0);
+    setGameStarted(true);
+  };
 
   const handleGuess = (char: string) => {
     if (status !== 'playing' || guesses.includes(char)) return;
-    const newGuesses = [...guesses, char];
-    setGuesses(newGuesses);
+    const updatedGuesses = [...guesses, char];
+    setGuesses(updatedGuesses);
+
     if (!word.includes(char)) {
       const newWrong = wrongGuesses + 1;
       setWrongGuesses(newWrong);
       if (newWrong >= 6) setStatus('lost');
-    } else if (word.split('').every((l) => newGuesses.includes(l))) {
+    } else if (word.split('').every((l) => updatedGuesses.includes(l))) {
       setStatus('won');
     }
   };
@@ -120,6 +146,12 @@ const HangmanGame: React.FC<HangmanGameProps> = ({ onBack, onComplete }) => {
     .split('')
     .map((char) => (guesses.includes(char) ? char : '_'))
     .join(' ');
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   const statusConfig = getStatusConfig(status);
   const StatusIcon = statusConfig.icon;
@@ -136,25 +168,45 @@ const HangmanGame: React.FC<HangmanGameProps> = ({ onBack, onComplete }) => {
           <ArrowLeft className="w-5 h-5" />
           <span>Back to Games</span>
         </button>
-      </div>
-      {/* Game Card */}
-      <div className="bg-gradient-to-br from-white via-indigo-100 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 rounded-2xl p-4 sm:p-6 shadow-xl dark:shadow-gray-900/40 border border-gray-200 dark:border-gray-700 mb-6">
-        <div className="flex items-center space-x-3 mb-4 sm:mb-6">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center">
-            <Target className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-          </div>
-          <div>
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Tech Hangman</h3>
-            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">Guess the tech term!</p>
-          </div>
-        </div>
 
+        <button
+          onClick={initializeGame}
+          className="flex items-center space-x-2 px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200"
+        >
+          <RefreshCw className="w-4 h-4" />
+          <span>Reset</span>
+        </button>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 text-center border border-blue-200 dark:border-blue-800">
+          <Clock className="w-6 h-6 text-blue-600 dark:text-blue-400 mx-auto mb-2" />
+          <p className="text-lg font-bold text-blue-800 dark:text-blue-200">{formatTime(timeElapsed)}</p>
+          <p className="text-sm text-blue-600 dark:text-blue-400">Time</p>
+        </div>
+        <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4 text-center border border-purple-200 dark:border-purple-800">
+          <Target className="w-6 h-6 text-purple-600 dark:text-purple-400 mx-auto mb-2" />
+          <p className="text-lg font-bold text-purple-800 dark:text-purple-200">{guesses.length}</p>
+          <p className="text-sm text-purple-600 dark:text-purple-400">Guesses</p>
+        </div>
+        <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-4 text-center border border-emerald-200 dark:border-emerald-800">
+          <Trophy className="w-6 h-6 text-emerald-600 dark:text-emerald-400 mx-auto mb-2" />
+          <p className="text-lg font-bold text-emerald-800 dark:text-emerald-200">{score}</p>
+          <p className="text-sm text-emerald-600 dark:text-emerald-400">Score</p>
+        </div>
+      </div>
+
+      {/* Game Box */}
+      <div className="bg-white dark:bg-gray-700 rounded-xl p-6 border border-gray-200 dark:border-gray-600 mb-6">
         <div className="flex flex-col items-center space-y-4">
           <HangmanDrawing wrongGuesses={wrongGuesses} />
-          <p className="text-2xl font-mono tracking-widest text-blue-800 dark:text-blue-300">{displayWord}</p>
-          <p className="text-sm text-purple-600 dark:text-purple-400">Wrong guesses: {wrongGuesses}/6</p>
-          <div className="text-sm italic text-gray-800 dark:text-gray-300">Hint: {hint}</div>
-          <div className="grid grid-cols-7 gap-2">
+          <p className="text-3xl font-mono tracking-widest text-blue-800 dark:text-blue-200">{displayWord}</p>
+          <p className="text-sm text-purple-700 dark:text-purple-300">Wrong guesses: {wrongGuesses}/6</p>
+          <div className="text-sm italic text-gray-700 dark:text-gray-300">Hint: {hint}</div>
+
+          {/* Letter buttons */}
+          <div className="grid grid-cols-7 gap-2 mt-4">
             {'abcdefghijklmnopqrstuvwxyz'.split('').map((char) => (
               <button
                 key={char}
@@ -166,29 +218,22 @@ const HangmanGame: React.FC<HangmanGameProps> = ({ onBack, onComplete }) => {
               </button>
             ))}
           </div>
-          <div className={`flex items-center space-x-2 mt-4 px-3 py-1.5 rounded-xl border ${statusConfig.border} ${statusConfig.bg}`}>
+
+          {/* Status */}
+          <div
+            className={`flex items-center space-x-2 mt-6 px-4 py-2 rounded-xl border ${statusConfig.border} ${statusConfig.bg}`}
+          >
             <StatusIcon className={`w-4 h-4 ${statusConfig.color}`} />
             <span className={`text-sm font-medium ${statusConfig.color}`}>{statusConfig.label}</span>
           </div>
-
-          {status !== 'playing' && (
-            <button
-              onClick={initializeGame}
-              className="mt-4 flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-lime-400 to-green-500 text-white hover:from-lime-500 hover:to-green-600 transition-colors"
-            >
-              <RefreshCw className="w-4 h-4" />
-              <span>Play Again</span>
-            </button>
-          )}
         </div>
       </div>
-      {/* How to Play / Tips */}
+
+      {/* How to Play */}
       <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
-        <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
-          🎯 How to Play
-        </h4>
+        <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">🧠 How to Play</h4>
         <p className="text-sm text-blue-700 dark:text-blue-300">
-          Guess the tech word by clicking letters. You have 6 wrong guesses before you lose. Use the hint if you get stuck!
+          Guess the hidden tech word by clicking letters. You have 6 chances. Use the hint if you're stuck. Score is calculated by speed and fewer wrong guesses.
         </p>
       </div>
     </div>
