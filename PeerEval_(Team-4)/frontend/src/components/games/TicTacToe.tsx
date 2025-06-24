@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+<<<<<<< HEAD:PeerEval_(Team-4)/frontend/src/components/games/TicTacToe.tsx
 import {
   ArrowLeft,
   Clock,
@@ -167,9 +168,13 @@ const TicTacToeTSX: React.FC<TicTacToeTSXProps> = ({ onBack, onComplete }) => {
 
         {/* Game Card */}
         <div className="bg-gradient-to-br from-white via-indigo-100 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 rounded-2xl p-4 sm:p-6 shadow-xl dark:shadow-gray-900/40 border border-gray-200 dark:border-gray-700 mb-6">
+<<<<<<< HEAD:PeerEval_(Team-4)/frontend/src/components/games/TicTacToe.tsx
           <h1 className="text-4xl font-bold mb-6 text-purple-700 dark:text-purple-300 text-center">
             Tic Tac Toe
           </h1>
+=======
+          <h1 className="text-4xl font-bold mb-6 text-purple-700 dark:text-purple-300 text-center">Tic Tac Toe</h1>
+>>>>>>> 7814fdade325e1fd3335a057ef9ed7af4cf6fce4:PeerEval_(Team-4)/frontend/src/components/games/TicTacToeTSX.tsx
           <div className="grid grid-cols-3 gap-4">
             {grid.map((value, idx) => (
               <div
@@ -184,9 +189,13 @@ const TicTacToeTSX: React.FC<TicTacToeTSXProps> = ({ onBack, onComplete }) => {
             ))}
           </div>
           {message && (
+<<<<<<< HEAD:PeerEval_(Team-4)/frontend/src/components/games/TicTacToe.tsx
             <div className="mt-6 text-2xl font-semibold text-amber-300 text-center animate-pulse">
               {message}
             </div>
+=======
+            <div className="mt-6 text-2xl font-semibold text-amber-300 text-center animate-pulse">{message}</div>
+>>>>>>> 7814fdade325e1fd3335a057ef9ed7af4cf6fce4:PeerEval_(Team-4)/frontend/src/components/games/TicTacToeTSX.tsx
           )}
         </div>
 
