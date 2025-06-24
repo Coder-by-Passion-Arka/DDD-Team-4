@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { Trophy, Flame, Menu, X, Gamepad2 } from 'lucide-react';
+import { Trophy, Flame, Menu, X, Gamepad2 } from "lucide-react";
 import Sidebar from './Sidebar';
 import ThemeToggle from './ThemeToggle';
 import FloatingChatbot from './FloatingChatbot';
 import LeaderboardPanel from './LeaderboardPanel';
-import GameModal from './GameModal';
+import GameModal from "./GameModal";
 
 const Breadcrumb: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -41,13 +41,13 @@ const Breadcrumb: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 transition-all duration-500">
-      <Sidebar 
+      <Sidebar
         isCollapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
         mobileMenuOpen={mobileMenuOpen}
         onMobileToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
       />
-      
+
       {/* Mobile Sticky Top Panel */}
       <div className="fixed top-0 left-0 right-0 z-50 lg:hidden">
         <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 shadow-lg">
@@ -69,7 +69,9 @@ const Breadcrumb: React.FC = () => {
               <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
                 <Trophy className="w-3 h-3 text-white" />
               </div>
-              <span className="font-bold text-gray-900 dark:text-white text-sm">PeerEval</span>
+              <span className="font-bold text-gray-900 dark:text-white text-sm">
+                PeerEval
+              </span>
             </div>
 
             {/* Right side - Controls */}
@@ -82,17 +84,24 @@ const Breadcrumb: React.FC = () => {
               >
                 <div className="flex items-center space-x-1">
                   <Flame className="w-4 h-4 text-orange-500 group-hover:text-orange-600 transition-colors duration-200" />
-                  <span className="text-sm font-bold text-orange-600 dark:text-orange-400">{currentStreak}</span>
+                  <span className="text-sm font-bold text-orange-600 dark:text-orange-400">
+                    {currentStreak} day streak - Click to View
+                  </span>
                 </div>
               </button>
 
               {/* Games Button */}
               <button
                 onClick={() => setIsGameModalOpen(true)}
-                className="relative p-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-all duration-200"
+                className="relative p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
                 aria-label="Open games"
               >
-                <Gamepad2 className="w-4 h-4 text-purple-500" />
+                <Gamepad2 className="w-6 h-6 text-purple-500 group-hover:text-purple-600 transition-colors duration-200" />
+
+                {/* Games tooltip */}
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                  Play games
+                </div>
               </button>
 
               {/* Leaderboard Button */}
@@ -107,7 +116,7 @@ const Breadcrumb: React.FC = () => {
                   <span className="text-xs font-bold text-white">!</span>
                 </div>
               </button>
-              
+
               {/* Theme Toggle */}
               <div className="scale-90">
                 <ThemeToggle />
@@ -127,9 +136,11 @@ const Breadcrumb: React.FC = () => {
         >
           <div className="flex items-center space-x-2">
             <Flame className="w-6 h-6 text-orange-500 group-hover:text-orange-600 group-hover:scale-110 transition-all duration-200" />
-            <span className="text-lg font-bold text-gray-900 dark:text-white">{currentStreak}</span>
+            <span className="text-lg font-bold text-gray-900 dark:text-white">
+              {currentStreak}
+            </span>
           </div>
-          
+
           {/* Streak tooltip */}
           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
             {currentStreak} day streak - Click to view details
@@ -143,7 +154,7 @@ const Breadcrumb: React.FC = () => {
           aria-label="Open games"
         >
           <Gamepad2 className="w-6 h-6 text-purple-500 group-hover:text-purple-600 transition-colors duration-200" />
-          
+
           {/* Games tooltip */}
           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
             Play games
@@ -157,7 +168,7 @@ const Breadcrumb: React.FC = () => {
           aria-label="View leaderboard"
         >
           <Trophy className="w-6 h-6 text-amber-500 group-hover:text-amber-600 transition-colors duration-200" />
-          
+
           {/* Notification Badge */}
           <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
             <span className="text-xs font-bold text-white">!</span>
@@ -168,19 +179,23 @@ const Breadcrumb: React.FC = () => {
             View leaderboard
           </div>
         </button>
-        
+
         <ThemeToggle />
       </div>
 
       {/* Mobile Overlay */}
       {mobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-20 lg:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
-      
-      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'} ml-0`}>
+
+      <div
+        className={`transition-all duration-300 ${
+          sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"
+        } ml-0`}
+      >
         <main className="p-4 sm:p-6 lg:p-8 pt-24 sm:pt-24 lg:pt-20">
           <div className="max-w-7xl mx-auto">
             <Outlet />
@@ -189,13 +204,13 @@ const Breadcrumb: React.FC = () => {
       </div>
 
       <FloatingChatbot />
-      <LeaderboardPanel 
-        isOpen={isLeaderboardOpen} 
-        onClose={() => setIsLeaderboardOpen(false)} 
+      <LeaderboardPanel
+        isOpen={isLeaderboardOpen}
+        onClose={() => setIsLeaderboardOpen(false)}
       />
-      <GameModal 
-        isOpen={isGameModalOpen} 
-        onClose={() => setIsGameModalOpen(false)} 
+      <GameModal
+        isOpen={isGameModalOpen}
+        onClose={() => setIsGameModalOpen(false)}
       />
     </div>
   );

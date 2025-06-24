@@ -8,6 +8,15 @@ export default defineConfig({
     react(),
     // tailwindcss()
   ],
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:8024",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
   optimizeDeps: {
     exclude: ["lucide-react"],
   },

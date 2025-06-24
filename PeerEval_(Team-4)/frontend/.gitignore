@@ -7,11 +7,22 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-**/node_modules/
+# Project Folders
+myapp
+node_modules
 dist
 dist-ssr
 *.local
 .qodo
+coverage
+.cache
+.next
+.serverless
+.pnpm-store
+.pnpmfile.lock
+.yarn
+.yarnrc
+.yarnrc.yml
 
 # Editor directories and files
 .vscode/*
