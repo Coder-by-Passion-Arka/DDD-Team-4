@@ -142,7 +142,7 @@ const Breadcrumb: React.FC = () => {
           </div>
 
           {/* Streak tooltip */}
-          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
             {currentStreak} day streak - Click to view details
           </div>
         </button>
@@ -156,7 +156,7 @@ const Breadcrumb: React.FC = () => {
           <Gamepad2 className="w-6 h-6 text-purple-500 group-hover:text-purple-600 transition-colors duration-200" />
 
           {/* Games tooltip */}
-          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
             Play games
           </div>
         </button>
@@ -175,12 +175,18 @@ const Breadcrumb: React.FC = () => {
           </div>
 
           {/* Leaderboard tooltip */}
-          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
             View leaderboard
           </div>
         </button>
 
-        <ThemeToggle />
+        {/* Theme Toggle with tooltip */}
+        <div className="relative group">
+          <ThemeToggle />
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+            Toggle theme
+          </div>
+        </div>
       </div>
 
       {/* Mobile Overlay */}
