@@ -226,37 +226,37 @@ const RockPaperScissors: React.FC<RockPaperScissorsProps> = ({ onBack, onComplet
       </div>
 
       {/* Game Area */}
-      <div className="bg-white dark:bg-gray-700 rounded-xl p-6 border border-gray-200 dark:border-gray-600 mb-6">
+      <div className="bg-white dark:bg-gray-700 rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-600 mb-6">
         {/* Choices Display */}
-        <div className="grid grid-cols-2 gap-8 mb-8">
+        <div className="flex flex-col gap-6 sm:grid sm:grid-cols-2 sm:gap-8 mb-8">
           {/* Player */}
           <div className="text-center">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">You</h3>
-            <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2 sm:mb-4">You</h3>
+            <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-2 sm:mb-4 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
               {playerChoice ? (
-                <span className="text-4xl">{getChoiceData(playerChoice)?.emoji}</span>
+                <span className="text-3xl sm:text-4xl">{getChoiceData(playerChoice)?.emoji}</span>
               ) : (
-                <span className="text-2xl text-white">?</span>
+                <span className="text-xl sm:text-2xl text-white">?</span>
               )}
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
               {playerChoice ? getChoiceData(playerChoice)?.name : 'Make your choice'}
             </p>
           </div>
 
           {/* AI */}
           <div className="text-center">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">AI</h3>
-            <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2 sm:mb-4">AI</h3>
+            <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-2 sm:mb-4 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
               {isPlaying ? (
-                <Zap className="w-8 h-8 text-white animate-pulse" />
+                <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-white animate-pulse" />
               ) : aiChoice ? (
-                <span className="text-4xl">{getChoiceData(aiChoice)?.emoji}</span>
+                <span className="text-3xl sm:text-4xl">{getChoiceData(aiChoice)?.emoji}</span>
               ) : (
-                <span className="text-2xl text-white">?</span>
+                <span className="text-xl sm:text-2xl text-white">?</span>
               )}
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
               {isPlaying ? 'Thinking...' : aiChoice ? getChoiceData(aiChoice)?.name : 'Waiting...'}
             </p>
           </div>
@@ -265,12 +265,12 @@ const RockPaperScissors: React.FC<RockPaperScissorsProps> = ({ onBack, onComplet
         {/* Result */}
         {showResult && (
           <div className="text-center mb-6">
-            <h2 className={`text-2xl font-bold mb-2 ${getResultColor()}`}>
+            <h2 className={`text-lg sm:text-2xl font-bold mb-2 ${getResultColor()}`}>
               {getResultMessage()}
             </h2>
             <button
               onClick={nextRound}
-              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-colors duration-200"
+              className="px-4 py-2 sm:px-6 sm:py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-colors duration-200 text-sm sm:text-base"
             >
               {round >= 10 ? 'View Results' : 'Next Round'}
             </button>
@@ -280,25 +280,25 @@ const RockPaperScissors: React.FC<RockPaperScissorsProps> = ({ onBack, onComplet
         {/* Choice Buttons */}
         {!showResult && (
           <div>
-            <h3 className="text-center text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <h3 className="text-center text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2 sm:mb-4">
               Choose your weapon:
             </h3>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 w-full">
               {choices.map((choice) => (
                 <button
                   key={choice.id}
                   onClick={() => handleChoice(choice.id as Choice)}
                   disabled={isPlaying}
-                  className={`p-6 rounded-xl border-2 transition-all duration-200 ${
+                  className={`w-full p-4 sm:p-6 rounded-xl border-2 transition-all duration-200 ${
                     isPlaying 
                       ? 'opacity-50 cursor-not-allowed' 
                       : 'hover:scale-105 hover:shadow-lg border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-500'
-                  } bg-white dark:bg-gray-800`}
+                  } bg-white dark:bg-gray-800 flex flex-col items-center`}
                 >
-                  <div className={`w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br ${choice.color} flex items-center justify-center`}>
-                    <span className="text-2xl">{choice.emoji}</span>
+                  <div className={`w-12 h-12 sm:w-16 sm:h-16 mb-2 sm:mb-3 rounded-full bg-gradient-to-br ${choice.color} flex items-center justify-center`}>
+                    <span className="text-xl sm:text-2xl">{choice.emoji}</span>
                   </div>
-                  <p className="font-medium text-gray-900 dark:text-white">{choice.name}</p>
+                  <p className="font-medium text-xs sm:text-base text-gray-900 dark:text-white">{choice.name}</p>
                 </button>
               ))}
             </div>
