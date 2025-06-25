@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Trophy, Flame, Menu, X, Gamepad2 } from "lucide-react";
 import Sidebar from './Sidebar';
@@ -12,16 +12,26 @@ const Breadcrumb: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [isGameModalOpen, setIsGameModalOpen] = useState(false);
+  const [showGamesTooltip, setShowGamesTooltip] = useState(false);
+  const [showLeaderboardTooltip, setShowLeaderboardTooltip] = useState(false);
+  const [showStreakTooltip, setShowStreakTooltip] = useState(false);
+  const gamesTooltipTimeout = useRef<NodeJS.Timeout | null>(null);
+  const leaderboardTooltipTimeout = useRef<NodeJS.Timeout | null>(null);
+  const streakTooltipTimeout = useRef<NodeJS.Timeout | null>(null);
   const navigate = useNavigate();
   
   // Current user's streak - this could come from props or context in a real app
   const currentStreak = 12;
 
-  const handleStreakClick = () => {
+  const handleStreakClick = (e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+      setShowStreakTooltip(true);
+      if (streakTooltipTimeout.current) clearTimeout(streakTooltipTimeout.current);
+      streakTooltipTimeout.current = setTimeout(() => setShowStreakTooltip(false), 2000);
+    }
     // Navigate to dashboard and scroll to streak section
     navigate('/dashboard');
-    
-    // Small delay to ensure navigation completes before scrolling
     setTimeout(() => {
       const streakElement = document.getElementById('streak-section');
       if (streakElement) {
@@ -29,14 +39,43 @@ const Breadcrumb: React.FC = () => {
           behavior: 'smooth',
           block: 'center'
         });
-        
-        // Add a brief highlight effect
         streakElement.classList.add('ring-4', 'ring-orange-300', 'ring-opacity-50');
         setTimeout(() => {
           streakElement.classList.remove('ring-4', 'ring-orange-300', 'ring-opacity-50');
         }, 2000);
       }
     }, 100);
+  };
+
+  // Hide tooltips when clicking outside
+  React.useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      setShowGamesTooltip(false);
+      setShowLeaderboardTooltip(false);
+      setShowStreakTooltip(false);
+    };
+    if (showGamesTooltip || showLeaderboardTooltip || showStreakTooltip) {
+      document.addEventListener('mousedown', handleClick);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+    };
+  }, [showGamesTooltip, showLeaderboardTooltip, showStreakTooltip]);
+
+  const handleGamesClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowGamesTooltip(true);
+    if (gamesTooltipTimeout.current) clearTimeout(gamesTooltipTimeout.current);
+    gamesTooltipTimeout.current = setTimeout(() => setShowGamesTooltip(false), 2000);
+    setIsGameModalOpen(true);
+  };
+
+  const handleLeaderboardClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowLeaderboardTooltip(true);
+    if (leaderboardTooltipTimeout.current) clearTimeout(leaderboardTooltipTimeout.current);
+    leaderboardTooltipTimeout.current = setTimeout(() => setShowLeaderboardTooltip(false), 2000);
+    setIsLeaderboardOpen(true);
   };
 
   return (
@@ -79,49 +118,48 @@ const Breadcrumb: React.FC = () => {
               {/* Streak Counter */}
               <button
                 onClick={handleStreakClick}
-                className="relative p-2 rounded-lg bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-all duration-200 group"
+                className="relative p-3 w-12 h-12 flex items-center justify-center rounded-xl bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-all duration-200 group"
                 aria-label="View streak details"
+                type="button"
               >
-                <div className="flex items-center space-x-1">
-                  <Flame className="w-4 h-4 text-orange-500 group-hover:text-orange-600 transition-colors duration-200" />
-                  <span className="text-sm font-bold text-orange-600 dark:text-orange-400">
-                    {currentStreak} day streak - Click to View
-                  </span>
+                <Flame className="w-6 h-6 text-orange-500 group-hover:text-orange-600 transition-colors duration-200" />
+                {/* Streak tooltip below icon */}
+                <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap transition-opacity duration-200 ${showStreakTooltip ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                  {currentStreak} day streak - Click to view
                 </div>
               </button>
 
               {/* Games Button */}
               <button
-                onClick={() => setIsGameModalOpen(true)}
-                className="relative p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
+                onClick={handleGamesClick}
+                className="relative p-3 w-12 h-12 flex items-center justify-center rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
                 aria-label="Open games"
+                type="button"
               >
                 <Gamepad2 className="w-6 h-6 text-purple-500 group-hover:text-purple-600 transition-colors duration-200" />
-
-                {/* Games tooltip */}
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                {/* Games tooltip below icon */}
+                <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap transition-opacity duration-200 ${showGamesTooltip ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                   Play games
                 </div>
               </button>
 
               {/* Leaderboard Button */}
               <button
-  onClick={() => setIsLeaderboardOpen(true)}
-  className="relative p-3 w-12 h-12 flex items-center justify-center rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
-  aria-label="View leaderboard"
->
-  <Trophy className="w-6 h-6 text-amber-500 group-hover:text-amber-600 transition-colors duration-200" />
-
-  {/* Notification Badge */}
-  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
-    <span className="text-[10px] font-bold text-white leading-none">!</span>
-  </div>
-
-  {/* Tooltip (Optional to Match Gamepad Button) */}
-  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-    Leaderboard
-  </div>
-</button>
+                onClick={handleLeaderboardClick}
+                className="relative p-3 w-12 h-12 flex items-center justify-center rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
+                aria-label="View leaderboard"
+                type="button"
+              >
+                <Trophy className="w-6 h-6 text-amber-500 group-hover:text-amber-600 transition-colors duration-200" />
+                {/* Notification Badge */}
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
+                  <span className="text-[10px] font-bold text-white leading-none">!</span>
+                </div>
+                {/* Leaderboard tooltip below icon */}
+                <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap transition-opacity duration-200 ${showLeaderboardTooltip ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                  Leaderboard
+                </div>
+              </button>
 
 
               {/* Theme Toggle */}
@@ -156,7 +194,7 @@ const Breadcrumb: React.FC = () => {
 
         {/* Games Button */}
         <button
-          onClick={() => setIsGameModalOpen(true)}
+          onClick={handleGamesClick}
           className="relative p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
           aria-label="Open games"
         >
@@ -170,7 +208,7 @@ const Breadcrumb: React.FC = () => {
 
         {/* Leaderboard Button */}
         <button
-          onClick={() => setIsLeaderboardOpen(true)}
+          onClick={handleLeaderboardClick}
           className="relative p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
           aria-label="View leaderboard"
         >
