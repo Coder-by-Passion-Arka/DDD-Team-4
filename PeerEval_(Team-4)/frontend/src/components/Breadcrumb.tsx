@@ -106,16 +106,23 @@ const Breadcrumb: React.FC = () => {
 
               {/* Leaderboard Button */}
               <button
-                onClick={() => setIsLeaderboardOpen(true)}
-                className="relative p-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-all duration-200"
-                aria-label="View leaderboard"
-              >
-                <Trophy className="w-4 h-4 text-amber-500" />
-                {/* Notification Badge */}
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-xs font-bold text-white">!</span>
-                </div>
-              </button>
+  onClick={() => setIsLeaderboardOpen(true)}
+  className="relative p-3 w-12 h-12 flex items-center justify-center rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
+  aria-label="View leaderboard"
+>
+  <Trophy className="w-6 h-6 text-amber-500 group-hover:text-amber-600 transition-colors duration-200" />
+
+  {/* Notification Badge */}
+  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
+    <span className="text-[10px] font-bold text-white leading-none">!</span>
+  </div>
+
+  {/* Tooltip (Optional to Match Gamepad Button) */}
+  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+    Leaderboard
+  </div>
+</button>
+
 
               {/* Theme Toggle */}
               <div className="scale-90">
