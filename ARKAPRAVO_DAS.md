@@ -1,5 +1,18 @@
 ## This is a README file of Arkapravo Das through which I give a overview of my Daily Work
 
+## Day 13 ( 26/06/2025 )
+
+    -- Ensuring more Role-based features inside the dashboard
+    -- Updating Logical redundancies
+    -- Incorporated User preference storage for future reference
+
+## Day 12 ( 25/06/2025 )
+
+    -- Learning more about Chart.js to make more attrative and insightful statistical charts
+    -- Fixing Google and GitHub authentication
+    -- Started working on the Documentation
+    -- Refined the Games pannel and added more classical games.
+
 ## Day 11 ( 24/06/2025 )
 
     -- Updating simple Aggregation pipelines for showcasing Data statistics and realtime Performance monitoring
