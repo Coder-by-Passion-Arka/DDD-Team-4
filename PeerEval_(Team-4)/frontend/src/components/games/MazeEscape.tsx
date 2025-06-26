@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowLeft, RefreshCw } from "lucide-react";
+import { ArrowLeft, RefreshCw, ArrowUp, ArrowDown, ArrowRight, Maximize2, Minimize2 } from "lucide-react";
 
 const mazeRows = 10;
 const mazeCols = 10;
-const cellSize = 40;
+const cellSize = 40; // base cell size for drawing
 
 interface Cell {
   top: boolean;
@@ -82,16 +82,44 @@ interface MazeEscapeProps {
 
 const MazeEscape: React.FC<MazeEscapeProps> = ({ onBack, onComplete }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const gameCardRef = useRef<HTMLDivElement>(null);
   const [maze, setMaze] = useState<Cell[][]>(generateMaze());
   const [player, setPlayer] = useState<Position>({ x: 0, y: 0 });
   const [gameWon, setGameWon] = useState(false);
+  const [canvasSize, setCanvasSize] = useState<number>(mazeCols * cellSize);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Responsive canvas size (handle fullscreen and normal)
+  useEffect(() => {
+    const handleResize = () => {
+      let size;
+      if (isFullscreen && gameCardRef.current) {
+        // Fix to 60vh for both width and height in fullscreen
+        const vh = window.innerHeight * 0.6;
+        size = vh;
+      } else if (wrapperRef.current) {
+        size = Math.min(
+          wrapperRef.current.offsetWidth,
+          window.innerHeight * 0.5,
+          mazeCols * cellSize
+        );
+      } else {
+        size = mazeCols * cellSize;
+      }
+      setCanvasSize(size);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isFullscreen]);
 
   useEffect(() => {
     drawMaze();
     if (gameWon) {
       onComplete && onComplete(true, 100);
     }
-  }, [player, maze, gameWon]);
+  }, [player, maze, gameWon, canvasSize]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => handleMove(e.key);
@@ -105,54 +133,61 @@ const MazeEscape: React.FC<MazeEscapeProps> = ({ onBack, onComplete }) => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Responsive cell size
+    const size = canvasSize;
+    const cell = size / mazeCols;
+
+    ctx.clearRect(0, 0, size, size);
     ctx.fillStyle = "#0f172a";
-    ctx.fillRect(0, 0, mazeCols * cellSize, mazeRows * cellSize);
+    ctx.fillRect(0, 0, size, size);
 
     maze.forEach((row, y) => {
-      row.forEach((cell, x) => {
+      row.forEach((cellData, x) => {
         ctx.strokeStyle = "#38bdf8";
         ctx.lineWidth = 2;
-        if (cell.top) {
+        if (cellData.top) {
           ctx.beginPath();
-          ctx.moveTo(x * cellSize, y * cellSize);
-          ctx.lineTo((x + 1) * cellSize, y * cellSize);
+          ctx.moveTo(x * cell, y * cell);
+          ctx.lineTo((x + 1) * cell, y * cell);
           ctx.stroke();
         }
-        if (cell.right) {
+        if (cellData.right) {
           ctx.beginPath();
-          ctx.moveTo((x + 1) * cellSize, y * cellSize);
-          ctx.lineTo((x + 1) * cellSize, (y + 1) * cellSize);
+          ctx.moveTo((x + 1) * cell, y * cell);
+          ctx.lineTo((x + 1) * cell, (y + 1) * cell);
           ctx.stroke();
         }
-        if (cell.bottom) {
+        if (cellData.bottom) {
           ctx.beginPath();
-          ctx.moveTo(x * cellSize, (y + 1) * cellSize);
-          ctx.lineTo((x + 1) * cellSize, (y + 1) * cellSize);
+          ctx.moveTo(x * cell, (y + 1) * cell);
+          ctx.lineTo((x + 1) * cell, (y + 1) * cell);
           ctx.stroke();
         }
-        if (cell.left) {
+        if (cellData.left) {
           ctx.beginPath();
-          ctx.moveTo(x * cellSize, y * cellSize);
-          ctx.lineTo(x * cellSize, (y + 1) * cellSize);
+          ctx.moveTo(x * cell, y * cell);
+          ctx.lineTo(x * cell, (y + 1) * cell);
           ctx.stroke();
         }
       });
     });
 
+    // Player
     ctx.fillStyle = "#4ade80";
     ctx.fillRect(
-      player.x * cellSize + 5,
-      player.y * cellSize + 5,
-      cellSize - 10,
-      cellSize - 10
+      player.x * cell + cell * 0.125,
+      player.y * cell + cell * 0.125,
+      cell * 0.75,
+      cell * 0.75
     );
 
+    // Goal
     ctx.fillStyle = "#facc15";
     ctx.fillRect(
-      (mazeCols - 1) * cellSize + 10,
-      (mazeRows - 1) * cellSize + 10,
-      cellSize - 20,
-      cellSize - 20
+      (mazeCols - 1) * cell + cell * 0.25,
+      (mazeRows - 1) * cell + cell * 0.25,
+      cell * 0.5,
+      cell * 0.5
     );
   };
 
@@ -185,6 +220,40 @@ const MazeEscape: React.FC<MazeEscapeProps> = ({ onBack, onComplete }) => {
     setGameWon(false);
   };
 
+  // Fullscreen handlers
+  const handleFullscreen = () => {
+    if (!isFullscreen && gameCardRef.current) {
+      if (gameCardRef.current.requestFullscreen) {
+        gameCardRef.current.requestFullscreen();
+      } else if ((gameCardRef.current as any).webkitRequestFullscreen) {
+        (gameCardRef.current as any).webkitRequestFullscreen();
+      }
+    } else if (isFullscreen) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if ((document as any).webkitExitFullscreen) {
+        (document as any).webkitExitFullscreen();
+      }
+    }
+  };
+
+  useEffect(() => {
+    const onFsChange = () => {
+      setIsFullscreen(
+        !!(
+          document.fullscreenElement ||
+          (document as any).webkitFullscreenElement
+        )
+      );
+    };
+    document.addEventListener("fullscreenchange", onFsChange);
+    document.addEventListener("webkitfullscreenchange", onFsChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", onFsChange);
+      document.removeEventListener("webkitfullscreenchange", onFsChange);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-white via-indigo-100 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-white p-6">
       <div className="w-full max-w-2xl mx-auto">
@@ -197,60 +266,122 @@ const MazeEscape: React.FC<MazeEscapeProps> = ({ onBack, onComplete }) => {
             <ArrowLeft className="w-5 h-5" />
             <span>Back to Games</span>
           </button>
-
-          <button
-            onClick={handleRestart}
-            className="flex items-center space-x-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white text-sm font-medium transition"
-          >
-            <RefreshCw className="w-4 h-4" />
-            <span>Restart</span>
-          </button>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={handleFullscreen}
+              className="flex items-center justify-center p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+              title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+            >
+              {isFullscreen ? (
+                <Minimize2 className="w-5 h-5 text-gray-700 dark:text-gray-200" />
+              ) : (
+                <Maximize2 className="w-5 h-5 text-gray-700 dark:text-gray-200" />
+              )}
+            </button>
+            <button
+              onClick={handleRestart}
+              className="flex items-center space-x-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white text-sm font-medium transition"
+            >
+              <RefreshCw className="w-4 h-4" />
+              <span>Restart</span>
+            </button>
+          </div>
         </div>
 
         {/* Game Card */}
-        <div className="bg-gradient-to-br from-white via-indigo-100 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 rounded-2xl p-4 sm:p-6 shadow-xl dark:shadow-gray-900/40 border border-gray-200 dark:border-gray-700 mb-6">
-          <h1 className="text-4xl font-bold mb-4">Maze Escape</h1>
-          <div className="flex justify-center">
-            <canvas
-              ref={canvasRef}
-              width={mazeCols * cellSize}
-              height={mazeRows * cellSize}
-              className="border-4 border-blue-600 rounded-lg shadow-lg mb-4"
-            ></canvas>
+        <div
+          ref={gameCardRef}
+          className={`relative bg-gradient-to-br from-white via-indigo-100 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 rounded-2xl p-4 sm:p-6 shadow-xl dark:shadow-gray-900/40 border border-gray-200 dark:border-gray-700 mb-6 ${
+            isFullscreen ? "w-screen h-screen max-w-none max-h-none rounded-none p-0 sm:p-0 flex flex-col" : ""
+          }`}
+          style={isFullscreen ? { zIndex: 50 } : {}}
+        >
+          {/* Fullscreen overlay controls */}
+          {isFullscreen && (
+            <div className="absolute top-4 right-4 z-50 flex space-x-2">
+              <button
+                onClick={handleFullscreen}
+                className="flex items-center justify-center p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+                title="Exit Fullscreen"
+              >
+                <Minimize2 className="w-5 h-5 text-gray-700 dark:text-gray-200" />
+              </button>
+              <button
+                onClick={handleRestart}
+                className="flex items-center justify-center p-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white transition"
+                title="Restart"
+              >
+                <RefreshCw className="w-5 h-5" />
+              </button>
+            </div>
+          )}
+          {/* Game name always at the top */}
+          <div className={`${isFullscreen ? "w-full flex-none pt-8 pb-4 bg-transparent" : ""}`}>
+            <h1 className="text-4xl font-bold mb-4 text-center">Maze Escape</h1>
           </div>
-
+          {/* Center game and controls in fullscreen */}
+          <div className={`flex flex-col items-center w-full h-full ${isFullscreen ? "justify-center flex-1" : ""}`}>
+            <div className={`w-full flex justify-center items-center h-full ${isFullscreen ? "flex-1" : ""}`} ref={wrapperRef}>
+              <canvas
+                ref={canvasRef}
+                width={canvasSize}
+                height={canvasSize}
+                style={{
+                  width: isFullscreen ? "60vh" : "100%",
+                  height: isFullscreen ? "60vh" : "auto",
+                  maxWidth: isFullscreen ? "60vh" : "100%",
+                  maxHeight: isFullscreen ? "60vh" : "60vh",
+                  aspectRatio: "1 / 1",
+                  display: "block",
+                  backgroundColor: "#0f172a",
+                }}
+                className="border-4 border-blue-600 rounded-lg shadow-lg mb-4 bg-slate-900"
+              ></canvas>
+            </div>
+            {/* Gamepad D-pad controls */}
+            <div className={`flex justify-center mb-4 ${isFullscreen ? "w-full" : ""}`}>
+              <div className="grid grid-cols-3 grid-rows-3 gap-2 w-32 h-32 mx-auto">
+                <div></div>
+                <button
+                  onClick={() => handleMove("up")}
+                  aria-label="Up"
+                  className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 rounded shadow w-full h-full text-white text-2xl"
+                >
+                  <ArrowUp className="w-7 h-7" />
+                </button>
+                <div></div>
+                <button
+                  onClick={() => handleMove("left")}
+                  aria-label="Left"
+                  className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 rounded shadow w-full h-full text-white text-2xl"
+                >
+                  <ArrowLeft className="w-7 h-7" />
+                </button>
+                <div></div>
+                <button
+                  onClick={() => handleMove("right")}
+                  aria-label="Right"
+                  className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 rounded shadow w-full h-full text-white text-2xl"
+                >
+                  <ArrowRight className="w-7 h-7" />
+                </button>
+                <div></div>
+                <button
+                  onClick={() => handleMove("down")}
+                  aria-label="Down"
+                  className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 rounded shadow w-full h-full text-white text-2xl"
+                >
+                  <ArrowDown className="w-7 h-7" />
+                </button>
+                <div></div>
+              </div>
+            </div>
+          </div>
           {gameWon && (
             <p className="text-green-400 text-xl font-medium animate-pulse mb-4 text-center">
               You escaped the maze!
             </p>
           )}
-
-          <div className="flex gap-2 flex-wrap justify-center mb-4">
-            <button
-              onClick={() => handleMove("up")}
-              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded shadow"
-            >
-              Up
-            </button>
-            <button
-              onClick={() => handleMove("left")}
-              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded shadow"
-            >
-              Left
-            </button>
-            <button
-              onClick={() => handleMove("down")}
-              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded shadow"
-            >
-              Down
-            </button>
-            <button
-              onClick={() => handleMove("right")}
-              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded shadow"
-            >
-              Right
-            </button>
-          </div>
         </div>
 
         {/* How to Play / Tips */}

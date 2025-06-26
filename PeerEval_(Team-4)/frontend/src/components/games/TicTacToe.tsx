@@ -170,18 +170,32 @@ const TicTacToeTSX: React.FC<TicTacToeTSXProps> = ({ onBack, onComplete }) => {
           <h1 className="text-4xl font-bold mb-6 text-purple-700 dark:text-purple-300 text-center">
             Tic Tac Toe
           </h1>
-          <div className="grid grid-cols-3 gap-4">
-            {grid.map((value, idx) => (
-              <div
-                key={idx}
-                id={`cell-${idx}`}
-                className="w-24 h-24 sm:w-32 sm:h-32 bg-blue-700 hover:bg-blue-600 text-white text-5xl sm:text-6xl flex items-center justify-center rounded-lg cursor-pointer shadow-md transition-all duration-300 ease-in-out transform hover:scale-105"
-                onClick={() => handleClick(idx)}
-              >
-                {value === "x" && "✖"}
-                {value === "o" && "◯"}
-              </div>
-            ))}
+          {/* Responsive grid wrapper */}
+          <div className="w-full flex justify-center">
+            <div
+              className="
+                grid grid-cols-3 gap-2 sm:gap-4
+                w-full max-w-xs sm:max-w-sm md:max-w-md
+              "
+            >
+              {grid.map((value, idx) => (
+                <div
+                  key={idx}
+                  id={`cell-${idx}`}
+                  className="
+                    aspect-square flex-1
+                    bg-blue-700 hover:bg-blue-600 text-white
+                    text-3xl sm:text-5xl md:text-6xl
+                    flex items-center justify-center rounded-lg cursor-pointer shadow-md
+                    transition-all duration-300 ease-in-out transform hover:scale-105
+                  "
+                  onClick={() => handleClick(idx)}
+                >
+                  {value === "x" && "✖"}
+                  {value === "o" && "◯"}
+                </div>
+              ))}
+            </div>
           </div>
           {message && (
             <div className="mt-6 text-2xl font-semibold text-amber-300 text-center animate-pulse">

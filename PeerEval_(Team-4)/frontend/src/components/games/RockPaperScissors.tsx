@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ArrowLeft, Trophy, Target, Zap } from 'lucide-react';
 
 interface RockPaperScissorsProps {
