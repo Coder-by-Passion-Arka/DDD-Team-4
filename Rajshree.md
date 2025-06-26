@@ -28,6 +28,21 @@ This repository documents the daily progress made during the MERN Stack internsh
 
 ---
 
+## 📅 26-06-2025
+- Worked on backend error debugging.
+- Identified and resolved issues related to API responses and route handling.
+- Improved error messages and added proper status codes for better debugging.
+- Verified fixes through thorough testing of affected endpoints.
+  
+---
+
+## 📅 25-06-2025
+- Worked on improving the user interface, mainly focusing on the game window.
+- Updated the database structure for better integration and performance.
+- Enhanced layout, visuals, and interactivity for smoother gameplay experience.
+  
+---
+
 ## 📅 24-06-2025
 - Updated UI of Tic Tac Toe, Maze Escape, Simon Says, and Sorting Game to match Sliding Puzzle aesthetics.
 - Added score, moves, and timer display across games.
