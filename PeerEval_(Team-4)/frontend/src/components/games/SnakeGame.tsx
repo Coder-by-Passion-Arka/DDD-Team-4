@@ -1,10 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Flame, Move3D, Clock, RefreshCw } from "lucide-react";
+import {
+  ArrowLeft,
+  Flame,
+  Move3D,
+  Clock,
+  RefreshCw,
+  ArrowUp,
+  ArrowDown,
+  ArrowRight,
+  Maximize2,
+  Minimize2,
+} from "lucide-react";
 
-const canvasSize = 400;
+const baseCanvasSize = 400;
 const scale = 20;
-const rows = canvasSize / scale;
-const cols = canvasSize / scale;
+const rows = baseCanvasSize / scale;
+const cols = baseCanvasSize / scale;
 
 const getRandomFood = (snake: { x: number; y: number }[]): { x: number; y: number } => {
   let food: { x: number; y: number };
@@ -29,6 +40,8 @@ interface SnakeGameProps {
 
 const SnakeGame: React.FC<SnakeGameProps> = ({ onBack, onComplete }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const gameCardRef = useRef<HTMLDivElement>(null);
   const [snake, setSnake] = useState<Position[]>([{ x: 10, y: 10 }]);
   const [direction, setDirection] = useState<Position>({ x: 0, y: 0 });
   const [food, setFood] = useState<Position>(getRandomFood([{ x: 10, y: 10 }]));
@@ -36,7 +49,31 @@ const SnakeGame: React.FC<SnakeGameProps> = ({ onBack, onComplete }) => {
   const [started, setStarted] = useState<boolean>(false);
   const [moves, setMoves] = useState<number>(0);
   const [time, setTime] = useState<number>(0);
+  const [canvasSize, setCanvasSize] = useState<number>(baseCanvasSize);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Responsive canvas size (handle fullscreen and normal)
+  useEffect(() => {
+    const handleResize = () => {
+      let size;
+      if (isFullscreen && gameCardRef.current) {
+        size = window.innerHeight * 0.6;
+      } else if (wrapperRef.current) {
+        size = Math.min(
+          wrapperRef.current.offsetWidth,
+          window.innerHeight * 0.5,
+          baseCanvasSize
+        );
+      } else {
+        size = baseCanvasSize;
+      }
+      setCanvasSize(size);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isFullscreen]);
 
   useEffect(() => {
     const context = canvasRef.current?.getContext("2d");
@@ -139,10 +176,53 @@ const SnakeGame: React.FC<SnakeGameProps> = ({ onBack, onComplete }) => {
     }, 1000);
   };
 
+  // Fullscreen handlers
+  const handleFullscreen = () => {
+    if (!isFullscreen && gameCardRef.current) {
+      if (gameCardRef.current.requestFullscreen) {
+        gameCardRef.current.requestFullscreen();
+      } else if ((gameCardRef.current as any).webkitRequestFullscreen) {
+        (gameCardRef.current as any).webkitRequestFullscreen();
+      }
+    } else if (isFullscreen) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if ((document as any).webkitExitFullscreen) {
+        (document as any).webkitExitFullscreen();
+      }
+    }
+  };
+
+  useEffect(() => {
+    const onFsChange = () => {
+      setIsFullscreen(
+        !!(
+          document.fullscreenElement ||
+          (document as any).webkitFullscreenElement
+        )
+      );
+    };
+    document.addEventListener("fullscreenchange", onFsChange);
+    document.addEventListener("webkitfullscreenchange", onFsChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", onFsChange);
+      document.removeEventListener("webkitfullscreenchange", onFsChange);
+    };
+  }, []);
+
+  // D-pad handlers
+  const handleDpad = (dir: "up" | "down" | "left" | "right") => {
+    if (!started || gameOver) return;
+    if (dir === "up" && direction.y !== 1) setDirection({ x: 0, y: -1 });
+    if (dir === "down" && direction.y !== -1) setDirection({ x: 0, y: 1 });
+    if (dir === "left" && direction.x !== 1) setDirection({ x: -1, y: 0 });
+    if (dir === "right" && direction.x !== -1) setDirection({ x: 1, y: 0 });
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-white via-indigo-100 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-white p-6">
       <div className="w-full max-w-2xl">
-        {/* Header: Back + Reset */}
+        {/* Header: Back + Reset + Fullscreen */}
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
@@ -151,14 +231,26 @@ const SnakeGame: React.FC<SnakeGameProps> = ({ onBack, onComplete }) => {
             <ArrowLeft className="w-5 h-5" />
             <span>Back to Games</span>
           </button>
-
-          <button
-            onClick={handleReset}
-            className="flex items-center space-x-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white text-sm font-medium transition"
-          >
-            <RefreshCw className="w-4 h-4" />
-            <span>Reset</span>
-          </button>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={handleFullscreen}
+              className="flex items-center justify-center p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+              title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+            >
+              {isFullscreen ? (
+                <Minimize2 className="w-5 h-5 text-gray-700 dark:text-gray-200" />
+              ) : (
+                <Maximize2 className="w-5 h-5 text-gray-700 dark:text-gray-200" />
+              )}
+            </button>
+            <button
+              onClick={handleReset}
+              className="flex items-center space-x-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white text-sm font-medium transition"
+            >
+              <RefreshCw className="w-4 h-4" />
+              <span>Reset</span>
+            </button>
+          </div>
         </div>
 
         {/* Score / Moves / Time */}
@@ -181,21 +273,97 @@ const SnakeGame: React.FC<SnakeGameProps> = ({ onBack, onComplete }) => {
         </div>
 
         {/* Game Area */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 sm:p-6 shadow-xl border border-gray-200 dark:border-gray-700 mb-6">
-          <h1 className="text-4xl font-bold mb-4 text-center text-gray-900 dark:text-white">Snake Game</h1>
-          <canvas
-            ref={canvasRef}
-            width={canvasSize}
-            height={canvasSize}
-            className="border-4 border-blue-600 rounded-lg shadow-lg mx-auto block mb-6"
-          ></canvas>
-
+        <div
+          ref={gameCardRef}
+          className={`relative bg-white dark:bg-gray-900 rounded-2xl p-4 sm:p-6 shadow-xl border border-gray-200 dark:border-gray-700 mb-6 ${
+            isFullscreen ? "w-screen h-screen max-w-none max-h-none rounded-none p-0 sm:p-0 flex flex-col" : ""
+          }`}
+          style={isFullscreen ? { zIndex: 50 } : {}}
+        >
+          {/* Fullscreen overlay controls */}
+          {isFullscreen && (
+            <div className="absolute top-4 right-4 z-50 flex space-x-2">
+              <button
+                onClick={handleFullscreen}
+                className="flex items-center justify-center p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+                title="Exit Fullscreen"
+              >
+                <Minimize2 className="w-5 h-5 text-gray-700 dark:text-gray-200" />
+              </button>
+              <button
+                onClick={handleReset}
+                className="flex items-center justify-center p-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white transition"
+                title="Reset"
+              >
+                <RefreshCw className="w-5 h-5" />
+              </button>
+            </div>
+          )}
+          <div className={`${isFullscreen ? "w-full flex-none pt-8 pb-4 bg-transparent" : ""}`}>
+            <h1 className="text-4xl font-bold mb-4 text-center text-gray-900 dark:text-white">Snake Game</h1>
+          </div>
+          <div className={`flex flex-col items-center w-full h-full ${isFullscreen ? "justify-center flex-1" : ""}`}>
+            <div className={`w-full flex justify-center items-center h-full ${isFullscreen ? "flex-1" : ""}`} ref={wrapperRef}>
+              <canvas
+                ref={canvasRef}
+                width={canvasSize}
+                height={canvasSize}
+                style={{
+                  width: isFullscreen ? "60vh" : "100%",
+                  height: isFullscreen ? "60vh" : "auto",
+                  maxWidth: isFullscreen ? "60vh" : "100%",
+                  maxHeight: isFullscreen ? "60vh" : "60vh",
+                  aspectRatio: "1 / 1",
+                  display: "block",
+                  backgroundColor: "#0f172a",
+                }}
+                className="border-4 border-blue-600 rounded-lg shadow-lg mb-4 bg-slate-900"
+              ></canvas>
+            </div>
+            {/* D-pad controls */}
+            <div className={`flex justify-center mb-4 ${isFullscreen ? "w-full" : ""}`}>
+              <div className="grid grid-cols-3 grid-rows-3 gap-2 w-32 h-32 mx-auto">
+                <div></div>
+                <button
+                  onClick={() => handleDpad("up")}
+                  aria-label="Up"
+                  className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 rounded shadow w-full h-full text-white text-2xl"
+                >
+                  <ArrowUp className="w-7 h-7" />
+                </button>
+                <div></div>
+                <button
+                  onClick={() => handleDpad("left")}
+                  aria-label="Left"
+                  className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 rounded shadow w-full h-full text-white text-2xl"
+                >
+                  <ArrowLeft className="w-7 h-7" />
+                </button>
+                <div></div>
+                <button
+                  onClick={() => handleDpad("right")}
+                  aria-label="Right"
+                  className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 rounded shadow w-full h-full text-white text-2xl"
+                >
+                  <ArrowRight className="w-7 h-7" />
+                </button>
+                <div></div>
+                <button
+                  onClick={() => handleDpad("down")}
+                  aria-label="Down"
+                  className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 rounded shadow w-full h-full text-white text-2xl"
+                >
+                  <ArrowDown className="w-7 h-7" />
+                </button>
+                <div></div>
+              </div>
+            </div>
+          </div>
           {gameOver && (
             <p className="text-red-400 text-2xl font-semibold mb-4 text-center animate-bounce">
               Game Over! Press reset to play again.
             </p>
           )}
-
           {!started && !gameOver && (
             <div className="flex justify-center mb-4">
               <button
@@ -212,7 +380,7 @@ const SnakeGame: React.FC<SnakeGameProps> = ({ onBack, onComplete }) => {
         <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
           <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">🐍 How to Play</h4>
           <p className="text-sm text-blue-700 dark:text-blue-300">
-            Use arrow keys to control the snake. Eat food to grow. Avoid hitting the walls or yourself!
+            Use arrow keys or the D-pad to control the snake. Eat food to grow. Avoid hitting the walls or yourself!
           </p>
         </div>
       </div>
