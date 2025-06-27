@@ -28,6 +28,11 @@ This repository documents the daily progress made during the MERN Stack internsh
 
 ---
 
+## 📅 27-06-2025
+Explored Overleaf documentation to understand LaTeX environment setup, document structure, and essential formatting commands. Reviewed templates for academic and technical writing.
+
+---
+
 ## 📅 26-06-2025
 - Worked on backend error debugging.
 - Identified and resolved issues related to API responses and route handling.
