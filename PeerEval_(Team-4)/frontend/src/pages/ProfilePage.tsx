@@ -610,8 +610,8 @@ const ProfilePage: React.FC = () => {
         setIsLoading(true);
         try {
           const response = await apiService.get(`/user/profile/${userId}`);
-          setUserData(response.data);
-          setTempData(response.data);
+          setUserData(response.data as any);
+          setTempData(response.data as any);
         } catch (error) {
           console.error("Error fetching user data:", error);
           setError("Failed to load user profile");
@@ -638,7 +638,7 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (!isOwnProfile) return;
+    if (!isOwnProfile || !tempData) return;
 
     setIsLoading(true);
     setError("");
@@ -663,10 +663,13 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setTempData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setTempData((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        [field]: value,
+      };
+    });
   };
 
   const handleNestedInputChange = (
@@ -674,31 +677,45 @@ const ProfilePage: React.FC = () => {
     field: string,
     value: string
   ) => {
-    setTempData((prev) => ({
-      ...prev,
-      [parent]: {
-        ...(prev[parent] || {}),
-        [field]: value,
-      },
-    }));
+    setTempData((prev) => {
+      if (!prev) return null;
+      // Only handle known nested objects, e.g., userLocation
+      if (parent === "userLocation") {
+        return {
+          ...prev,
+          userLocation: {
+            homeAddress: prev.userLocation?.homeAddress ?? "",
+            currentAddress: prev.userLocation?.currentAddress ?? "",
+            [field]: value,
+          },
+        };
+      }
+      // fallback: return prev unchanged if parent is not handled
+      return prev;
+    });
   };
 
   const handleAddSkill = () => {
     if (newSkill.trim() && !tempData?.userSkills?.includes(newSkill.trim())) {
-      setTempData((prev) => ({
-        ...prev,
-        userSkills: [...(prev.userSkills || []), newSkill.trim()],
-      }));
+      setTempData((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          userSkills: [...(prev.userSkills || []), newSkill.trim()],
+        };
+      });
       setNewSkill("");
     }
   };
 
   const handleRemoveSkill = (skillToRemove: string) => {
-    setTempData((prev) => ({
-      ...prev,
-      userSkills:
-        prev.userSkills?.filter((skill) => skill !== skillToRemove) || [],
-    }));
+    setTempData((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        userSkills: prev.userSkills?.filter((skill) => skill !== skillToRemove) || [],
+      };
+    });
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
