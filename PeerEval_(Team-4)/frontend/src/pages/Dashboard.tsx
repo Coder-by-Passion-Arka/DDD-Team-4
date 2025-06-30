@@ -98,6 +98,7 @@ import BadgesSection from "../components/BadgesSection";
 import DailyGoals from "../components/DailyGoals";
 import { useAuth } from "../contexts/AuthContext";
 import { apiService } from "../services/api";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 interface DashboardStats {
   submitted: number;
@@ -186,16 +187,7 @@ const Dashboard: React.FC = () => {
   }, [state.user]);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-indigo-600" />
-          <p className="text-gray-600 dark:text-gray-400">
-            Loading dashboard...
-          </p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner fullScreen size="lg" />;
   }
 
   if (error) {

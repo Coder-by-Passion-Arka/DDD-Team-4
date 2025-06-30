@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Bot, Send, X, Minimize2, Maximize2 } from 'lucide-react';
 import axios from 'axios';
+import LoadingSpinner from './LoadingSpinner';
 
 interface Message {
   id: string;
@@ -134,6 +135,11 @@ const FloatingChatbot: React.FC = () => {
 
   return (
     <>
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl z-10">
+          <LoadingSpinner size="sm" />
+        </div>
+      )}
       {isOpen && (
         <div className={`fixed bottom-16 sm:bottom-20 right-2 sm:right-6 w-72 sm:w-80 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 z-50 transition-all duration-300 ${isMinimized ? 'h-16' : 'h-80 sm:h-96'}`}>
           <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-t-2xl">
