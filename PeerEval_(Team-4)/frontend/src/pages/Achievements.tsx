@@ -1,3 +1,4 @@
+// codebase
 // import React from 'react';
 // import { motion } from 'framer-motion';
 // import { ScrollText, Medal, Globe } from "lucide-react"; 

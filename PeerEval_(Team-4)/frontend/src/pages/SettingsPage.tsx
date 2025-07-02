@@ -1,3 +1,4 @@
+// codebase
 // import React, { useState } from 'react';
 // import {
 //   Settings,
@@ -357,6 +358,7 @@
 //               <ToggleSwitch
 //                 enabled={settings.twoFactorEnabled}
 //                 onChange={(value) => handleSettingChange('twoFactorEnabled', value)}
+//                 disabled={true} // Disabled until backend implementation
 //               />
 //             </div>
 

@@ -73,14 +73,14 @@ const options = {
       position: "top" as const,
       labels: {
         color: "#2563eb",
-        font: { size: 16, weight: "bold" },
+        font: { size: 16, weight: "bold" as const },
       },
     },
     title: {
       display: true,
       text: "Monthly Reviews and Evaluations",
       color: colorSchema.white,
-      font: { size: 22, weight: "bold" },
+      font: { size: 22, weight: "bold" as const },
     },
     tooltip: {
       mode: "index" as const,
