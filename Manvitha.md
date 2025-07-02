@@ -53,3 +53,6 @@
 
 ### ✅ 23-06-2025
 - Working on changes in backend
+
+### ✅ 02-07-2025
+- Working on Loading Spinner
