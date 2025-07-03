@@ -28,7 +28,23 @@ This repository documents the daily progress made during the MERN Stack internsh
 
 ---
 
-## 📅 28-06-2025
+## 📅 03-07-2025
+
+Explored Overleaf documentation to understand LaTeX environment setup, document structure, and essential formatting commands. Reviewed templates for academic and technical writing.
+
+---
+
+## 📅 02-07-2025
+Worked on the teacher dashboard UI. Explored Overleaf documentation to understand LaTeX environment setup, document structure, and essential formatting commands. Reviewed templates for academic and technical writing.
+
+---
+
+## 📅 01-07-2025
+Worked on the teacher dashboard UI. Explored Overleaf documentation to understand LaTeX environment setup, document structure, and essential formatting commands. Reviewed templates for academic and technical writing.
+
+---
+
+## 📅 30-06-2025
 Reviewed and checked the backend files for consistency, errors, and overall structure.
 
 ---
