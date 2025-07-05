@@ -54,9 +54,40 @@
 ### ✅ 23-06-2025
 - Working on changes in backend
 
+## ✅ 24-06-2025
+- Completed the new responsive nav panel
+- Made it more user-friendly and bug free
+  
+### ✅ 25-06-2025
+- Changed nav panel in mobile view
+- CLeared the bug of streak icon
+- Made rock paper scissor game responsive to mobile view.
+  
+### ✅ 26-06-2025
+- Added d-pad to games like maze escape.
+- Made tic tac toe and maze escape more responsive and did them more user friendly.
+
+### ✅ 27-06-2025
+- Enhaced the performance of snake game. I have added d-pad to it.
+- Made game more responsive in design.
+- Added full screen option for better playing experience of user.
+  
+### ✅ 28-06-2025
+- Looked into backend.
+- Did changes to profile page.
+
+### ✅ 30-06-2025
+- Working on adding spinner and testing it in created dashboard.
+  
+### ✅ 01-07-2025
+- Added loading spinner.
+
 ### ✅ 02-07-2025
 - Working on Loading Spinner
 
+### ✅ 03-07-2025, 04-07-2025
+- I am sorry say that I have been struck in a hilly area and could not able to any work. It was a family trip and suddenly the vehicle went down and due to heavy rain we got struck in that place. There are no signals in that place. I am sorry for the loss that I caused without working these 2 days.
+  
 ### ✅ 05-07-2025
 - We have did changes and send them to each other through zip files. After the final change our team leader will commit it to the git. We did this to avoid merge conflicts which are creating chaos in the project.
 - The Changes were created a option for teacher to create assignments.

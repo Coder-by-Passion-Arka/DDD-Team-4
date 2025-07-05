@@ -78,7 +78,7 @@ const FloatingChatbot: React.FC = () => {
         },
         {
           headers: {
-            Authorization: `Bearer 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`,
+            Authorization: `Bearer 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`,
             'Content-Type': 'application/json',
             'HTTP-Referer': window.location.origin,
             'X-Title': 'Peer Evaluation Assistant',
