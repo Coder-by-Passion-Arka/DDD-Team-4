@@ -56,3 +56,7 @@
 
 ### ✅ 02-07-2025
 - Working on Loading Spinner
+
+### ✅ 05-07-2025
+- We have did changes and send them to each other through zip files. After the final change our team leader will commit it to the git. We did this to avoid merge conflicts which are creating chaos in the project.
+- The Changes were created a option for teacher to create assignments.
