@@ -28,8 +28,22 @@ This repository documents the daily progress made during the MERN Stack internsh
 
 ---
 
-## 📅 03-07-2025
+## 📅 07-07-2025
+Worked on API testing for various backend endpoints to ensure correct functionality, data validation, and error handling. Verified authentication, data retrieval, and response structure across different scenarios.
 
+---
+
+## 📅 05-07-2025
+Worked on the project report, including drafting, formatting, and updating relevant sections.
+
+---
+
+## 📅 04-07-2025
+Worked on the project report, including updating the structure, refining the content, and ensuring consistency across all sections.
+
+---
+
+## 📅 03-07-2025
 Explored Overleaf documentation to understand LaTeX environment setup, document structure, and essential formatting commands. Reviewed templates for academic and technical writing.
 
 ---
