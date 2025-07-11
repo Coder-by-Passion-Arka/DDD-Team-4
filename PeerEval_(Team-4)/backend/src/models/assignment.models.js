@@ -203,9 +203,10 @@ const assignmentSchema = new mongoose.Schema(
       required: [true, "Assignment description is required"],
       trim: true,
     },
-    subject: {
-      type: String,
-      required: [true, "Subject is required"],
+    course: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Course",
+      required: [true, "Course is required"],
       trim: true,
     },
     assignedBy: {

@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
     userPassword: {
       type: String,
       required: [true, "Password is required"],
-      minlength: [6, "Password must be at least 6 characters"],
+      minlength: [8, "Password must be at least 8 characters long"],
     },
     userPhoneNumber: {
       type: String,
@@ -65,6 +65,11 @@ const userSchema = new mongoose.Schema(
     userCoverImage: {
       type: String,
       default: "",
+    },
+    authProvider: {
+      type: String,
+      enum: ["local", "google", "github"],
+      default: "local"
     },
     userAcademicInformation: {
       universityName: {
@@ -145,13 +150,13 @@ const userSchema = new mongoose.Schema(
 );
 
 // Index for better query performance
-userSchema.index({ userEmail: 1 });
+// userSchema.index({ userEmail: 1 });
 userSchema.index({ userName: 1 });
 
 // Hash password before saving
 userSchema.pre("save", async function (next) {
   // Only hash the password if it has been modified (or is new)
-  if (!this.isModified("userPassword")) return next();
+  if (!this.isModified("userPassword") || this.authProvider !== "local") return next();
 
   try {
     // Hash password with cost of 12
@@ -164,6 +169,11 @@ userSchema.pre("save", async function (next) {
 
 // Compare password method
 userSchema.methods.isPasswordCorrect = async function (password) {
+  // For social login users, always return false for direct password comparison
+  if (this.authProvider !== "local") {
+    return false;
+  }
+  
   try {
     return await bcrypt.compare(password, this.userPassword);
   } catch (error) {
@@ -180,9 +190,9 @@ userSchema.methods.generateAccessToken = function () {
       userName: this.userName,
       userRole: this.userRole,
     },
-    process.env.ACCESS_TOKEN_SECRET,
+    process.env.accessToken_SECRET,
     {
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "1h",
+      expiresIn: process.env.accessToken_EXPIRY || "1h",
     }
   );
 };
@@ -193,9 +203,9 @@ userSchema.methods.generateRefreshToken = function () {
     {
       _id: this._id,
     },
-    process.env.REFRESH_TOKEN_SECRET,
+    process.env.refreshToken_SECRET,
     {
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRY || "7d",
+      expiresIn: process.env.refreshToken_EXPIRY || "7d",
     }
   );
 };

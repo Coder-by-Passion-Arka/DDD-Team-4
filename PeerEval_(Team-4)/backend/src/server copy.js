@@ -7,26 +7,15 @@ import logger from "./logger.js";
 import { fileURLToPath } from "url";
 import path from "path";
 
-// Import routes
-import healthCheckRouter from "./routes/healthCheck.routes.js";
-import userRouter from "./routes/user.routes.js";
-import errorHandler from "./middlewares/errorHandling.middleware.js";
-import uploadRoutes from "./routes/upload.routes.js";
-import adminRouter from "./routes/admin.routes.js";
-import dashboardRouter from "./routes/dashboard.routes.js";
-import assignmentsRouter from "./routes/assignments.routes.js";
-import evaluationsRouter from "./routes/evaluations.routes.js";
-import submissionsRouter from "./routes/submissions.routes.js";
-
-// import authRoutes from "./routes/auth.routes.js";
-// import courseRoutes from "./routes/course.routes.js";
-// import assignmentRoutes from "./routes/assignment.routes.js";
-// import evaluationRoutes from "./routes/evaluation.routes.js";
+// // Import routes
+// import healthCheckRouter from "./routes/healthCheck.route.js";
+// import userRouter from "./routes/user.route.js";
+// import errorHandler from "./middlewares/errorHandling.middleware.js";
+// import goalsRouter from "./routes/goals.route.js";
 
 dotenv.config({
   path: "src/.env",
 });
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -37,12 +26,13 @@ const morganFormat =
   ":method :url :status :res[content-length] - :response-time ms";
 
 // Enable CORS for cross-origin requests
+// CORS configuration
 const corsOptions = {
   origin: [
     // Allowed origins
     "http://localhost:3000", // Listen to port 3000 for frontend
     "http://localhost:5173",  // Listen to port 5173 for frontend
-    // Removed "*" for credentials:true
+    "*", // Allow all origins (for testing purposes, remove in production)
   ],
   credentials: true,
   methods: [
@@ -69,10 +59,15 @@ server.use(
 );
 
 // Middleware to parse JSON data
-server.use(express.json({ limit: "1mb" }));
+server.use(express.json({ 
+  limit: "1mb" 
+}));
 
 // Parse URL-encoded data
-server.use(express.urlencoded({ extended: true, limit: "1mb" }));
+server.use(express.urlencoded({ 
+  extended: true, 
+  limit: "1mb" 
+}));
 
 // Serve static files from public folder
 server.use(express.static(
@@ -82,7 +77,10 @@ server.use(express.static(
 // Cookie parser middleware
 server.use(cookieParser());
 
-// Morgan logging middleware
+// Serve static files
+server.use(express.static("../public"));
+
+// Morgan logging middleware setup (for development)
 server.use(
   morgan(morganFormat, {
     stream: {
@@ -99,23 +97,19 @@ server.use(
   })
 );
 
+// Import routes all the routes for cleaner code
+import apiRoutes from "./routes/allRoutes.routes.js";
+import { errorHandler, notFound } from "./middlewares/auth.middleware.js";
 
-// Routes
-server.use("/api/healthCheck", healthCheckRouter);
-server.use("/api/user", userRouter);
-server.use("/api/dashboard", dashboardRouter);
-server.use("/api/assignments", assignmentsRouter);
-server.use("/api/evaluations", evaluationsRouter);
-server.use("/api/submissions", submissionsRouter);
-server.use("/api/upload", uploadRoutes);
-
-// Admin routes
-server.use("/api/admin", adminRouter);
+// API routes
+server.use("/api/v1", apiRoutes);
 
 // Error handling middleware (should be last)
+server.use(notFound);
 server.use(errorHandler);
 
 export default server;
+
 
 // ================================ //
 
