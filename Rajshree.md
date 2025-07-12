@@ -1,4 +1,13 @@
 # MERN Stack Internship – Daily Work Log
+---
+
+### 📅 12-07-2025
+Successfully fixed and finalized the LaTeX report. Addressed formatting issues, corrected alignment problems, and ensured consistency in headings, spacing, and references throughout the document.
+
+---
+
+### 📅 11-07-2025
+Worked on integrating and visualizing data using Chart.js. Designed and implemented the analytics UI section that includes various charts based on user registration details. Structured the dashboard to display metrics such as total users, daily registrations, and user distribution.
 
 ---
 
