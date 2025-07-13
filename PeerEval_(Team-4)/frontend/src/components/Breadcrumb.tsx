@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Trophy, Flame, Menu, X, Gamepad2 } from "lucide-react";
 import Sidebar from './Sidebar';
 import ThemeToggle from './ThemeToggle';
@@ -19,6 +19,7 @@ const Breadcrumb: React.FC = () => {
   const leaderboardTooltipTimeout = useRef<NodeJS.Timeout | null>(null);
   const streakTooltipTimeout = useRef<NodeJS.Timeout | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   
   // Current user's streak - this could come from props or context in a real app
   const currentStreak = 12;
@@ -88,24 +89,24 @@ const Breadcrumb: React.FC = () => {
       />
 
       {/* Mobile Sticky Top Panel */}
-      <div className="fixed top-0 left-0 right-0 z-50 lg:hidden">
+      <div className="fixed top-0 left-0 right-0 z-50 lg:hidden animate-slideInDown">
         <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 shadow-lg">
           <div className="flex items-center justify-between px-4 py-3">
             {/* Left side - Menu button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 hover-scale"
             >
               {mobileMenuOpen ? (
-                <X className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                <X className="w-5 h-5 text-gray-600 dark:text-gray-400 transition-transform duration-200" />
               ) : (
-                <Menu className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                <Menu className="w-5 h-5 text-gray-600 dark:text-gray-400 transition-transform duration-200" />
               )}
             </button>
 
             {/* Center - App Logo/Title */}
-            <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+            <div className="flex items-center space-x-2 animate-scaleIn">
+              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center animate-pulse-custom">
                 <Trophy className="w-3 h-3 text-white" />
               </div>
               <span className="font-bold text-gray-900 dark:text-white text-sm">
@@ -118,13 +119,13 @@ const Breadcrumb: React.FC = () => {
               {/* Streak Counter */}
               <button
                 onClick={handleStreakClick}
-                className="relative p-3 w-12 h-12 flex items-center justify-center rounded-xl bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-all duration-200 group"
+                className="relative p-3 w-12 h-12 flex items-center justify-center rounded-xl bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-all duration-200 group hover-scale"
                 aria-label="View streak details"
                 type="button"
               >
-                <Flame className="w-6 h-6 text-orange-500 group-hover:text-orange-600 transition-colors duration-200" />
+                <Flame className="w-6 h-6 text-orange-500 group-hover:text-orange-600 transition-colors duration-200 animate-pulse-custom" />
                 {/* Streak tooltip below icon */}
-                <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap transition-opacity duration-200 ${showStreakTooltip ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap transition-all duration-200 ${showStreakTooltip ? 'opacity-100 translate-y-0' : 'opacity-0 pointer-events-none translate-y-1'}`}>
                   {currentStreak} day streak - Click to view
                 </div>
               </button>
@@ -132,13 +133,13 @@ const Breadcrumb: React.FC = () => {
               {/* Games Button */}
               <button
                 onClick={handleGamesClick}
-                className="relative p-3 w-12 h-12 flex items-center justify-center rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
+                className="relative p-3 w-12 h-12 flex items-center justify-center rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group hover-lift"
                 aria-label="Open games"
                 type="button"
               >
-                <Gamepad2 className="w-6 h-6 text-purple-500 group-hover:text-purple-600 transition-colors duration-200" />
+                <Gamepad2 className="w-6 h-6 text-purple-500 group-hover:text-purple-600 transition-all duration-200 group-hover:scale-110" />
                 {/* Games tooltip below icon */}
-                <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap transition-opacity duration-200 ${showGamesTooltip ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap transition-all duration-200 ${showGamesTooltip ? 'opacity-100 translate-y-0' : 'opacity-0 pointer-events-none translate-y-1'}`}>
                   Play games
                 </div>
               </button>
@@ -146,21 +147,20 @@ const Breadcrumb: React.FC = () => {
               {/* Leaderboard Button */}
               <button
                 onClick={handleLeaderboardClick}
-                className="relative p-3 w-12 h-12 flex items-center justify-center rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
+                className="relative p-3 w-12 h-12 flex items-center justify-center rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group hover-lift"
                 aria-label="View leaderboard"
                 type="button"
               >
-                <Trophy className="w-6 h-6 text-amber-500 group-hover:text-amber-600 transition-colors duration-200" />
+                <Trophy className="w-6 h-6 text-amber-500 group-hover:text-amber-600 transition-all duration-200 group-hover:scale-110" />
                 {/* Notification Badge */}
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center animate-bounce-custom">
                   <span className="text-[10px] font-bold text-white leading-none">!</span>
                 </div>
                 {/* Leaderboard tooltip below icon */}
-                <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap transition-opacity duration-200 ${showLeaderboardTooltip ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap transition-all duration-200 ${showLeaderboardTooltip ? 'opacity-100 translate-y-0' : 'opacity-0 pointer-events-none translate-y-1'}`}>
                   Leaderboard
                 </div>
               </button>
-
 
               {/* Theme Toggle */}
               <div className="scale-90">
@@ -172,22 +172,22 @@ const Breadcrumb: React.FC = () => {
       </div>
 
       {/* Desktop Top Controls (hidden on mobile) */}
-      <div className="absolute top-4 right-4 z-10 hidden lg:flex items-center space-x-3">
+      <div className="absolute top-4 right-4 z-10 hidden lg:flex items-center space-x-3 animate-fadeInRight">
         {/* Streak Counter - Now Clickable */}
         <button
           onClick={handleStreakClick}
-          className="relative p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group cursor-pointer"
+          className="relative p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group cursor-pointer hover-lift"
           aria-label="View streak details"
         >
           <div className="flex items-center space-x-2">
-            <Flame className="w-6 h-6 text-orange-500 group-hover:text-orange-600 group-hover:scale-110 transition-all duration-200" />
+            <Flame className="w-6 h-6 text-orange-500 group-hover:text-orange-600 group-hover:scale-110 transition-all duration-200 animate-pulse-custom" />
             <span className="text-lg font-bold text-gray-900 dark:text-white">
               {currentStreak}
             </span>
           </div>
 
           {/* Streak tooltip */}
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-all duration-200 whitespace-nowrap translate-y-1 group-hover:translate-y-0">
             {currentStreak} day streak - Click to view details
           </div>
         </button>
@@ -195,13 +195,13 @@ const Breadcrumb: React.FC = () => {
         {/* Games Button */}
         <button
           onClick={handleGamesClick}
-          className="relative p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
+          className="relative p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group hover-lift"
           aria-label="Open games"
         >
-          <Gamepad2 className="w-6 h-6 text-purple-500 group-hover:text-purple-600 transition-colors duration-200" />
+          <Gamepad2 className="w-6 h-6 text-purple-500 group-hover:text-purple-600 transition-all duration-200 group-hover:scale-110" />
 
           {/* Games tooltip */}
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-all duration-200 whitespace-nowrap translate-y-1 group-hover:translate-y-0">
             Play games
           </div>
         </button>
@@ -209,18 +209,18 @@ const Breadcrumb: React.FC = () => {
         {/* Leaderboard Button */}
         <button
           onClick={handleLeaderboardClick}
-          className="relative p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
+          className="relative p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group hover-lift"
           aria-label="View leaderboard"
         >
-          <Trophy className="w-6 h-6 text-amber-500 group-hover:text-amber-600 transition-colors duration-200" />
+          <Trophy className="w-6 h-6 text-amber-500 group-hover:text-amber-600 transition-all duration-200 group-hover:scale-110" />
 
           {/* Notification Badge */}
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+          <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center animate-bounce-custom">
             <span className="text-xs font-bold text-white">!</span>
           </div>
 
           {/* Leaderboard tooltip */}
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-all duration-200 whitespace-nowrap translate-y-1 group-hover:translate-y-0">
             View leaderboard
           </div>
         </button>
@@ -228,7 +228,7 @@ const Breadcrumb: React.FC = () => {
         {/* Theme Toggle with tooltip */}
         <div className="relative group">
           <ThemeToggle />
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-all duration-200 whitespace-nowrap translate-y-1 group-hover:translate-y-0">
             Toggle theme
           </div>
         </div>
@@ -237,7 +237,7 @@ const Breadcrumb: React.FC = () => {
       {/* Mobile Overlay */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-20 lg:hidden"
+          className="fixed inset-0 bg-black/50 z-20 lg:hidden animate-fadeInUp"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
@@ -249,7 +249,10 @@ const Breadcrumb: React.FC = () => {
       >
         <main className="p-4 sm:p-6 lg:p-8 pt-24 sm:pt-24 lg:pt-20">
           <div className="max-w-7xl mx-auto">
-            <Outlet />
+            {/* Page transition wrapper */}
+            <div key={location.pathname} className="animate-fadeInUp">
+              <Outlet />
+            </div>
           </div>
         </main>
       </div>

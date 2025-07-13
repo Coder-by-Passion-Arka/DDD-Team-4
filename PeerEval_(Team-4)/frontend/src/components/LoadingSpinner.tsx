@@ -16,15 +16,15 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   };
 
   const spinner = (
-    <div className={`${sizeClasses[size]} border-gray-200 dark:border-gray-800 border-t-indigo-600 dark:border-t-indigo-400 rounded-full animate-spin`} />
+    <div className={`${sizeClasses[size]} border-gray-200 dark:border-gray-800 border-t-indigo-600 dark:border-t-indigo-400 rounded-full animate-spin dashboard-loading`} />
   );
 
   if (fullScreen) {
     return (
-      <div className="fixed inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm flex items-center justify-center z-50">
-        <div className="text-center">
+      <div className="fixed inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeInUp dashboard-enter">
+        <div className="text-center animate-scaleIn dashboard-card-enter">
           {spinner}
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Loading...</p>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 animate-gentle-pulse">Loading...</p>
         </div>
       </div>
     );

@@ -4,7 +4,7 @@ import { DivideIcon as LucideIcon, TrendingUp, TrendingDown } from 'lucide-react
 interface StatsCardProps {
   title: string;
   value: number;
-  icon: LucideIcon;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   color: 'emerald' | 'amber' | 'blue' | 'purple' | 'red' | 'indigo';
   trend?: string;
 }
@@ -53,17 +53,17 @@ const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon: Icon, color, 
   const classes = colorClasses[color];
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group dashboard-card-hover">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">{title}</p>
-          <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">{value.toLocaleString()}</p>
+          <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 mb-1 animate-fadeInUp">{title}</p>
+          <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2 animate-fadeInUp animate-stagger-1">{value.toLocaleString()}</p>
           {trend && (
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-1 animate-fadeInUp animate-stagger-2">
               {isPositive ? (
-                <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-500" />
+                <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-500 animate-bounce-custom" />
               ) : (
-                <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4 text-red-500" />
+                <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4 text-red-500 animate-bounce-custom" />
               )}
               <span className={`text-xs sm:text-sm font-medium ${isPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                 {trend} from last week
@@ -71,8 +71,8 @@ const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon: Icon, color, 
             </div>
           )}
         </div>
-        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${classes.bg} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-          <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${classes.icon}`} />
+        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${classes.bg} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 animate-scaleIn`}>
+          <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${classes.icon} group-hover:animate-pulse-custom`} />
         </div>
       </div>
     </div>
