@@ -1,10 +1,11 @@
 // codebase
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import { Link, Navigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 import { AxiosError } from "axios";
+import { signInWithGoogle } from "../services/firebase";
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +15,17 @@ const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { login, state } = useAuth();
+  const { login, state, setUser } = useAuth();
+
+  // ✅ Restore user from localStorage token on mount
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      if (state.user && state.user._id) {
+        setUser({ ...state.user, accessToken: token }); // optionally fetch full profile here
+      }
+    }
+  }, []);
 
   // Redirect if already authenticated
   if (state.isAuthenticated) {
@@ -46,6 +57,46 @@ const Login: React.FC = () => {
       } else {
         setError("Login failed");
       }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    setError("");
+    try {
+      // Sign in with Firebase
+      const firebaseUser = await signInWithGoogle();
+      if (!firebaseUser) throw new Error("Google sign-in failed");
+
+      // Get Firebase ID token
+      const idToken = await firebaseUser.getIdToken();
+
+      // Send token to backend
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL || "http://localhost:8024/api"}/auth/firebase`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idToken }),
+          credentials: "include",
+        }
+      );
+      const result = await response.json();
+
+      // ✅ Store access token
+      localStorage.setItem("accessToken", result.accessToken);
+
+      // ✅ Set user in context (if using AuthContext)
+      setUser(result.user);
+
+      if (!response.ok) throw new Error(result.message || "Google login failed");
+
+      // Optionally: update auth context if needed
+      window.location.href = "/dashboard";
+    } catch (error: any) {
+      setError(error.message || "Google login failed");
     } finally {
       setIsLoading(false);
     }
@@ -102,6 +153,7 @@ const Login: React.FC = () => {
           <button
             type="button"
             disabled={isLoading}
+            onClick={handleGoogleLogin}
             className="flex items-center justify-center gap-2 w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 py-2 rounded-lg shadow-sm hover:shadow-md transition disabled:opacity-50"
           >
             <FcGoogle size={20} />

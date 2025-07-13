@@ -5,6 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { useAuth, RegisterData } from "../contexts/AuthContext";
 import { AxiosError } from "axios";
+import { signInWithGoogle } from "../services/firebase";
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState<RegisterData>({
@@ -22,7 +23,7 @@ const Register: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { register, state } = useAuth();
+  const { register, state, setUser } = useAuth();
 
   // Redirect if already authenticated
   if (state.isAuthenticated) {
@@ -59,6 +60,36 @@ const Register: React.FC = () => {
         ...prev,
         [name]: files[0],
       }));
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    setIsLoading(true);
+    setError("");
+    try {
+      const firebaseUser = await signInWithGoogle();
+      const idToken = await firebaseUser.getIdToken();
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL || "http://localhost:8024/api"}/auth/firebase`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idToken }),
+          credentials: "include",
+        }
+      );
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || "Google sign-up failed");
+
+      localStorage.setItem("accessToken", result.accessToken);
+      setUser(result.user);
+      window.location.href = "/dashboard";
+    } catch (err: any) {
+      setError(err.message || "Google sign-up failed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -253,10 +284,10 @@ const Register: React.FC = () => {
         <div className="flex flex-col gap-3 pt-2">
           <button
             type="button"
+            onClick={handleGoogleSignup}
             disabled={isLoading}
             className="flex items-center justify-center gap-2 w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 py-2 rounded-lg shadow-sm hover:shadow-md transition disabled:opacity-50"
           >
-            {/* TODO: Make functional */}
             <FcGoogle size={20} />
             <span className="text-gray-800 dark:text-gray-200">
               Sign up with Google

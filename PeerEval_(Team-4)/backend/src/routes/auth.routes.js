@@ -82,10 +82,11 @@ router.route("/refresh-token").post(refreshAccessToken);
 
 // Firebase Authentication
 router.route("/firebase").post(handleFirebaseAuth);
+router.route("/google").post(handleFirebaseAuth); // Add this for /google alias
 
-// Firebase Authentication
-router.route("/firebase").post(handleFirebaseAuth);
-
+router.route("/firebase").get((req, res) => {
+  res.json({ success: true, message: "Auth Firebase GET endpoint is working." });
+});
 
 // ============================= //
 

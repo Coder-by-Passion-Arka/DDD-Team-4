@@ -16,6 +16,7 @@ export const handleFirebaseAuth = asyncHandler(async (req, res) => {
   }
 
   try {
+    console.log("Received Firebase token:", idToken);
     // Verify the ID token
     const decodedToken = await verifyFirebaseToken(idToken);
     const { uid, email, name, picture } = decodedToken;
@@ -32,10 +33,10 @@ export const handleFirebaseAuth = asyncHandler(async (req, res) => {
       user = await User.create({
         userName: name || email.split('@')[0],
         userEmail: email,
-        userPassword: Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8), // Random secure password
+        userPassword: Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8),
         userPhoneNumber: "",
         countryCode: "",
-        userRole: "student", // Default role
+        userRole: "student",
         userLocation: {
           homeAddress: "",
           currentAddress: ""
@@ -76,7 +77,7 @@ export const handleFirebaseAuth = asyncHandler(async (req, res) => {
       )
     );
   } catch (error) {
-    console.error("Firebase auth error:", error);
+    console.error("Firebase auth error:", error.message, error.code);
     throw new ApiError(401, "Invalid or expired Firebase token");
   }
 });

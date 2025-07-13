@@ -388,6 +388,7 @@ interface User {
   userJoiningDate?: string;
   userLastLogin?: string;
   isActive?: boolean;
+  accessToken?: string;
 }
 
 interface AuthState {
@@ -491,6 +492,7 @@ interface AuthContextType {
   updateProfile: (userData: Partial<User>) => Promise<User>;
   refreshAccessToken: () => Promise<void>;
   getCurrentUser: () => Promise<User>;
+  setUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -688,6 +690,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     await refreshTokens();
   };
 
+  // Add setUser implementation
+  const setUser = (user: User) => {
+    dispatch({ type: "UPDATE_USER", payload: user });
+  };
+
   const value: AuthContextType = {
     state,
     login,
@@ -696,6 +703,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     updateProfile,
     refreshAccessToken,
     getCurrentUser,
+    setUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

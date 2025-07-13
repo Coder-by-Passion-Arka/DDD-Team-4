@@ -17,11 +17,7 @@ import dashboardRouter from "./routes/dashboard.routes.js";
 import assignmentsRouter from "./routes/assignments.routes.js";
 import evaluationsRouter from "./routes/evaluations.routes.js";
 import submissionsRouter from "./routes/submissions.routes.js";
-
-// import authRoutes from "./routes/auth.routes.js";
-// import courseRoutes from "./routes/course.routes.js";
-// import assignmentRoutes from "./routes/assignment.routes.js";
-// import evaluationRoutes from "./routes/evaluation.routes.js";
+import authRouter from "./routes/auth.routes.js";
 
 dotenv.config({
   path: "src/.env",
@@ -108,6 +104,7 @@ server.use("/api/assignments", assignmentsRouter);
 server.use("/api/evaluations", evaluationsRouter);
 server.use("/api/submissions", submissionsRouter);
 server.use("/api/upload", uploadRoutes);
+server.use("/api/auth", authRouter); // <-- Add this line
 
 // Admin routes
 server.use("/api/admin", adminRouter);

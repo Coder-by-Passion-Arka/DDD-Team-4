@@ -28,12 +28,12 @@ const userSchema = new mongoose.Schema(
     },
     userPhoneNumber: {
       type: String,
-      required: [true, "Phone number is required"],
+      default: "",
       trim: true,
     },
     countryCode: {
       type: String,
-      required: [true, "Country code is required"],
+      default: "",
       trim: true,
     },
     userRole: {
@@ -44,12 +44,12 @@ const userSchema = new mongoose.Schema(
     userLocation: {
       homeAddress: {
         type: String,
-        required: [true, "Home address is required"],
+        default: "",
         trim: true,
       },
       currentAddress: {
         type: String,
-        required: [true, "Current address is required"],
+        default: "",
         trim: true,
       },
     },
@@ -68,7 +68,7 @@ const userSchema = new mongoose.Schema(
     },
     authProvider: {
       type: String,
-      enum: ["local", "google", "github"],
+      enum: ["local", "google", "github", "firebase"],
       default: "local"
     },
     userAcademicInformation: {
