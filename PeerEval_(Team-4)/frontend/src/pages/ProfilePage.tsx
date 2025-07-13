@@ -1,4 +1,3 @@
-// codebase
 // import React, { useState } from 'react';
 // import {
 //   User,
@@ -155,7 +154,7 @@
 //               <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-1">
 //                 {profileData.name}
 //               </h2>
-//               <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400 mb-4">
+//               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4">
 //                 {profileData.major} • Class of {profileData.graduationYear}
 //               </p>
               

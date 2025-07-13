@@ -517,7 +517,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           dispatch({
             type: "AUTH_SUCCESS",
             payload: {
-              user: response.data,
+              user: response,
               accessToken,
               refreshToken,
             },
@@ -547,7 +547,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         refreshToken?: string;
       }>("/user/refresh-token");
 
-      const { accessToken, refreshToken } = response.data;
+      const { accessToken, refreshToken } = response;
 
       localStorage.setItem("accessToken", accessToken);
       if (refreshToken) {
@@ -561,7 +561,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Get updated user data
       const userResponse = await apiService.get<User>("/user/me");
-      dispatch({ type: "UPDATE_USER", payload: userResponse.data });
+      dispatch({ type: "UPDATE_USER", payload: userResponse });
     } catch (error) {
       dispatch({ type: "LOGOUT" });
       throw error;
@@ -575,13 +575,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({ type: "AUTH_START" });
 
     try {
-      const response = await apiService.post<{
+      const { user, accessToken, refreshToken } = await apiService.post<{
         user: User;
         accessToken: string;
         refreshToken: string;
       }>("/user/login", { userEmail, userPassword });
-
-      const { user, accessToken, refreshToken } = response.data;
 
       // Store tokens
       localStorage.setItem("accessToken", accessToken);
@@ -592,6 +590,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         payload: { user, accessToken, refreshToken },
       });
     } catch (error) {
+      console.error("Login error:", error); // <-- Add this line for debugging
       dispatch({ type: "AUTH_FAILURE" });
 
       if (error instanceof AxiosError) {
@@ -624,7 +623,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         formData.append("coverImage", userData.coverImage);
       }
 
-      const response = await apiService.uploadFile<User>(
+      await apiService.uploadFile<User>(
         "/user/register",
         formData
       );
@@ -659,8 +658,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         "/user/update-profile",
         userData
       );
-      dispatch({ type: "UPDATE_USER", payload: response.data });
-      return response.data;
+      dispatch({ type: "UPDATE_USER", payload: response });
+      return response;
     } catch (error) {
       if (error instanceof AxiosError) {
         const errorMessage =
@@ -674,8 +673,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const getCurrentUser = async (): Promise<User> => {
     try {
       const response = await apiService.get<User>("/user/me");
-      dispatch({ type: "UPDATE_USER", payload: response.data });
-      return response.data;
+      dispatch({ type: "UPDATE_USER", payload: response });
+      return response;
     } catch (error) {
       if (error instanceof AxiosError) {
         const errorMessage =

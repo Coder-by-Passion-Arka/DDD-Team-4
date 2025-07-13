@@ -49,7 +49,7 @@ const Login: React.FC = () => {
       await login(formData.userEmail, formData.userPassword);
       // Navigation will happen automatically via auth state change
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Login error (handleSubmit):", error); // More detailed logging
       if (error instanceof AxiosError) {
         setError(error.response?.data?.message || "Login failed");
       } else if (error instanceof Error) {

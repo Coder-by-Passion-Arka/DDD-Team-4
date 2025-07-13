@@ -18,7 +18,4 @@ connectDB()
   .catch((error) => {
     console.error(`Failed to connect to MongoDB: ${error.message}`);
     process.exit(1);
-  })
-  .finally(() => {
-    console.log("Error at `app.js` file, Diagnose the error and fix it");
   });

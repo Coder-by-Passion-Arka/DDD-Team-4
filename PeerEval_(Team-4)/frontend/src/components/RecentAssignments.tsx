@@ -1,12 +1,12 @@
 // import React from 'react';
-// import { 
-//   Calendar, 
-//   Clock, 
-//   CheckCircle, 
-//   AlertCircle, 
-//   Users, 
+// import {
+//   Calendar,
+//   Clock,
+//   CheckCircle,
+//   AlertCircle,
+//   Users,
 //   FileText,
-//   ArrowRight 
+//   ArrowRight
 // } from 'lucide-react';
 
 // interface Assignment {
@@ -97,9 +97,9 @@
 //   };
 
 //   const formatDate = (dateString: string) => {
-//     return new Date(dateString).toLocaleDateString('en-US', { 
-//       month: 'short', 
-//       day: 'numeric' 
+//     return new Date(dateString).toLocaleDateString('en-US', {
+//       month: 'short',
+//       day: 'numeric'
 //     });
 //   };
 
@@ -127,7 +127,7 @@
 //           const StatusIcon = statusConfig.icon;
 
 //           return (
-//             <div 
+//             <div
 //               key={assignment.id}
 //               className="p-3 sm:p-4 rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-md dark:hover:shadow-gray-900/30 transition-all duration-200 cursor-pointer group"
 //             >
@@ -142,7 +142,7 @@
 //                         {assignment.title}
 //                       </h4>
 //                       <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2">{assignment.course}</p>
-                      
+
 //                       <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-xs text-gray-500 dark:text-gray-400">
 //                         <div className="flex items-center space-x-1">
 //                           <Calendar className="w-3 h-3" />
@@ -156,7 +156,7 @@
 //                     </div>
 //                   </div>
 //                 </div>
-                
+
 //                 <div className={`px-2 py-1 rounded-full text-xs font-medium ${statusConfig.bg} ${statusConfig.color} border ${statusConfig.border} ml-2`}>
 //                   {statusConfig.label}
 //                 </div>
@@ -169,7 +169,7 @@
 //                     <span>{assignment.submissionsReceived} of {assignment.peersCount} evaluations</span>
 //                   </div>
 //                   <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5">
-//                     <div 
+//                     <div
 //                       className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full transition-all duration-500"
 //                       style={{ width: `${(assignment.submissionsReceived / assignment.peersCount) * 100}%` }}
 //                     />
@@ -186,11 +186,13 @@
 
 // export default RecentAssignments;
 
-// ======================================== //
+// ============================================================================//
 
 import React, { useState, useEffect } from "react";
 import { Calendar, User, Clock, ArrowRight, Loader2 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import AssignmentPage from "../pages/Assignments";
 import { apiService } from "../services/api";
 
 interface RecentAssignment {
@@ -224,7 +226,7 @@ const RecentAssignments: React.FC = () => {
         const mockAssignments: RecentAssignment[] = [];
 
         // Simulate API call delay
-        await new Promise((resolve) => setTimeout(resolve, 300));
+        // await new Promise((resolve) => setTimeout(resolve, 300));
 
         // TODO: Replace with actual API call when backend endpoint is ready
         /*
@@ -305,14 +307,14 @@ const RecentAssignments: React.FC = () => {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700 dashboard-card-hover">
-      <div className="flex items-center justify-between mb-4 sm:mb-6 animate-fadeInUp">
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white animate-fadeInLeft">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 shadow-lg dark:shadow-gray-900/30 border border-gray-100 dark:border-gray-700">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
           Recent Assignments
         </h2>
         <button
           onClick={() => (window.location.href = "/assignments")}
-          className="flex items-center space-x-1 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 text-sm font-medium transition-colors dashboard-button-hover"
+          className="flex items-center space-x-1 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 text-sm font-medium transition-colors"
         >
           <span>View All</span>
           <ArrowRight className="w-4 h-4" />
@@ -320,50 +322,54 @@ const RecentAssignments: React.FC = () => {
       </div>
 
       {error && (
-        <div className="mb-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 animate-fadeInUp">
+        <div className="mb-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
           <p className="text-red-800 dark:text-red-200 text-sm">{error}</p>
         </div>
       )}
 
       <div className="space-y-3 sm:space-y-4">
         {assignments.length === 0 ? (
-          <div className="text-center py-8 animate-fadeInUp">
-            <div className="w-16 h-16 mx-auto bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4 animate-scaleIn dashboard-enter">
-              <Calendar className="w-8 h-8 text-gray-400 dark:text-gray-500 animate-gentle-pulse" />
+          <div className="text-center py-8">
+            <div className="w-16 h-16 mx-auto bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
+              <Calendar className="w-8 h-8 text-gray-400 dark:text-gray-500" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 animate-fadeInUp animate-stagger-1">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
               No Recent Assignments
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 animate-fadeInUp animate-stagger-2">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
               You don't have any recent assignments. Check back later or contact
               your instructor.
             </p>
             <button
-              onClick={() => (window.location.href = "/assignments")}
-              className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm dashboard-button-hover animate-fadeInUp animate-stagger-3"
+              // onClick={() => (window.location.href = "/assignments")}
+              onClick={() => {
+                <Router>
+                  <Route path="/assignments" element={<AssignmentPage />} />
+                </Router>;
+              }}
+              className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm"
             >
               <Calendar className="w-4 h-4 mr-2" />
               Go to Assignments
             </button>
           </div>
         ) : (
-          assignments.map((assignment, index) => (
+          assignments.map((assignment) => (
             <div
               key={assignment.id}
               className={`p-4 border-l-4 rounded-lg border border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer ${getPriorityColor(
                 assignment.priority
-              )} animate-fadeInUp dashboard-card-hover`}
-              style={{ animationDelay: `${index * 100}ms` }}
+              )}`}
               onClick={() => (window.location.href = "/assignments")}
             >
               <div className="flex items-start justify-between space-x-4">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center space-x-2 mb-2 animate-fadeInLeft">
+                  <div className="flex items-center space-x-2 mb-2">
                     <h3 className="text-sm sm:text-base font-medium text-gray-900 dark:text-white truncate">
                       {assignment.title}
                     </h3>
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium animate-scaleIn ${getStatusColor(
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
                         assignment.status
                       )}`}
                     >
@@ -372,17 +378,17 @@ const RecentAssignments: React.FC = () => {
                     </span>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-2 animate-fadeInLeft animate-stagger-1">
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-2">
                     {assignment.subject}
                   </p>
 
                   {assignment.description && (
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-2 line-clamp-2 animate-fadeInLeft animate-stagger-2">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-2 line-clamp-2">
                       {assignment.description}
                     </p>
                   )}
 
-                  <div className="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400 animate-fadeInLeft animate-stagger-3">
+                  <div className="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400">
                     <div className="flex items-center space-x-1">
                       <User className="w-3 h-3" />
                       <span>{assignment.assignedBy}</span>
@@ -402,13 +408,13 @@ const RecentAssignments: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex-shrink-0 animate-fadeInRight">
+                <div className="flex-shrink-0">
                   <div className="text-right">
                     <div className="text-xs text-gray-500 dark:text-gray-400">
                       {new Date(assignment.dueDate).toLocaleDateString()}
                     </div>
                     {assignment.priority === "high" && (
-                      <div className="text-xs text-red-600 dark:text-red-400 font-medium mt-1 animate-bounce-custom">
+                      <div className="text-xs text-red-600 dark:text-red-400 font-medium mt-1">
                         High Priority
                       </div>
                     )}
@@ -422,9 +428,9 @@ const RecentAssignments: React.FC = () => {
 
       {/* Quick stats for assignments */}
       {assignments.length > 0 && (
-        <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700 animate-fadeInUp">
+        <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="text-center dashboard-card-hover animate-fadeInUp dashboard-stagger-1">
+            <div className="text-center">
               <div className="text-lg font-semibold text-gray-900 dark:text-white">
                 {assignments.filter((a) => a.status === "pending").length}
               </div>
@@ -432,7 +438,7 @@ const RecentAssignments: React.FC = () => {
                 Pending
               </div>
             </div>
-            <div className="text-center dashboard-card-hover animate-fadeInUp dashboard-stagger-2">
+            <div className="text-center">
               <div className="text-lg font-semibold text-gray-900 dark:text-white">
                 {assignments.filter((a) => a.status === "submitted").length}
               </div>
@@ -440,7 +446,7 @@ const RecentAssignments: React.FC = () => {
                 Submitted
               </div>
             </div>
-            <div className="text-center dashboard-card-hover animate-fadeInUp dashboard-stagger-3">
+            <div className="text-center">
               <div className="text-lg font-semibold text-gray-900 dark:text-white">
                 {assignments.filter((a) => a.status === "evaluated").length}
               </div>
@@ -448,7 +454,7 @@ const RecentAssignments: React.FC = () => {
                 Evaluated
               </div>
             </div>
-            <div className="text-center dashboard-card-hover animate-fadeInUp dashboard-stagger-4">
+            <div className="text-center">
               <div className="text-lg font-semibold text-gray-900 dark:text-white">
                 {assignments.filter((a) => a.status === "overdue").length}
               </div>
@@ -460,28 +466,28 @@ const RecentAssignments: React.FC = () => {
         </div>
       )}
 
-      {/* User guidance sections with animations */}
+      {/* User guidance for new users */}
       {assignments.length === 0 && state.user?.userRole === "student" && (
-        <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg animate-fadeInUp dashboard-card-hover">
-          <h4 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2 animate-fadeInLeft">
+        <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <h4 className="md:text-xl font-medium text-blue-900 dark:text-blue-100 mb-2">
             Getting Started with Assignments
           </h4>
-          <ul className="text-xs text-blue-800 dark:text-blue-200 space-y-1">
-            <li className="animate-fadeInLeft animate-stagger-1">• Your instructors will assign tasks that appear here</li>
-            <li className="animate-fadeInLeft animate-stagger-2">
+          <ul className="md:text-md text-blue-800 dark:text-blue-200 space-y-1 ">
+            <li>• Your instructors will assign tasks that appear here</li>
+            <li>
               • Complete assignments to earn points and improve your skills
             </li>
-            <li className="animate-fadeInLeft animate-stagger-3">• Participate in peer evaluations to help others and learn</li>
+            <li>• Participate in peer evaluations to help others and learn</li>
           </ul>
         </div>
       )}
 
       {state.user?.userRole === "teacher" && assignments.length === 0 && (
-        <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg animate-fadeInUp dashboard-card-hover">
-          <h4 className="text-sm font-medium text-green-900 dark:text-green-100 mb-2 animate-fadeInLeft">
+        <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+          <h4 className="text-sm font-medium text-green-900 dark:text-green-100 mb-2">
             Teacher Dashboard
           </h4>
-          <p className="text-xs text-green-800 dark:text-green-200 animate-fadeInLeft animate-stagger-1">
+          <p className="text-xs text-green-800 dark:text-green-200">
             Create and manage assignments for your students. Use the assignment
             creation tools to get started.
           </p>

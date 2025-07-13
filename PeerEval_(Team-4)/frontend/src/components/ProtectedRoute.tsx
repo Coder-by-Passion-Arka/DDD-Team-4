@@ -1,7 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import LoadingSpinner from "./LoadingSpinner";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -19,8 +18,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   // Show loading spinner while checking auth
   if (state.isLoading) {
     return (
-      <div className="flex justify-center items-center h-full py-16">
-        <LoadingSpinner size="lg" />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
       </div>
     );
   }
@@ -57,11 +59,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
                 Access Denied
               </h3>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                You need administrator privileges to access this page.
+                You need Administrator privileges to access this page.
               </p>
               <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
                 Current role:{" "}
-                <span className="font-medium capitalize">
+                <span className="font-medium capitalize text-emerald-700 dark:text-emerald-400">
                   {state.user?.userRole}
                 </span>
               </p>
