@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../hooks/useToast';
 import { apiService } from '../services/api';
+import type { User } from '../contexts/AuthContext';
 
 enum UserRole {
   TEACHER = "teacher",
@@ -65,7 +66,7 @@ const SocialProfileCompletion: React.FC<SocialProfileCompletionProps> = ({ onCom
 
       // Call API to complete social profile
       const response = await apiService.patch('/auth/social-profile/complete', formData);
-      if (response && setUser) setUser(response); // update context if needed
+      if (response && setUser) setUser(response as User); // update context if needed
       
       toast.success("Profile completed successfully!");
       onComplete();

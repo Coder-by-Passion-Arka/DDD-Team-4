@@ -397,6 +397,7 @@ interface AuthState {
   refreshToken: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  needsProfileCompletion: boolean;
 }
 
 type AuthAction =
@@ -435,6 +436,7 @@ const initialState: AuthState = {
   refreshToken: null,
   isLoading: true,
   isAuthenticated: false,
+  needsProfileCompletion: false,
 };
 
 // Reducer
