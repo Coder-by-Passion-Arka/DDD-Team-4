@@ -5,7 +5,7 @@
 //   Routes,
 //   Route,
 //   Navigate,
-// } from "react-router-dom";
+// } from "react-router-dom;
 
 // // ================================ Component Imports ============================ //
 // import ProtectedRoute from "./components/ProtectedRoute.tsx";
@@ -202,6 +202,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import GoToStudentProfile from "./pages/GoToStudentProfile";
 import Courses from "./pages/Courses";
+import StudentsPage from "./pages/StudentsPage";
 
 // Context Imports
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -330,6 +331,7 @@ const AppContent: React.FC = () => {
               <Route path="profile" element={<ProfilePage />} />
               <Route path="profile/:userId" element={<ProfilePage />} />
               <Route path="settings" element={<SettingsPage />} />
+              <Route path="students" element={<StudentsPage />} />
 
               {/* Admin-only routes */}
               <Route

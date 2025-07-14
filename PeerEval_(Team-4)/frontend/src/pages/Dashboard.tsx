@@ -537,7 +537,7 @@ const Dashboard: React.FC = () => {
           />
           <StatsCard
             title="System Health"
-            value={`${stats.systemHealth}%`}
+            value={stats.systemHealth}
             icon={BarChart}
             color="amber"
             trend="+2%"

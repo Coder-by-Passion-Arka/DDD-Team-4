@@ -15,7 +15,7 @@ interface SocialProfileCompletionProps {
 }
 
 const SocialProfileCompletion: React.FC<SocialProfileCompletionProps> = ({ onComplete, onCancel }) => {
-  const { state, updateProfile } = useAuth();
+  const { state, updateProfile, setUser } = useAuth();
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(false);
   
@@ -64,7 +64,8 @@ const SocialProfileCompletion: React.FC<SocialProfileCompletionProps> = ({ onCom
       }
 
       // Call API to complete social profile
-      await apiService.patch('/auth/social-profile/complete', formData);
+      const response = await apiService.patch('/auth/social-profile/complete', formData);
+      if (response && setUser) setUser(response); // update context if needed
       
       toast.success("Profile completed successfully!");
       onComplete();
