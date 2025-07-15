@@ -96,3 +96,30 @@
 - Implemented google and github authentication
 - Included cloudinary for data storage
 - Cleared bugs in files
+
+###  ✅ 08-07-2025
+- Fixed bugs in backend especially server.js which lead to the crashing of backend.
+- Solved routing problem.
+ 
+###  ✅ 09-07-2025
+- Working on alternative methods due to deprecation of a plugin in backend.
+- Working on firebase errors.
+
+###  ✅ 10-07-2025
+- Solved many backend bugs in code.
+- Working on authentication.
+
+###  ✅ 11-07-2025
+- Rebuilding authentication part from scratch.
+
+###  ✅ 12-07-2025
+- Solving the google login issue.
+
+###  ✅ 14-07-2025
+- Solved the issue of student login from teacher page.
+- Now in the teacher page we can login into student.
+
+###  ✅ 15-07-2025
+- Made frontend more user-friendly.
+  
+
