@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Bot, Send, X, Minimize2, Maximize2 } from "lucide-react";
 import axios from "axios";
+const OPENROUTER_API_KEY = process.env.REACT_APP_OPENROUTER_API_KEY;
 
 interface Message {
   id: string;
@@ -99,7 +100,7 @@ If you're unsure about something, say so politely rather than guessing.
         },
         {
           headers: {
-            Authorization: `Bearer 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`, // Bearer Token for OpenRouter
+            Authorization: `Bearer ${OPENROUTER_API_KEY}`, // Bearer Token for OpenRouter
             "Content-Type": "application/json",
             "HTTP-Referer": window.location.origin,
             "X-Title": "Your Personal Friendly Assistant",
