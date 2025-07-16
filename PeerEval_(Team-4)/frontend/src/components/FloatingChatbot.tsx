@@ -128,6 +128,7 @@ If you're unsure about something, say so politely rather than guessing.
           ...updated[updated.length - 1],
           content: "⚠️ Sorry, I encountered an error. Please try again.",
         };
+        console.log("API KEY:", OPENROUTER_API_KEY);
         return updated;
       });
     } finally {
