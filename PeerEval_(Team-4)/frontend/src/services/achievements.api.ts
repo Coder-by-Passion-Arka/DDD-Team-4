@@ -1,3 +1,5 @@
+// achievements.api.ts
+
 import { apiService } from "./api";
 
 export interface Achievement {
@@ -223,8 +225,28 @@ class AchievementApiService {
   }
 
   // Helper method to get achievement types by category
-  static getAchievementTypes(category: string): string[] {
-    const typesByCategory = {
+  static getAchievementTypes(
+    category:
+      | "academic"
+      | "collaboration"
+      | "milestones"
+      | "skills"
+      | "teaching"
+      | "mentorship"
+      | "management"
+      | "leadership"
+  ): string[] {
+    const typesByCategory: {
+      [key in
+        | "academic"
+        | "collaboration"
+        | "milestones"
+        | "skills"
+        | "teaching"
+        | "mentorship"
+        | "management"
+        | "leadership"]: string[];
+    } = {
       academic: [
         "perfect_score",
         "academic_excellence",
@@ -247,10 +269,12 @@ class AchievementApiService {
       leadership: ["team_builder", "strategic_thinker"],
     };
 
-    return typesByCategory[category] || [];
+    return typesByCategory[category] ?? [];
   }
 }
 
 const achievementApi = new AchievementApiService();
 
 export default achievementApi;
+
+export { AchievementApiService };

@@ -77,15 +77,15 @@ const FloatingChatbot: React.FC = () => {
               content:
                 "You are a smart assistant built into a Student Performance monitoring Dashboard. Your task is to assist users understand how to navigate the dashboard and effectively make sense of the several cutting-edge features built-in. Your prime focus is to help the user make the most out of the Application. User can ask you about Scoring Criteria, Evaluation Metrics, Deadline notifications and Assignment Information.",
             },
-            { 
-              role: "user", 
-              content: userMessage.content 
+            {
+              role: "user",
+              content: userMessage.content,
             },
           ],
         },
         {
           headers: {
-            Authorization: `Bearer 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`, // Bearer Token for OpenRouter
+            Authorization: `Bearer ${OPENROUTER_API_KEY}`, // Bearer Token for OpenRouter
             "Content-Type": "application/json",
             "HTTP-Referer": window.location.origin,
             "X-Title": "Your Personal Friendly Assistant",
