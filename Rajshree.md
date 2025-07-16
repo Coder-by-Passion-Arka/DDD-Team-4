@@ -1,6 +1,13 @@
 # MERN Stack Internship – Daily Work Log
 ---
 
+### 📅 16-07-2025
+Integrated a custom system prompt into the chatbot to make it relevant to the features and workflows of the "Dopamine Drive Through Dashboard" project.
+Aligned the chatbot’s responses with the platform’s peer evaluation, scoring, analytics, and gamification features.
+Finalized the complete project report, including the bibliography, appendix, and supporting material such as UI screenshots and technical details.
+
+---
+
 ### 📅 15-07-2025
 Completed the final project report by incorporating all the changes and suggestions provided by ma'am. Ensured that formatting, structure, and content matched the required standards.
 
