@@ -122,7 +122,7 @@ Keep responses brief, helpful, and dashboard-focused.
         },
         {
           headers: {
-            Authorization: `Bearer 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`, // Bearer Token for OpenRouter
+            Authorization: `Bearer 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`, // Bearer Token for OpenRouter
             "Content-Type": "application/json",
             "HTTP-Referer": window.location.origin,
             "X-Title": "Your Personal Friendly Assistant",
