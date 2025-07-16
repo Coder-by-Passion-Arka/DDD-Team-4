@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Bot, Send, X, Minimize2, Maximize2 } from "lucide-react";
 import axios from "axios";
-const OPENROUTER_API_KEY = process.env.REACT_APP_OPENROUTER_API_KEY;
+const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
 
 interface Message {
   id: string;
