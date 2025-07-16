@@ -1,0 +1,260 @@
+import React, { useState } from "react";
+
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js/auto";
+import { Line, Pie, Bar } from "react-chartjs-2";
+
+// Simple icon components
+const ChartIcon = ({ className }: { className?: string }) => (
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+    />
+  </svg>
+);
+
+const CalendarIcon = ({ className }: { className?: string }) => (
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+    />
+  </svg>
+);
+
+const TrendingUpIcon = ({ className }: { className?: string }) => (
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+    />
+  </svg>
+);
+
+const AwardIcon = ({ className }: { className?: string }) => (
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+    />
+  </svg>
+);
+
+const TargetIcon = ({ className }: { className?: string }) => (
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+);
+
+// Register the custom color schema for the chart
+const colorSchema = {
+  blue: `rgba(${37}, ${99}, ${235}, 1)`,
+  red: `rgba(${235}, ${99}, ${37}, 1)`,
+  orange: `rgba(${235}, ${99}, ${37}, 1)`,
+  green: `rgba(${37}, ${235}, ${99}, 1)`,
+  purple: `rgba(${142}, ${68}, ${235}, 1)`,
+  pink: `rgba(${235}, ${68}, ${142}, 1)`,
+  yellow: `rgba(${255}, ${235}, ${68}, 1)`,
+  black: `rgba(0, 0, 0, 1)`,
+  transperant: `rgba(0, 0, 0, 0)`,
+  white: `rgba(255, 255, 255, 1)`,
+};
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+// Data for Line Graph //
+const data = {
+  labels: ["January", "February", "March", "April", "May", "June", "July"],
+  datasets: [
+    {
+      // Color Blue Line
+      label: "Reviewed ",
+      data: [0, 200, 120, 600, 800, 1800, 2800],
+      borderColor: colorSchema.blue,
+      backgroundColor: "rgba(100, 156, 245, 0.2)",
+      tension: 0.4,
+      pointBackgroundColor: colorSchema.blue,
+      pointBorderColor: colorSchema.white,
+      fill: true,
+    },
+    {
+      // Color Orange Line
+      label: "Evaluated",
+      data: [850, 400, 950, 1500, 2500, 3000, 12000],
+      borderColor: colorSchema.orange,
+      backgroundColor: "rgba(247, 191, 106, 0.2)",
+      tension: 0.4,
+      pointBackgroundColor: colorSchema.orange,
+      pointBorderColor: colorSchema.white,
+      fill: true,
+    },
+  ],
+};
+
+const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top" as const,
+      labels: {
+        color: "#2563eb",
+        font: { size: 16, weight: "bold" as const },
+      },
+    },
+    title: {
+      display: true,
+      text: "Monthly Reviews and Evaluations",
+      color: colorSchema.white,
+      font: { size: 22, weight: "bold" as const },
+    },
+    tooltip: {
+      mode: "index" as const,
+      intersect: false,
+    },
+  },
+  scales: {
+    x: {
+      ticks: { color: "#64748b", font: { size: 14 } },
+      grid: { color: "#64748b" },
+    },
+    y: {
+      ticks: { color: "#64748b", font: { size: 14 } },
+      grid: { color: "#64748b" },
+    },
+  },
+};
+
+// Dummy Data for Pie Chart //
+const Data = [
+  { year: 2016, userGain: 800 },
+  { year: 2017, userGain: 456 },
+  { year: 2018, userGain: 1234 },
+  { year: 2019, userGain: 900 },
+  { year: 2020, userGain: 1500 },
+];
+
+const chartData = {
+  labels: Data.map((data) => data.year.toString()),
+  datasets: [
+    {
+      label: "Users Gained ",
+      data: Data.map((data) => data.userGain),
+      backgroundColor: [
+        "rgba(75,192,192,0.6)",
+        "rgba(250, 164, 77, 0.6)",
+        "rgba(192, 108, 245, 0.5)",
+        "#f3ba2f",
+        "#2a71d0",
+      ],
+      borderColor: "#64748b",
+      borderWidth: 2,
+    },
+  ],
+};
+
+type PieChartProps = {
+  chartData: typeof chartData;
+};
+
+function PieChart({ chartData }: PieChartProps) {
+  return (
+    <div className="chart-container">
+      <h2 style={{ textAlign: "center" }}>Pie Chart</h2>
+      <Pie
+        data={chartData}
+        options={{
+          plugins: {
+            title: {
+              display: true,
+              text: "Users Gained between 2016-2020",
+            },
+          },
+        }}
+      />
+    </div>
+  );
+}
+
+const Analytics: React.FC = () => (
+  <>
+    <div className="analytics-container mb-6 sm:mb-8 lg:mb-10">
+      <div
+        className="analytics-heading sm:text-3xl lg:text-4xl font-bold
+      m-2 text-center text-wrap text-blue-800 dark:text-blue-300"
+      >
+        <ChartIcon className=" sm:w-7 sm:h-7 inline-block m-2" />
+        <span>Student Analytics</span>
+      </div>
+      <div className="p-8 bg-white dark:bg-slate-800 text-xl dark:text-white border-2 border-blue-300/90 rounded-xl shadow-lg hover:shadow-blue-900 transition-all duration-300 m-[0.3rem]">
+        <h2 className="text-center"> Line Chart</h2>
+        <Line data={data} options={options} />
+      </div>
+
+      <div
+        className="p-8 bg-white dark:bg-slate-800 text-xl dark:text-white border-2 border-blue-300/90 rounded-xl shadow-lg hover:shadow-blue-900 transition-all duration-300 m-[0.3rem]
+    max-h-2xl max-w-2xl"
+      >
+        <PieChart chartData={chartData} />
+      </div>
+    </div>
+  </>
+);
+
+export default Analytics;
