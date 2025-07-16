@@ -89,16 +89,49 @@
 // ================================================================ //
 
 import React, { useState, useEffect } from "react";
-import {
-  BookOpen,
-  Clock,
-  Target,
-  CheckCircle,
-  Loader2,
-  Users,
-  Settings,
-  BarChart,
-} from "lucide-react";
+
+// Custom SVG Icons to replace problematic lucide-react imports
+const BookOpenIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.832 18.477 19.246 18 17.5 18c-1.746 0-3.332.477-4.5 1.253" />
+  </svg>
+);
+
+const ClockIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
+const TargetIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
+const CheckCircleIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
+const Loader2Icon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+  </svg>
+);
+
+const UsersIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a4 4 0 11-8 0 4 4 0 018 0z" />
+  </svg>
+);
+
+const BarChartIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+  </svg>
+);
 import StatsCard from "../components/StatsCard";
 import ProgressChart from "../components/ProgressChart";
 import StreakCounter from "../components/StreakCounter";
@@ -179,65 +212,64 @@ const Dashboard: React.FC = () => {
             case "teacher":
               mockData = {
                 stats: {
-                  totalStudents: 45,
-                  activeAssignments: 8,
-                  pendingEvaluations: 23,
-                  coursesManaged: 3,
+                  totalStudents: Math.floor(Math.random() * 30) + 30,    // 30-60 students
+                  activeAssignments: Math.floor(Math.random() * 8) + 5,  // 5-12 assignments
+                  pendingEvaluations: Math.floor(Math.random() * 25) + 10, // 10-35 pending
+                  coursesManaged: Math.floor(Math.random() * 4) + 2,     // 2-5 courses
                 } as TeacherStats,
                 dailyProgress: [
-                  { day: "Mon", submissions: 12, evaluations: 8 },
-                  { day: "Tue", submissions: 15, evaluations: 10 },
-                  { day: "Wed", submissions: 8, evaluations: 12 },
-                  { day: "Thu", submissions: 18, evaluations: 9 },
-                  { day: "Fri", submissions: 14, evaluations: 15 },
-                  { day: "Sat", submissions: 5, evaluations: 3 },
-                  { day: "Sun", submissions: 7, evaluations: 4 },
+                  { day: "Mon", submissions: Math.floor(Math.random() * 15) + 8, evaluations: Math.floor(Math.random() * 12) + 5 },
+                  { day: "Tue", submissions: Math.floor(Math.random() * 18) + 10, evaluations: Math.floor(Math.random() * 15) + 8 },
+                  { day: "Wed", submissions: Math.floor(Math.random() * 12) + 6, evaluations: Math.floor(Math.random() * 18) + 10 },
+                  { day: "Thu", submissions: Math.floor(Math.random() * 20) + 12, evaluations: Math.floor(Math.random() * 14) + 7 },
+                  { day: "Fri", submissions: Math.floor(Math.random() * 16) + 10, evaluations: Math.floor(Math.random() * 20) + 12 },
+                  { day: "Sat", submissions: Math.floor(Math.random() * 8) + 3, evaluations: Math.floor(Math.random() * 5) + 2 },
+                  { day: "Sun", submissions: Math.floor(Math.random() * 10) + 4, evaluations: Math.floor(Math.random() * 6) + 3 },
                 ],
-                currentStreak: 15,
-                bestStreak: 42,
+                currentStreak: Math.floor(Math.random() * 25) + 10,  // 10-35 day streak
+                bestStreak: Math.floor(Math.random() * 60) + 30,     // 30-90 day best streak
               };
               break;
 
             case "admin":
               mockData = {
                 stats: {
-                  totalUsers: 1250,
-                  activeTeachers: 25,
-                  totalStudents: 1200,
-                  systemHealth: 98,
+                  totalUsers: Math.floor(Math.random() * 500) + 1000,    // 1000-1500 users
+                  activeTeachers: Math.floor(Math.random() * 15) + 20,   // 20-35 teachers
+                  totalStudents: Math.floor(Math.random() * 400) + 1000, // 1000-1400 students
+                  systemHealth: Math.floor(Math.random() * 5) + 95,      // 95-100% health
                 } as AdminStats,
                 dailyProgress: [
-                  { day: "Mon", submissions: 45, evaluations: 35 },
-                  { day: "Tue", submissions: 52, evaluations: 42 },
-                  { day: "Wed", submissions: 38, evaluations: 48 },
-                  { day: "Thu", submissions: 61, evaluations: 39 },
-                  { day: "Fri", submissions: 47, evaluations: 56 },
-                  { day: "Sat", submissions: 23, evaluations: 18 },
-                  { day: "Sun", submissions: 28, evaluations: 22 },
+                  { day: "Mon", submissions: Math.floor(Math.random() * 30) + 35, evaluations: Math.floor(Math.random() * 25) + 25 },
+                  { day: "Tue", submissions: Math.floor(Math.random() * 35) + 40, evaluations: Math.floor(Math.random() * 30) + 30 },
+                  { day: "Wed", submissions: Math.floor(Math.random() * 25) + 30, evaluations: Math.floor(Math.random() * 35) + 35 },
+                  { day: "Thu", submissions: Math.floor(Math.random() * 40) + 45, evaluations: Math.floor(Math.random() * 28) + 28 },
+                  { day: "Fri", submissions: Math.floor(Math.random() * 32) + 35, evaluations: Math.floor(Math.random() * 40) + 40 },
+                  { day: "Sat", submissions: Math.floor(Math.random() * 20) + 15, evaluations: Math.floor(Math.random() * 15) + 12 },
+                  { day: "Sun", submissions: Math.floor(Math.random() * 22) + 18, evaluations: Math.floor(Math.random() * 18) + 15 },
                 ],
-                currentStreak: 30,
-                bestStreak: 85,
+                currentStreak: Math.floor(Math.random() * 40) + 20,  // 20-60 day streak
+                bestStreak: Math.floor(Math.random() * 70) + 50,     // 50-120 day best streak
               };
               break;
 
             default: // student
               mockData = {
                 stats: {
-                  submitted: 4,
-                  inProgress: 3,
-                  toEvaluate: 7,
-                  completed: 8,
+                  submitted: Math.floor(Math.random() * 15) + 10, // 10-25 submitted
+                  inProgress: Math.floor(Math.random() * 5) + 1,  // 1-5 in progress
+                  toEvaluate: Math.floor(Math.random() * 8) + 3,  // 3-10 to evaluate
+                  completed: Math.floor(Math.random() * 20) + 15, // 15-35 completed
                 } as DashboardStats,
                 dailyProgress: [
-                  // Month-1
-                  // Week-1
-                  { day: "Mon", submissions: 4, evaluations: 2 },
-                  { day: "Tue", submissions: 6, evaluations: 3 },
-                  { day: "Wed", submissions: 3, evaluations: 5 },
-                  { day: "Thu", submissions: 8, evaluations: 4 },
-                  { day: "Fri", submissions: 5, evaluations: 6 },
-                  { day: "Sat", submissions: 2, evaluations: 1 },
-                  { day: "Sun", submissions: 3, evaluations: 2 },
+                  // Current week - more realistic varying data
+                  { day: "Mon", submissions: Math.floor(Math.random() * 8) + 2, evaluations: Math.floor(Math.random() * 6) + 1 },
+                  { day: "Tue", submissions: Math.floor(Math.random() * 10) + 3, evaluations: Math.floor(Math.random() * 8) + 2 },
+                  { day: "Wed", submissions: Math.floor(Math.random() * 6) + 1, evaluations: Math.floor(Math.random() * 12) + 3 },
+                  { day: "Thu", submissions: Math.floor(Math.random() * 12) + 4, evaluations: Math.floor(Math.random() * 7) + 2 },
+                  { day: "Fri", submissions: Math.floor(Math.random() * 9) + 3, evaluations: Math.floor(Math.random() * 10) + 4 },
+                  { day: "Sat", submissions: Math.floor(Math.random() * 4) + 1, evaluations: Math.floor(Math.random() * 3) + 1 },
+                  { day: "Sun", submissions: Math.floor(Math.random() * 5) + 1, evaluations: Math.floor(Math.random() * 4) + 1 },
                   // // Week-2
                   // { day: "Mon", submissions: 4, evaluations: 2 },
                   // { day: "Tue", submissions: 6, evaluations: 3 },
@@ -362,8 +394,8 @@ const Dashboard: React.FC = () => {
                   // { day: "Sat", submissions: 2, evaluations: 1 },
                   // { day: "Sun", submissions: 3, evaluations: 2 },
                 ],
-                currentStreak: 12,
-                bestStreak: 28,
+                currentStreak: Math.floor(Math.random() * 20) + 5,  // 5-25 day streak
+                bestStreak: Math.floor(Math.random() * 50) + 25,    // 25-75 day best streak
               };
           }
 
@@ -448,7 +480,7 @@ const Dashboard: React.FC = () => {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-indigo-600" />
+          <Loader2Icon className="w-8 h-8 animate-spin mx-auto mb-4 text-indigo-600" />
           <p className="text-gray-600 dark:text-gray-400">
             Loading dashboard...
           </p>
@@ -664,28 +696,28 @@ const Dashboard: React.FC = () => {
           <StatsCard
             title="Total Submitted"
             value={stats.submitted}
-            icon={CheckCircle}
+            icon={CheckCircleIcon}
             color="emerald"
             trend={stats.submitted > 0 ? "+1%" : "0%"} // TODO: Need to retrieve them from the backend API
           />
           <StatsCard
             title="In Progress"
             value={stats.inProgress}
-            icon={Clock}
+            icon={ClockIcon}
             color="amber"
             trend={stats.inProgress > 0 ? "-5%" : "0%"} // TODO: Need to retrieve them from the backend API
           />
           <StatsCard
             title="To Evaluate"
             value={stats.toEvaluate}
-            icon={Target}
+            icon={TargetIcon}
             color="blue"
             trend={stats.toEvaluate > 0 ? "+8%" : "0%"} // TODO: Need to retrieve them from the backend API
           />
           <StatsCard
             title="Completed"
             value={stats.completed}
-            icon={BookOpen}
+            icon={BookOpenIcon}
             color="purple"
             trend={stats.completed > 0 ? "+3%" : "0%"} // TODO: Need to retrieve them from the backend API
           />
@@ -693,7 +725,7 @@ const Dashboard: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
           <div className="lg:col-span-2">
-            <ProgressChart data={dashboardData.dailyProgress} />
+            <ProgressChart />
           </div>
           <div className="transition-all duration-300 rounded-2xl">
             <StreakCounter
@@ -750,7 +782,7 @@ const Dashboard: React.FC = () => {
           // clientSecret={process.env.GOOGLE_CLIENT_SECRET}
           onSuccess={() => console.log("Success")} // TODO: make a toast of Login success here
           onError={() => {
-            window.href.location = "/login";
+            window.location.href = "/login";
           }} //  TODO: Make a Toast of login failure here
           // cookiePolicy={"single_host_origin"}
           // isSignedIn={true}
@@ -769,28 +801,28 @@ const Dashboard: React.FC = () => {
           <StatsCard
             title="Total Students"
             value={stats.totalStudents}
-            icon={Users}
+            icon={UsersIcon}
             color="blue"
             trend="+5%"
           />
           <StatsCard
             title="Active Assignments"
             value={stats.activeAssignments}
-            icon={BookOpen}
+            icon={BookOpenIcon}
             color="emerald"
             trend="+2"
           />
           <StatsCard
             title="Pending Evaluations"
             value={stats.pendingEvaluations}
-            icon={Clock}
+            icon={ClockIcon}
             color="amber"
             trend="-8%"
           />
           <StatsCard
             title="Courses Managed"
             value={stats.coursesManaged}
-            icon={Target}
+            icon={TargetIcon}
             color="purple"
             trend="0%"
           />
@@ -876,28 +908,28 @@ const Dashboard: React.FC = () => {
           <StatsCard
             title="Total Users"
             value={stats.totalUsers}
-            icon={Users}
+            icon={UsersIcon}
             color="purple"
             trend="+12%"
           />
           <StatsCard
             title="Active Teachers"
             value={stats.activeTeachers}
-            icon={BookOpen}
+            icon={BookOpenIcon}
             color="blue"
             trend="+3"
           />
           <StatsCard
             title="Total Students"
             value={stats.totalStudents}
-            icon={Target}
+            icon={TargetIcon}
             color="emerald"
             trend="+8%"
           />
           <StatsCard
             title="System Health"
-            value={`${stats.systemHealth}%`}
-            icon={BarChart}
+            value={stats.systemHealth}
+            icon={BarChartIcon}
             color="amber"
             trend="+2%"
           />
@@ -905,7 +937,7 @@ const Dashboard: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
           <div className="lg:col-span-2">
-            <ProgressChart data={dashboardData.dailyProgress} />
+            <ProgressChart />
           </div>
           <div className="transition-all duration-300 rounded-2xl">
             <StreakCounter

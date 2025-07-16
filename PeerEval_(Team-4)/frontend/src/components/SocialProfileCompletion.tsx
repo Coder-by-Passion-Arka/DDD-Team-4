@@ -430,6 +430,9 @@ const SocialProfileCompletion: React.FC<SocialProfileCompletionProps> = ({
       await onComplete(formData);
 
       console.log("✅ Profile completion successful through onComplete");
+      
+      // Note: Don't manually hide the modal here - let the parent component handle it
+      // based on the updated needsProfileCompletion state
     } catch (error) {
       console.error("❌ Error completing profile:", error);
       toast.error("Failed to complete profile. Please try again.", {
@@ -614,7 +617,7 @@ const SocialProfileCompletion: React.FC<SocialProfileCompletionProps> = ({
         </form>
 
         {/* Google Account Info Display */}
-        {state.user?.metadata?.authProvider === "google" && (
+        {state.user?.authProvider === "google" && (
           <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
             <div className="flex items-center space-x-3">
               {state.user.userProfileImage && (

@@ -545,18 +545,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       dispatch({ type: "SET_LOADING", payload: true });
       dispatch({ type: "CLEAR_ERROR" });
 
-      const response: any = await apiService.patch(
+      console.log("🔍 Sending profile completion request with data:", data);
+
+      // The apiService.patch already unwraps the response using unwrapResponse()
+      const updatedUser: any = await apiService.patch(
         "/auth/complete-social-profile",
         data
       );
 
-      if (response.user || response.data) {
-        const updatedUser = response.user || response.data;
+      console.log("🔍 Profile completion response (unwrapped):", updatedUser);
+
+      if (updatedUser) {
         dispatch({ type: "UPDATE_USER", payload: updatedUser });
         dispatch({ type: "SET_NEEDS_PROFILE_COMPLETION", payload: false });
+        console.log("✅ Profile completion state updated successfully");
         toast.success("Profile completed successfully");
+      } else {
+        console.error("❌ No user data received from server");
+        throw new Error("No user data received from server");
       }
     } catch (error: any) {
+      console.error("❌ Profile completion error:", error);
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
