@@ -13,6 +13,9 @@ import Breadcrumb from "./components/Breadcrumb";
 import SocialProfileCompletion from "./components/SocialProfileCompletion";
 import Preferences from "./components/Preferences";
 
+// Cookie Preferences Import
+import { CookiePreferencesManager } from "./utils/cookiePreferences";
+
 
 // Pages Imports
 import DashboardHome from "./pages/Dashboard";
@@ -87,6 +90,11 @@ const CompleteProfilePage: React.FC = () => (
 );
 
 function App() {
+  // Initialize cookie preferences on app startup
+  useEffect(() => {
+    CookiePreferencesManager.initializePreferences();
+  }, []);
+
   // Get Google Client ID from environment
   const GOOGLE_CLIENT_ID =
     import.meta.env.VITE_GOOGLE_CLIENT_ID ||

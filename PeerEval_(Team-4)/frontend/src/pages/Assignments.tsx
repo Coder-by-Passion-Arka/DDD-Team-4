@@ -2274,13 +2274,6 @@ const AssignmentPage: React.FC = () => {
                     >
                       Complete Evaluations
                     </button>
-                    {/* <button
-  onClick={() => completeEvaluation(assignment._id)}
-  className="px-4 py-2 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
->
-  Complete Evaluation
-</button>
- */}
                   )}
               </div>
             </div>

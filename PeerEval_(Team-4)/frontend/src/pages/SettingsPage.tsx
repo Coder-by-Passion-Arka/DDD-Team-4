@@ -520,6 +520,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import { CookiePreferencesManager, useCookiePreferences } from "../utils/cookiePreferences";
 // import { apiService } from "../services/api";
 
 interface UserSettings {
