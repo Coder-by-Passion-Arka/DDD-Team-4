@@ -627,7 +627,7 @@ const refreshAccessToken = asyncHandler(async (request, response) => {
       sameSite: "strict",
     };
 
-    const { accessToken, refreshToken: newRefreshToken } = await       generateAccessTokenAndRefreshToken(tokenUser._id);
+    const { accessToken, refreshToken: newRefreshToken } = await generateAccessTokenAndRefreshToken(tokenUser._id);
 
     return response
       .status(200)

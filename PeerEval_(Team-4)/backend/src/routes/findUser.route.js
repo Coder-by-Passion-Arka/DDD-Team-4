@@ -1,45 +1,40 @@
-// import express from "express";
-// import { findStudent } from "../controllers/findStudent.controller.js";
-// import { findTeacher } from "../controllers/findTeacher.controller.js";
-// import {
-//   errorHandler,
-//   verifyJWT,
-//   isAdmin,
-//   isTeacher,
-// } from "../middlewares/auth.middleware.js";
+import express from "express";
+import {
+  findStudent,
+  findTeacher,
+} from "../controllers/findUser.controller.js";
+import {
+  errorHandler,
+  verifyJWT,
+  isAdmin,
+  isTeacherOrAdmin,
+} from "../middlewares/auth.middleware.js";
 
-// const router = express.Router();
+const router = express.Router();
 
-// // Apply middleware
-// router.use(express.json());
-// router.use(errorHandler);
+// Apply middleware
+router.use(express.json());
 
-// // Route to find student - accessible by teachers and admins
-// router
-// .route("/find-student")
-// .get(verifyJWT, isTeacher, findStudent)
-// .route("/profile");
+// Route to find student - accessible by teachers and admins
+router.route("/find-student").get(verifyJWT, isTeacherOrAdmin, findStudent);
 
-// // Route to find teacher - accessible by admins only
-// router.route("/find-teacher").get(verifyJWT, isAdmin, findTeacher);
+// Route to find teacher by ID - accessible by admins only
+router.route("/find-teacher/:userId").get(verifyJWT, isAdmin, findTeacher);
 
-// // Route for unauthorized access
-// // router.route("/not-authorised").get((request, response) => {
-// //   response.status(403).json({
-// //     success: false,
-// //     message:
-// //       "Unauthorized access. You don't have permission to access this resource.",
-// //     statusCode: 403,
-// //   });
-// // });
+// Alternative route for finding teacher by query params (if needed)
+router.route("/find-teacher").get(verifyJWT, isAdmin, (req, res) => {
+  const { userId } = req.query;
+  if (!userId) {
+    return res.status(400).json({
+      success: false,
+      message: "User ID is required as query parameter",
+    });
+  }
+  req.params.userId = userId;
+  findTeacher(req, res);
+});
 
-// // Catch-all route for undefined endpoints
-// // router.use("*", (request, response) => {
-// //   response.status(404).json({
-// //     success: false,
-// //     message: "Route not found",
-// //     statusCode: 404,
-// //   });
-// // });
+// Apply error handler at the end
+router.use(errorHandler);
 
-// export default router;
+export default router;

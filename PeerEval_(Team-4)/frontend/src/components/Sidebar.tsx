@@ -117,13 +117,13 @@ const Sidebar: React.FC<SidebarProps> = ({
       path: "/find-student",
       roles: ["teacher"],
     },
-    {
-      id: "find-teacher",
-      label: "Find Teacher",
-      icon: Search,
-      path: "/find-teacher",
-      roles: ["teacher"],
-    },
+    // {
+    //   id: "find-teacher",
+    //   label: "Find Teacher",
+    //   icon: Search,
+    //   path: "/find-teacher",
+    //   roles: ["admin"],
+    // },
     {
       id: "courses",
       label: "Courses",

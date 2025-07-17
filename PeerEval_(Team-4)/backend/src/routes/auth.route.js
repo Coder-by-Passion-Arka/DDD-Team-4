@@ -119,6 +119,10 @@ router.route("/update-profile").patch(
 // 9. Complete social profile (for Google users who need to add more info)
 router.route("/complete-social-profile").patch(verifyJWT, completeSocialProfile);
 
+// 10. Unauthorized access route
+router
+  .route("/not-authorized");
+  
 // ============================= //
 
 // Role-based Protected Routes //

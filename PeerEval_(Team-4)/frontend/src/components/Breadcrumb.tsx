@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { Trophy, Flame, Menu, X, Gamepad2 } from "lucide-react";
+import { Trophy, Flame, Menu, X, Gamepad2, BookOpenText } from "lucide-react";
 import Sidebar from './Sidebar';
 import ThemeToggle from './ThemeToggle';
 import FloatingChatbot from './FloatingChatbot';
 import LeaderboardPanel from './LeaderboardPanel';
 import GameModal from "./GameModal";
+import RecentAssignments from './RecentAssignments';
 import { useStreak } from '../contexts/StreakContext';
 
 const Breadcrumb: React.FC = () => {
@@ -19,6 +20,9 @@ const Breadcrumb: React.FC = () => {
   const gamesTooltipTimeout = useRef<NodeJS.Timeout | null>(null);
   const leaderboardTooltipTimeout = useRef<NodeJS.Timeout | null>(null);
   const streakTooltipTimeout = useRef<NodeJS.Timeout | null>(null);
+  const[isRecentAssignmentsOpen, setIsRecentAssignmentsOpen] = useState(false);
+  const recentAssignmentsTooltipTimeout = useRef<NodeJS.Timeout | null>(null);
+  const[showRecentAssignmentsTooltip, setShowRecentAssignmentsTooltip] = useState(false);
   const navigate = useNavigate();
   
   // Get current user's streak from StreakContext
@@ -70,6 +74,15 @@ const Breadcrumb: React.FC = () => {
     if (gamesTooltipTimeout.current) clearTimeout(gamesTooltipTimeout.current);
     gamesTooltipTimeout.current = setTimeout(() => setShowGamesTooltip(false), 2000);
     setIsGameModalOpen(true);
+  };
+
+  // TODO: 
+  const handleRecentAssignmentsClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowRecentAssignmentsTooltip(true);
+    if (recentAssignmentsTooltipTimeout.current) clearTimeout(recentAssignmentsTooltipTimeout.current);
+    recentAssignmentsTooltipTimeout.current = setTimeout(() => setShowRecentAssignmentsTooltip(false), 2000);
+    setIsRecentAssignmentsOpen(true);
   };
 
   const handleLeaderboardClick = (e: React.MouseEvent) => {
@@ -126,7 +139,13 @@ const Breadcrumb: React.FC = () => {
               >
                 <Flame className="w-6 h-6 text-orange-500 group-hover:text-orange-600 transition-colors duration-200" />
                 {/* Streak tooltip below icon */}
-                <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap transition-opacity duration-200 ${showStreakTooltip ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                <div
+                  className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap transition-opacity duration-200 ${
+                    showStreakTooltip
+                      ? "opacity-100"
+                      : "opacity-0 pointer-events-none"
+                  }`}
+                >
                   {currentStreak} day streak - Click to view
                 </div>
               </button>
@@ -140,8 +159,35 @@ const Breadcrumb: React.FC = () => {
               >
                 <Gamepad2 className="w-6 h-6 text-purple-500 group-hover:text-purple-600 transition-colors duration-200" />
                 {/* Games tooltip below icon */}
-                <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap transition-opacity duration-200 ${showGamesTooltip ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                <div
+                  className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap transition-opacity duration-200 ${
+                    showGamesTooltip
+                      ? "opacity-100"
+                      : "opacity-0 pointer-events-none"
+                  }`}
+                >
                   Play games
+                </div>
+              </button>
+
+              {/* TODO: Complete this*/}
+              {/* Recent Assignments Button */}
+              <button
+                onClick={handleRecentAssignmentsClick}
+                className="relative p-3 w-12 h-12 flex items-center justify-center rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
+                aria-label="View recent assignments"
+                type="button"
+              >
+                <BookOpenText className="w-6 h-6 text-blue-500 group-hover:text-blue-600 transition-colors duration-200" />
+                {/* Recent Assignments tooltip below icon */}
+                <div
+                  className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap transition-opacity duration-200 ${
+                    showRecentAssignmentsTooltip
+                      ? "opacity-100"
+                      : "opacity-0 pointer-events-none"
+                  }`}
+                >
+                  Recent Assignments
                 </div>
               </button>
 
@@ -155,14 +201,21 @@ const Breadcrumb: React.FC = () => {
                 <Trophy className="w-6 h-6 text-amber-500 group-hover:text-amber-600 transition-colors duration-200" />
                 {/* Notification Badge */}
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-[10px] font-bold text-white leading-none">!</span>
+                  <span className="text-[10px] font-bold text-white leading-none">
+                    !
+                  </span>
                 </div>
                 {/* Leaderboard tooltip below icon */}
-                <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap transition-opacity duration-200 ${showLeaderboardTooltip ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                <div
+                  className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap transition-opacity duration-200 ${
+                    showLeaderboardTooltip
+                      ? "opacity-100"
+                      : "opacity-0 pointer-events-none"
+                  }`}
+                >
                   Leaderboard
                 </div>
               </button>
-
 
               {/* Theme Toggle */}
               <div className="scale-90">

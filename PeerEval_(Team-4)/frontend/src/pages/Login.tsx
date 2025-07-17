@@ -405,7 +405,7 @@ import { useToast } from "../hooks/useToast";
 import { AxiosError } from "axios";
 
 const Login: React.FC = () => {
-  // ✅ CRITICAL: ALL hooks MUST be called first, before any conditional logic
+  // ALL hooks MUST be called first, before any conditional logic
   const [formData, setFormData] = useState({
     userEmail: "",
     userPassword: "",
@@ -417,7 +417,7 @@ const Login: React.FC = () => {
   const toast = useToast();
   const navigate = useNavigate();
 
-  // ✅ Google Login Hook - MUST be called unconditionally
+  // Google Login Hook - MUST be called unconditionally
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       setIsLoading(true);
@@ -469,7 +469,7 @@ const Login: React.FC = () => {
     },
   });
 
-  // ✅ Enhanced auto-redirect with better logging
+  // Enhanced auto-redirect with better logging
   useEffect(() => {
     console.log("🔍 Auth state changed:", {
       isAuthenticated: state.isAuthenticated,
