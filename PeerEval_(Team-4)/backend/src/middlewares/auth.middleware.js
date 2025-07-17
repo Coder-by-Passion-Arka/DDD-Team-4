@@ -67,9 +67,7 @@ export const optionalAuth = asyncHandler(async (request, response, next) => {
 });
 
 // Role-based authorization middleware
-export const authorizeRoles = (
-  ...roles
-) => {
+export const authorizeRoles = (...roles) => {
   return asyncHandler(async (request, response, next) => {
     if (!request.user) {
       throw new ApiError(401, "Authentication required");
@@ -100,20 +98,22 @@ export const isAdmin = asyncHandler(async (request, response, next) => {
 });
 
 // Check if user is teacher or admin
-export const isTeacherOrAdmin = asyncHandler(async (request, response, next) => {
-  if (!request.user) {
-    throw new ApiError(401, "Authentication required");
-  }
+export const isTeacherOrAdmin = asyncHandler(
+  async (request, response, next) => {
+    if (!request.user) {
+      throw new ApiError(401, "Authentication required");
+    }
 
-  if (!["teacher", "admin"].includes(request.user.userRole)) {
-    throw new ApiError(
-      403,
-      "Access denied. Teacher or Admin privileges required."
-    );
-  }
+    if (!["teacher", "admin"].includes(request.user.userRole)) {
+      throw new ApiError(
+        403,
+        "Access denied. Teacher or Admin privileges required."
+      );
+    }
 
-  next();
-});
+    next();
+  }
+);
 
 // Check if user is student
 export const isStudent = asyncHandler(async (request, response, next) => {
@@ -136,9 +136,14 @@ export const validateOwnershipOrAdmin = (getUserId) => {
     }
 
     const userId =
-      typeof getUserId === "function" ? getUserId(request) : request.params.userId;
+      typeof getUserId === "function"
+        ? getUserId(request)
+        : request.params.userId;
 
-    if (request.user.userRole === "admin" || request.user._id.toString() === userId) {
+    if (
+      request.user.userRole === "admin" ||
+      request.user._id.toString() === userId
+    ) {
       return next();
     }
 
@@ -255,18 +260,18 @@ export const requestLogger = (request, response, next) => {
 
   // Log request
   console.log(
-    `${new Date().toISOString()} - ${request.method} ${request.originalUrl} - IP: ${
-      request.ip
-    }`
+    `${new Date().toISOString()} - ${request.method} ${
+      request.originalUrl
+    } - IP: ${request.ip}`
   );
 
   // Log response time
   response.on("finish", () => {
     const duration = Date.now() - startTime;
     console.log(
-      `${new Date().toISOString()} - ${request.method} ${request.originalUrl} - ${
-        response.statusCode
-      } - ${duration}ms`
+      `${new Date().toISOString()} - ${request.method} ${
+        request.originalUrl
+      } - ${response.statusCode} - ${duration}ms`
     );
   });
 
@@ -274,19 +279,19 @@ export const requestLogger = (request, response, next) => {
 };
 
 // Global error handler
-export const errorHandler = (err, req, res, next) => {
+export const errorHandler = (err, request, response, next) => {
   // Log error with stack trace if available
   logger.error({
     message: err.message,
     stack: err.stack,
     status: err.statusCode || 500,
-    url: req.originalUrl,
-    method: req.method,
-    user: req.user ? req.user._id : undefined,
+    url: request.originalUrl,
+    method: request.method,
+    user: request.user ? request.user._id : undefined,
   });
 
   // Respond with error (never leak stack in production)
-  res.status(err.statusCode || 500).json({
+  response.status(err.statusCode || 500).json({
     success: false,
     message:
       process.env.NODE_ENV === "production"
@@ -323,10 +328,8 @@ export const fileSizeLimit = (maxSize = 50 * 1024 * 1024) => {
 
 // Validate required fields middleware
 export const validateRequiredFields = (fields) => {
-  return asyncHandler(async (request, response, next) => 
-  {
-    const missingFields = fields.filter((field) => 
-    {
+  return asyncHandler(async (request, response, next) => {
+    const missingFields = fields.filter((field) => {
       const value = request.body[field];
       return value === undefined || value === null || value === "";
     });

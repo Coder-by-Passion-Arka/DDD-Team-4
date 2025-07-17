@@ -9,6 +9,7 @@ function GoToStudentProfileDialog() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const [attributeName, setAttributeName] = useState("Email");
 
   // Check if user is logged in
   if (!state.user) {
@@ -34,6 +35,35 @@ function GoToStudentProfileDialog() {
       </div>
     );
   }
+
+  const handleFindProfile = async (
+    event: React.KeyboardEvent<HTMLInputElement>,
+    studentId: string
+  ) => {
+    // Check if the pressed key is "Enter"
+    if (event.key === "Enter") {
+      // Go to the profile page with the entered ID
+      if (!studentId.trim()) {
+        setError("Please enter a student ID or email");
+        return;
+      }
+
+      setIsLoading(true);
+
+      try {
+        // Navigate to the profile page with the entered ID
+        // The request must send the attributeName and attributeValue as query parameters
+        navigate(
+          `/find-student?attributeName=${attributeName}&attributeValue=${studentId}`
+        );
+      } catch (error) {
+        console.error("Error navigating to student profile:", error);
+        setError("Failed to navigate to student profile");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
 
   // Check if user has permission to view student profiles
   if (state.user?.userRole === "student") {
@@ -119,7 +149,7 @@ function GoToStudentProfileDialog() {
             Find Student Profile
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            Enter a student's ID or email to view their profile
+            Enter a Email or Phone Number to view their profile
           </p>
         </div>
 
@@ -143,25 +173,57 @@ function GoToStudentProfileDialog() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Attribute Name */}
+          <div>
+            {/* <label
+              htmlFor="attributeName"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Please Slect either Email or Phone Number
+            </label> */}
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-gray-900 dark:text-gray-300">Search by Email</span>
+              <input
+                type="radio"
+                name="attributeName"
+                value="Email"
+                checked={attributeName === "Email"}
+                onChange={(e) => setAttributeName(e.target.value)}
+                className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-900 dark:text-gray-300">Search by Phone Number</span>
+              <input
+                type="radio"
+                name="attributeName"
+                value="Phone-Number"
+                checked={attributeName === "Phone-Number"}
+                onChange={(e) => setAttributeName(e.target.value)}
+                className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+            </div>
+          </div>
+          {/* Attribute Value */}
           <div>
             <label
               htmlFor="studentId"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
             >
-              Student ID or Email
+              Student Email or Phone Number
             </label>
             <input
               id="studentId"
               type="text"
               value={studentId}
               onChange={(e) => setStudentId(e.target.value)}
-              placeholder="Enter student ID, email, or username"
+              placeholder="Enter student's email, or phone number"
               disabled={isLoading}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-50"
             />
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              You can search by user ID, email address, or username
-            </p>
+            {/* <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              You can search by User's email address, or phone number
+            </p> */}
           </div>
 
           <button
@@ -184,7 +246,7 @@ function GoToStudentProfileDialog() {
         </form>
 
         {/* Additional actions */}
-        <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600">
+        {/* <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600">
           <div className="flex space-x-3">
             <button
               onClick={() => navigate("/dashboard")}
@@ -199,7 +261,7 @@ function GoToStudentProfileDialog() {
               My Profile
             </button>
           </div>
-        </div>
+        </div> */}
 
         {/* Permissions note */}
         <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
@@ -215,3 +277,264 @@ function GoToStudentProfileDialog() {
 }
 
 export default GoToStudentProfileDialog;
+
+// ======================================================== //
+
+// import React, { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { useAuth } from "../contexts/AuthContext";
+// import { Shield, User, Search } from "lucide-react";
+
+// function GoToStudentProfileDialog() {
+//   const { state } = useAuth();
+//   const [studentId, setStudentId] = useState("");
+//   const [error, setError] = useState("");
+//   const [isLoading, setIsLoading] = useState(false);
+//   const navigate = useNavigate();
+//   const [attributeName, setAttributeName] = useState("Email");
+
+//   // Check if user is logged in
+//   if (!state.user) {
+//     return (
+//       <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+//         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 max-w-md w-full mx-4">
+//           <div className="text-center">
+//             <User className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+//             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+//               Authentication Required
+//             </h3>
+//             <p className="text-gray-600 dark:text-gray-400 mb-6">
+//               Please log in to access student profiles
+//             </p>
+//             <button
+//               onClick={() => navigate("/login")}
+//               className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+//             >
+//               Go to Login
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // Check if user has permission to view student profiles
+//   if (state.user?.userRole === "student") {
+//     return (
+//       <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+//         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 max-w-md w-full mx-4">
+//           <div className="text-center">
+//             <Shield className="w-16 h-16 mx-auto text-red-400 mb-4" />
+//             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+//               Access Denied
+//             </h3>
+//             <p className="text-gray-600 dark:text-gray-400 mb-6">
+//               Students cannot access other student profiles. This feature is
+//               only available to teachers and administrators.
+//             </p>
+//             <div className="space-y-3">
+//               <button
+//                 onClick={() => navigate("/dashboard")}
+//                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+//               >
+//                 Go to Dashboard
+//               </button>
+//               <button
+//                 onClick={() => navigate("/profile")}
+//                 className="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+//               >
+//                 View My Profile
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   const handleFindProfile = async (studentId: string) => {
+//     if (!studentId.trim()) {
+//       setError("Please enter a student ID or email");
+//       return;
+//     }
+
+//     setIsLoading(true);
+//     setError("");
+
+//     try {
+//       // Navigate to the profile page with the entered ID
+//       // The request must send the attributeName and attributeValue as query parameters
+//       navigate(
+//         `/find-student?attributeName=${attributeName}&attributeValue=${encodeURIComponent(
+//           studentId.trim()
+//         )}`
+//       );
+//     } catch (error) {
+//       console.error("Error navigating to student profile:", error);
+//       setError("Failed to navigate to student profile");
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+//     if (event.key === "Enter") {
+//       event.preventDefault();
+//       handleFindProfile(studentId);
+//     }
+//   };
+
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     handleFindProfile(studentId);
+//   };
+
+//   const getRoleDisplayName = (role: string) => {
+//     switch (role) {
+//       case "teacher":
+//         return "Teacher";
+//       case "admin":
+//         return "Administrator";
+//       default:
+//         return "User";
+//     }
+//   };
+
+//   return (
+//     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+//       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 max-w-md w-full">
+//         <div className="text-center mb-6">
+//           <div className="w-16 h-16 mx-auto bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mb-4">
+//             <Search className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
+//           </div>
+//           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+//             Find Student Profile
+//           </h2>
+//           <p className="text-gray-600 dark:text-gray-400">
+//             Enter an Email or Phone Number to view their profile
+//           </p>
+//         </div>
+
+//         {/* User role indicator */}
+//         <div className="mb-6 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+//           <div className="flex items-center space-x-2">
+//             <User className="w-4 h-4 text-gray-500" />
+//             <span className="text-sm text-gray-600 dark:text-gray-400">
+//               Logged in as:{" "}
+//               <span className="font-medium text-gray-900 dark:text-white">
+//                 {getRoleDisplayName(state.user?.userRole || "")}
+//               </span>
+//             </span>
+//           </div>
+//         </div>
+
+//         {error && (
+//           <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+//             <p className="text-red-800 dark:text-red-200 text-sm">{error}</p>
+//           </div>
+//         )}
+
+//         <form onSubmit={handleSubmit} className="space-y-4">
+//           {/* Attribute Name Selection */}
+//           <div>
+//             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+//               Please select either Email or Phone Number
+//             </label>
+//             <div className="space-y-2">
+//               <div className="flex items-center">
+//                 <input
+//                   id="email-option"
+//                   type="radio"
+//                   name="attributeName"
+//                   value="Email"
+//                   checked={attributeName === "Email"}
+//                   onChange={(e) => setAttributeName(e.target.value)}
+//                   className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+//                 />
+//                 <label
+//                   htmlFor="email-option"
+//                   className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+//                 >
+//                   Email
+//                 </label>
+//               </div>
+//               <div className="flex items-center">
+//                 <input
+//                   id="phone-option"
+//                   type="radio"
+//                   name="attributeName"
+//                   value="Phone-Number"
+//                   checked={attributeName === "Phone-Number"}
+//                   onChange={(e) => setAttributeName(e.target.value)}
+//                   className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+//                 />
+//                 <label
+//                   htmlFor="phone-option"
+//                   className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+//                 >
+//                   Phone Number
+//                 </label>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Attribute Value Input */}
+//           <div>
+//             <label
+//               htmlFor="studentId"
+//               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+//             >
+//               Student {attributeName === "Email" ? "Email" : "Phone Number"}
+//             </label>
+//             <input
+//               id="studentId"
+//               type="text"
+//               value={studentId}
+//               onChange={(e) => setStudentId(e.target.value)}
+//               onKeyPress={handleKeyPress}
+//               placeholder={
+//                 attributeName === "Email"
+//                   ? "Enter student's email address"
+//                   : "Enter student's phone number"
+//               }
+//               disabled={isLoading}
+//               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-50"
+//             />
+//             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+//               You can search by user's email address or phone number
+//             </p>
+//           </div>
+
+//           <button
+//             type="submit"
+//             disabled={isLoading || !studentId.trim()}
+//             className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+//           >
+//             {isLoading ? (
+//               <>
+//                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+//                 <span>Searching...</span>
+//               </>
+//             ) : (
+//               <>
+//                 <Search className="w-4 h-4" />
+//                 <span>View Profile</span>
+//               </>
+//             )}
+//           </button>
+//         </form>
+
+//         {/* Permissions note */}
+//         <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+//           <p className="text-xs text-blue-800 dark:text-blue-200">
+//             <strong>Note:</strong> You can view student profiles based on your
+//             role permissions. Contact your administrator if you need access to
+//             specific profiles.
+//           </p>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default GoToStudentProfileDialog;

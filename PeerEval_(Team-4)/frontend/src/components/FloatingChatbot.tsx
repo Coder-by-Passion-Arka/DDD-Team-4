@@ -74,7 +74,7 @@ const FloatingChatbot: React.FC = () => {
           messages: [
             {
               role: "system",
-  content: `
+              content: `
     You are PeerBot, a helpful and intelligent AI chatbot designed to assist students.
 
 Your job is to:
@@ -89,12 +89,11 @@ You can answer questions from any subject, including programming, science, math,
 Always be friendly, concise, and encouraging. Avoid giving direct answers to exam questions unless asked for explanations or guidance.
 
 If you're unsure about something, say so politely rather than guessing.
-`
-}
-,
-            { 
-              role: "user", 
-              content: userMessage.content 
+`,
+            },
+            {
+              role: "user",
+              content: userMessage.content,
             },
           ],
         },

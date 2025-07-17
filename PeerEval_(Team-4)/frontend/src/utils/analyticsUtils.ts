@@ -374,20 +374,29 @@ export const calculateAnalytics = (data: ProgressData[], activeView: 'submission
   const values = data.map(item => activeView === 'submissions' ? item.submissions : item.evaluations);
   const total = values.reduce((sum, val) => sum + val, 0);
   const average = total / data.length;
-  
+
   // Find best performing day
   const maxIndex = values.indexOf(Math.max(...values));
-  const bestDay = data[maxIndex]?.day || 'N/A';
-  
+  const bestDay = data[maxIndex]?.day || "N/A";
+
   // Calculate growth rate (last value vs first value)
-  const growthRate = data.length > 1 ? 
-    ((values[values.length - 1] - values[0]) / values[0] * 100) : 0;
-  
+  const growthRate =
+    data.length > 1
+      ? ((values[values.length - 1] - values[0]) / values[0]) * 100
+      : 0;
+
   // Calculate efficiency (ratio of evaluations to submissions)
-  const totalSubmissions = data.reduce((sum, item) => sum + item.submissions, 0);
-  const totalEvaluations = data.reduce((sum, item) => sum + item.evaluations, 0);
-  const efficiency = totalSubmissions > 0 ? (totalEvaluations / totalSubmissions * 100) : 0;
-  
+  const totalSubmissions = data.reduce(
+    (sum, item) => sum + item.submissions,
+    0
+  );
+  const totalEvaluations = data.reduce(
+    (sum, item) => sum + item.evaluations,
+    0
+  );
+  const efficiency =
+    totalSubmissions > 0 ? (totalEvaluations / totalSubmissions) * 100 : 0;
+
   return {
     totalSubmissions: data.reduce((sum, item) => sum + item.submissions, 0),
     totalEvaluations: data.reduce((sum, item) => sum + item.evaluations, 0),
@@ -402,21 +411,23 @@ export const calculateAnalytics = (data: ProgressData[], activeView: 'submission
 export const generateInsights = (data: ProgressData[], context: ViewContext): string[] => {
   const analytics = calculateAnalytics(data, 'submissions');
   const insights: string[] = [];
-  
+
   if (analytics.growthRate > 10) {
     insights.push(`📈 Great momentum! ${analytics.growthRate}% growth in this ${context.level.slice(0, -2)} view`);
   } else if (analytics.growthRate < -10) {
     insights.push(`📉 Consider reviewing your ${context.level.slice(0, -2)} strategy`);
   }
-  
+
   if (analytics.efficiency > 80) {
-    insights.push(`⚡ Excellent evaluation efficiency at ${analytics.efficiency}%`);
+    insights.push(
+      `⚡ Excellent evaluation efficiency at ${analytics.efficiency}%`
+    );
   } else if (analytics.efficiency < 50) {
     insights.push(`🎯 Focus on completing more evaluations`);
   }
-  
+
   insights.push(`🏆 Peak performance on ${analytics.bestDay}`);
-  
+
   if (analytics.averageDaily > 5) {
     insights.push(`🔥 Consistent activity with ${analytics.averageDaily} avg ${context.level === 'daily' ? 'daily' : 'period'} submissions`);
   }
@@ -664,7 +675,7 @@ export const getStreakInsights = (streakData: StreakData): string[] => {
     const daysToGo = nextMilestone - currentStreak;
     insights.push(`🎖️ ${daysToGo} more days to reach ${nextMilestone}-day milestone!`);
   }
-  
+
   return insights;
 };
 

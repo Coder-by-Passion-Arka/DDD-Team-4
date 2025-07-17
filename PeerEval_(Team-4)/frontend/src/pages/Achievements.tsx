@@ -96,6 +96,8 @@
 
 // =================================================== //
 
+// Achievements.tsx
+
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import {
@@ -127,6 +129,7 @@ import {
   CreateAchievementData,
 } from "../services/achievements.api";
 import achievementApi from "../services/achievements.api";
+import {AchievementApiService} from "../services/achievements.api";
 
 const iconMap = {
   Medal,
@@ -170,7 +173,7 @@ const AchievementModal: React.FC<AchievementModalProps> = ({
     userId: "",
   });
 
-  const categories = achievementApi.getAchievementCategories(userRole);
+  const categories = AchievementApiService.getAchievementCategories(userRole);
   const icons = Object.keys(iconMap);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -351,8 +354,11 @@ const Achievements: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const userRole = state.user?.userRole || "student";
-  const canManageAchievements = achievementApi.canManageAchievements(userRole);
-  const canDeleteAchievements = achievementApi.canDeleteAchievements(userRole);
+
+  // Call static methods from the AchievementApiService class
+  const canManageAchievements = AchievementApiService.canManageAchievements(userRole);
+  const canDeleteAchievements = 
+    AchievementApiService.canDeleteAchievements(userRole);(userRole);
 
   // Fetch achievements from backend
   const fetchAchievements = useCallback(async () => {
@@ -384,7 +390,7 @@ const Achievements: React.FC = () => {
     }
   }, [state.user, currentPage, selectedCategory]);
 
-  // Award achievement
+  // Award achievement (from Teacher to Student)
   const handleAwardAchievement = async (data: CreateAchievementData) => {
     try {
       setIsAwardingAchievement(true);
@@ -400,6 +406,8 @@ const Achievements: React.FC = () => {
       } else {
         newAchievement = await achievementApi.createAchievement(data);
       }
+
+      console.log("New achievement:", newAchievement);
 
       // Refresh achievements list
       await fetchAchievements();
@@ -554,7 +562,7 @@ const Achievements: React.FC = () => {
             className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
           >
             <option value="">All Categories</option>
-            {achievementApi
+            {AchievementApiService
               .getAchievementCategories(userRole)
               .map((category) => (
                 <option key={category} value={category}>
@@ -711,6 +719,15 @@ const Achievements: React.FC = () => {
         </div>
       )}
 
+      {/* Functionality for Teachers only*/}
+      {userRole === "teacher" && (
+        <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-6 border border-blue-200 dark:border-blue-800">
+          <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-3">
+            📊 Class Overview
+          </h3>
+          {/* Teachers can select a particular course from the course list and then see its stats*/}
+        </div>
+      )}
       {/* Award Achievement Modal */}
       <AchievementModal
         isOpen={showAwardModal}
