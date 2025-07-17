@@ -134,6 +134,14 @@ const assignmentSchema = new mongoose.Schema(
           ],
         },
       ],
+      // Store the Files as Links 
+      filelink:[{
+        type: String,
+        required: false,
+        trim: true,
+        maxlength: [500, "Filelink cannot exceed 500 characters"],
+        unique: true,
+      }],
       maxFileSize: {
         type: Number,
         default: 50 * 1024 * 1024, // 50MB in bytes

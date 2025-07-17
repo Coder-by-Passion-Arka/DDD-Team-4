@@ -160,7 +160,7 @@ function GoToStudentProfileDialog() {
             <span className="text-sm text-gray-600 dark:text-gray-400">
               Logged in as:{" "}
               <span className="font-medium text-gray-900 dark:text-white">
-                {getRoleDisplayName(state.user?.userRole || "")}
+                {getRoleDisplayName(state.user?.userName || "")}
               </span>
             </span>
           </div>
