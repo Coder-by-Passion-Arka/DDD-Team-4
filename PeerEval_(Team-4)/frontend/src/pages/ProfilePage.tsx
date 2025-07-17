@@ -591,7 +591,7 @@ import { apiService } from "../services/api";
 
 const ProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
-  const { state: authState, updateProfile, getCurrentUser } = useAuth();
+  const { state: authState, updateProfile } = useAuth();
   const { streakData } = useStreak();
 
   // Determine if viewing own profile or another user's profile
@@ -612,8 +612,9 @@ const ProfilePage: React.FC = () => {
         setIsLoading(true);
         try {
           const response = await apiService.get(`/user/profile/${userId}`);
-          setUserData(response.data as any);
-          setTempData(response.data as any);
+          const res = response as { data: any };
+          setUserData(res.data);
+          setTempData(res.data);
         } catch (error) {
           console.error("Error fetching user data:", error);
           setError("Failed to load user profile");
@@ -646,8 +647,8 @@ const ProfilePage: React.FC = () => {
     setError("");
 
     try {
-      const updatedUser = await updateProfile(tempData);
-      setUserData(updatedUser);
+      await updateProfile(tempData);
+      setUserData(tempData);
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -705,12 +706,28 @@ const ProfilePage: React.FC = () => {
     return [];
   };
   const handleAddSkill = () => {
-    if (newSkill.trim() && !tempData?.userSkills?.includes(newSkill.trim())) {
+    if (
+      newSkill.trim() &&
+      !(
+        Array.isArray(tempData?.userSkills) &&
+        tempData.userSkills.some(
+          (skill: { name: string }) => skill.name === newSkill.trim()
+        )
+      )
+    ) {
       setTempData((prev) => {
         if (!prev) return null;
         return {
           ...prev,
-          userSkills: [...(prev.userSkills || []), newSkill.trim()],
+          userSkills: [
+            ...(prev.userSkills || []),
+            {
+              name: newSkill.trim(),
+              level: "Beginner",
+              category: "General",
+              verified: false,
+            },
+          ],
         };
       });
       setNewSkill("");
@@ -723,7 +740,9 @@ const ProfilePage: React.FC = () => {
       return {
         ...prev,
         userSkills:
-          prev.userSkills?.filter((skill) => skill !== skillToRemove) || [],
+          prev.userSkills?.filter(
+            (skill: { name: string }) => skill.name !== skillToRemove
+          ) || [],
       };
     });
   };
@@ -926,7 +945,7 @@ const ProfilePage: React.FC = () => {
                       (social, index) => (
                         <a
                           key={index}
-                          href={social.profileLink}
+                          href={social.url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg flex items-center justify-center transition-colors duration-200"
@@ -1132,7 +1151,7 @@ const ProfilePage: React.FC = () => {
                     University
                   </label>
                   <p className="text-sm sm:text-base text-gray-900 dark:text-white">
-                    {displayData?.userAcademicInformation.universityName ||
+                    {displayData?.userAcademicInformation.institution ||
                       "Not provided"}
                   </p>
                 </div>
@@ -1152,7 +1171,7 @@ const ProfilePage: React.FC = () => {
                     Grade/GPA
                   </label>
                   <p className="text-sm sm:text-base text-gray-900 dark:text-white">
-                    {displayData?.userAcademicInformation.grade ||
+                    {displayData?.userAcademicInformation.gpa ??
                       "Not provided"}
                   </p>
                 </div>
@@ -1162,17 +1181,17 @@ const ProfilePage: React.FC = () => {
                     Start Date
                   </label>
                   <p className="text-sm sm:text-base text-gray-900 dark:text-white">
-                    {displayData?.userAcademicInformation.startDate ||
+                    {displayData?.userAcademicInformation.degree ||
                       "Not provided"}
                   </p>
                 </div>
 
                 <div>
                   <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    End Date
+                    Graduation Year
                   </label>
                   <p className="text-sm sm:text-base text-gray-900 dark:text-white">
-                    {displayData?.userAcademicInformation.endDate ||
+                    {displayData?.userAcademicInformation.graduationYear ??
                       "Not provided"}
                   </p>
                 </div>
@@ -1210,6 +1229,20 @@ const ProfilePage: React.FC = () => {
                         onClick={() => handleRemoveSkill(skill)}
                         className="text-indigo-600 dark:text-indigo-400 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
                       >
+              {Array.isArray(displayData?.userSkills) && displayData.userSkills.length > 0 ? (
+                displayData.userSkills.map((skill, index) => (
+                  <div
+                    key={index}
+                    className="inline-flex items-center space-x-2 px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200 rounded-full text-sm"
+                  >
+                    <span>
+                      {skill.name}
+                    </span>
+                    {isEditing && (
+                      <button
+                        onClick={() => handleRemoveSkill(skill.name)}
+                        className="text-indigo-600 dark:text-indigo-400 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
+                      >
                         <X className="w-3 h-3" />
                       </button>
                     )}
@@ -1219,23 +1252,7 @@ const ProfilePage: React.FC = () => {
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   No skills added yet
                 </p>
-              )} */}
-              {getSkillsArray(displayData?.userSkills).length > 0 ? (
-                getSkillsArray(displayData?.userSkills).map((skill, index) => (
-                  <div
-                    key={index}
-                    className="inline-flex items-center space-x-2 px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200 rounded-full text-sm"
-                  >
-                    <span>
-                      {typeof skill === "string"
-                        ? skill
-                        : JSON.stringify(skill)}
-                    </span>
-                    {isEditing && (
-                      <button
-                        onClick={() => handleRemoveSkill(skill)}
-                        className="text-indigo-600 dark:text-indigo-400 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
-                      >
+              )}
                         <X className="w-3 h-3" />
                       </button>
                     )}
@@ -1281,6 +1298,7 @@ const ProfilePage: React.FC = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
