@@ -1609,7 +1609,14 @@ const AssignmentPage: React.FC = () => {
       setUserSkills(updatedSkills);
 
       try {
-        await updateProfile({ userSkills: updatedSkills });
+        await updateProfile({
+          userSkills: updatedSkills.map((skill) => ({
+            name: skill,
+            level: "beginner",
+            category: "general",
+            verified: false,
+          })),
+        });
         console.log("Added skills to profile:", newSkills);
       } catch (error) {
         console.error("Failed to update skills in profile:", error);
@@ -1619,7 +1626,13 @@ const AssignmentPage: React.FC = () => {
 
   useEffect(() => {
     if (state.user?.userSkills) {
-      setUserSkills(state.user.userSkills);
+      setUserSkills(
+        Array.isArray(state.user.userSkills)
+          ? state.user.userSkills.map((skill: any) =>
+              typeof skill === "string" ? skill : skill.name
+            )
+          : []
+      );
     }
   }, [state.user]);
 
@@ -1931,14 +1944,9 @@ const completeEvaluation = async (assignmentId: string) => {
     submissionData: any
   ) => {
     try {
-      // TODO: Submit assignment
-      /*
-      await apiService.post(`/assignments/${assignmentId}/submit`, submissionData);
-      */
+      console.log("📝 Submitting assignment:", submissionData);
 
-      console.log("Submitting assignment:", submissionData);
-
-      // Update local state
+      // Update local state with submission including Cloudinary URL
       setAssignmentData((prev) => ({
         ...prev,
         myAssignments: prev.myAssignments.map((assignment) =>
@@ -1946,14 +1954,20 @@ const completeEvaluation = async (assignmentId: string) => {
             ? {
                 ...assignment,
                 userSubmission: {
-                  _id: "new_sub",
+                  _id: `submission_${Date.now()}`,
                   status: "submitted",
                   submittedAt: new Date().toISOString(),
+                  cloudinaryUrl: submissionData.cloudinaryUrl,
+                  filename: submissionData.filename,
+                  content: submissionData.content,
                 },
               }
             : assignment
         ),
       }));
+
+      // Show success message with Cloudinary URL
+      alert(`✅ Assignment submitted successfully!\n📁 File uploaded: ${submissionData.filename}\n🔗 Cloudinary URL: ${submissionData.cloudinaryUrl}`);
 
       // Trigger skill suggestion
       const assignment = assignmentData.myAssignments.find(
@@ -1971,7 +1985,7 @@ const completeEvaluation = async (assignmentId: string) => {
       setShowSubmissionModal(false);
       setSelectedAssignment(null);
     } catch (error) {
-      console.error("Error submitting assignment:", error);
+      console.error("❌ Error submitting assignment:", error);
       setError("Failed to submit assignment");
     }
   };
@@ -2179,6 +2193,31 @@ const completeEvaluation = async (assignmentId: string) => {
                       assignment.userSubmission.submittedAt
                     ).toLocaleDateString()}
                   </p>
+                )}
+
+                {/* Display submitted file */}
+                {(assignment.userSubmission as any)?.cloudinaryUrl && (
+                  <div className="mt-2 p-2 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-800">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-green-600 dark:text-green-400">📄</span>
+                        <span className="text-xs font-medium text-green-900 dark:text-green-100">
+                          {(assignment.userSubmission as any)?.filename || 'Submitted File'}
+                        </span>
+                      </div>
+                      <a
+                        href={(assignment.userSubmission as any).cloudinaryUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                      >
+                        View File
+                      </a>
+                    </div>
+                    <p className="text-xs text-green-600 dark:text-green-400 mt-1 break-all">
+                      🔗 {(assignment.userSubmission as any).cloudinaryUrl}
+                    </p>
+                  </div>
                 )}
 
                 {assignment.userSubmission.score !== undefined && (
@@ -2674,29 +2713,197 @@ const completeEvaluation = async (assignmentId: string) => {
   );
 };
 
-// Submission Modal Component
+// Submission Modal Component with Cloudinary Integration
 const SubmissionModal: React.FC<{
   assignment: Assignment;
   onSubmit: (assignmentId: string, data: any) => void;
   onClose: () => void;
 }> = ({ assignment, onSubmit, onClose }) => {
   const [content, setContent] = useState("");
-  const [attachments, setAttachments] = useState<File[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
-  const handleSubmit = () => {
+  // Debug logging
+  useEffect(() => {
+    console.log("🔄 SubmissionModal state changed:", {
+      hasContent: !!content.trim(),
+      selectedFile: selectedFile?.name || null,
+      isSubmitting,
+      buttonDisabled: isSubmitting || !content.trim() || !selectedFile
+    });
+  }, [content, selectedFile, isSubmitting]);
+
+  // Keyboard support for file removal
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (selectedFile && !isSubmitting) {
+        if (event.key === 'Delete' && event.shiftKey) {
+          event.preventDefault();
+          handleRemoveFile();
+        } else if (event.key === 'Escape') {
+          event.preventDefault();
+          onClose();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [selectedFile, isSubmitting]);
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    console.log("🔍 File selected:", file);
+    
+    if (file) {
+      console.log("📄 File details:", {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        sizeMB: (file.size / (1024 * 1024)).toFixed(2)
+      });
+
+      // Validate file size (50MB max)
+      const maxSize = 50 * 1024 * 1024;
+      if (file.size > maxSize) {
+        alert("File size must be less than 50MB");
+        return;
+      }
+
+      // Validate file type
+      const allowedTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "text/plain",
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "application/zip",
+      ];
+
+      console.log("🔍 File type validation:", {
+        fileType: file.type,
+        isAllowed: allowedTypes.includes(file.type),
+        allowedTypes
+      });
+
+      if (!allowedTypes.includes(file.type)) {
+        alert("File type not supported. Please upload PDF, DOC, DOCX, TXT, images, or ZIP files.");
+        return;
+      }
+
+      console.log("✅ File accepted, setting selectedFile");
+      setSelectedFile(file);
+    }
+  };
+
+  const handleRemoveFile = () => {
+    const confirmed = window.confirm(`Are you sure you want to remove "${selectedFile?.name}"? This action cannot be undone.`);
+    
+    if (confirmed) {
+      console.log("🗑️ Removing selected file:", selectedFile?.name);
+      setSelectedFile(null);
+      setUploadProgress(0); // Reset upload progress if any
+      
+      // Reset the file input
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
+      
+      console.log("✅ File removed successfully");
+    } else {
+      console.log("❌ File removal cancelled by user");
+    }
+  };
+
+  const handleSubmit = async () => {
     if (!content.trim()) {
       alert("Please provide submission content");
       return;
     }
 
-    onSubmit(assignment._id, {
-      content,
-      attachments: attachments.map((file) => ({
-        filename: file.name,
-        size: file.size,
-        mimetype: file.type,
-      })),
-    });
+    if (!selectedFile) {
+      alert("Please select a file to submit");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setUploadProgress(0);
+
+    try {
+      // First, upload the file to get the Cloudinary URL
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
+      console.log("📤 Uploading file to backend...");
+      
+      const uploadResponse = await axios.post("http://localhost:8024/api/v1/v1/upload/single", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setUploadProgress(progress);
+          }
+        },
+      });
+
+      console.log("✅ File upload response:", uploadResponse.data);
+
+      if (!uploadResponse.data.success || !uploadResponse.data.data) {
+        throw new Error("Failed to upload file");
+      }
+
+      const fileData = uploadResponse.data.data;
+
+      // Create submission with file attachment
+      const submissionPayload = {
+        assignmentId: assignment._id,
+        content: content.trim(),
+        attachments: [
+          {
+            filename: fileData.filename || selectedFile.name,
+            originalName: fileData.originalName || selectedFile.name,
+            url: fileData.url,
+            size: fileData.size || selectedFile.size,
+            mimetype: fileData.mimetype || selectedFile.type,
+          },
+        ],
+      };
+
+      console.log("📝 Creating submission...", submissionPayload);
+
+      // Call the parent onSubmit with the submission data including Cloudinary URL
+      onSubmit(assignment._id, {
+        content: content.trim(),
+        cloudinaryUrl: fileData.url,
+        filename: selectedFile.name,
+        submissionPayload,
+      });
+
+      alert("Assignment submitted successfully!");
+      
+    } catch (error: any) {
+      console.error("❌ Submission error:", error);
+      const errorMessage = error.response?.data?.message || error.message || "Failed to submit assignment";
+      alert(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+      setUploadProgress(0);
+    }
+  };
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
   return (
@@ -2706,15 +2913,19 @@ const SubmissionModal: React.FC<{
           <div className="flex justify-between items-start">
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Submit Assignment
+                📝 Submit Assignment
               </h2>
               <p className="text-gray-600 dark:text-gray-400 mt-1">
                 {assignment.title}
               </p>
+              <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
+                Due: {new Date(assignment.dueDate).toLocaleDateString()}
+              </p>
             </div>
             <button
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              disabled={isSubmitting}
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 disabled:opacity-50"
             >
               ✕
             </button>
@@ -2722,58 +2933,166 @@ const SubmissionModal: React.FC<{
         </div>
 
         <div className="p-6 space-y-6">
+          {/* Assignment Description */}
+          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+            <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">📋 Assignment Description</h4>
+            <p className="text-blue-700 dark:text-blue-300 text-sm">{assignment.description}</p>
+          </div>
+
+          {/* Submission Content */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Submission Content *
+              💬 Submission Content *
             </label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Enter your assignment submission content..."
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-              rows={8}
+              disabled={isSubmitting}
+              placeholder="Describe your solution, approach, or any additional information about your submission..."
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white disabled:opacity-50"
+              rows={6}
               required
             />
           </div>
 
+          {/* File Upload */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Attachments (Optional)
+              📎 Upload Assignment File *
             </label>
-            <input
-              type="file"
-              multiple
-              onChange={(e) => setAttachments(Array.from(e.target.files || []))}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-            />
-            {attachments.length > 0 && (
-              <div className="mt-2 space-y-1">
-                {attachments.map((file, index) => (
-                  <div
-                    key={index}
-                    className="text-sm text-gray-600 dark:text-gray-400"
-                  >
-                    {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
+            
+            {!selectedFile ? (
+              <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-indigo-400 dark:hover:border-indigo-500 transition-colors">
+                <input
+                  type="file"
+                  onChange={handleFileSelect}
+                  disabled={isSubmitting}
+                  className="hidden"
+                  accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif,.zip"
+                  id="file-upload"
+                />
+                <label
+                  htmlFor="file-upload"
+                  className="inline-flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 cursor-pointer"
+                >
+                  <span>📁</span>
+                  <span>Choose File</span>
+                </label>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                  PDF, DOC, DOCX, TXT, Images, or ZIP files (max 50MB)
+                </p>
+              </div>
+            ) : (
+              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <span className="text-green-600 dark:text-green-400 text-xl">📄</span>
+                    <div>
+                      <p className="font-medium text-green-900 dark:text-green-100">{selectedFile.name}</p>
+                      <p className="text-sm text-green-600 dark:text-green-400">{formatFileSize(selectedFile.size)}</p>
+                    </div>
                   </div>
-                ))}
+                  <div className="flex items-center space-x-2">
+                    <button
+                      type="button"
+                      onClick={() => document.getElementById('file-upload')?.click()}
+                      disabled={isSubmitting}
+                      className="flex items-center space-x-1 text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 px-2 py-1 rounded transition-colors disabled:opacity-50"
+                      title="Change file"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                      </svg>
+                      <span className="text-xs">Change</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleRemoveFile}
+                      disabled={isSubmitting}
+                      className="flex items-center space-x-1 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 px-2 py-1 rounded transition-colors disabled:opacity-50"
+                      title="Remove file"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      <span className="text-xs">Remove</span>
+                    </button>
+                  </div>
+                </div>
+                
+                {/* File details section */}
+                <div className="mt-3 pt-3 border-t border-green-200 dark:border-green-700">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-green-600 dark:text-green-400">Type:</span>
+                      <span className="ml-2 text-green-800 dark:text-green-200">{selectedFile.type || 'Unknown'}</span>
+                    </div>
+                    <div>
+                      <span className="text-green-600 dark:text-green-400">Size:</span>
+                      <span className="ml-2 text-green-800 dark:text-green-200">{formatFileSize(selectedFile.size)}</span>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-xs text-green-600 dark:text-green-400">
+                    💡 Tip: Press <kbd className="bg-green-100 dark:bg-green-800 px-1 rounded">Shift+Delete</kbd> to remove file quickly
+                  </div>
+                </div>
               </div>
             )}
+          </div>
+
+          {/* Upload Progress */}
+          {isSubmitting && uploadProgress > 0 && uploadProgress < 100 && (
+            <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-blue-900 dark:text-blue-100">Uploading...</span>
+                <span className="text-sm text-blue-600 dark:text-blue-400">{uploadProgress}%</span>
+              </div>
+              <div className="w-full bg-blue-200 dark:bg-blue-800 rounded-full h-2">
+                <div
+                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Debug Info */}
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg border border-yellow-200 dark:border-yellow-800">
+            <h4 className="text-sm font-medium text-yellow-900 dark:text-yellow-100 mb-2">🔍 Debug Info</h4>
+            <div className="text-xs text-yellow-700 dark:text-yellow-300 space-y-1">
+              <div>Content: {content.trim() ? `"${content.substring(0, 30)}..."` : "❌ Empty"}</div>
+              <div>File: {selectedFile ? `✅ ${selectedFile.name} (${(selectedFile.size / 1024 / 1024).toFixed(2)}MB)` : "❌ No file selected"}</div>
+              <div>Submitting: {isSubmitting ? "🔄 Yes" : "✅ No"}</div>
+              <div>Button Enabled: {!(isSubmitting || !content.trim() || !selectedFile) ? "✅ Yes" : "❌ No"}</div>
+            </div>
           </div>
         </div>
 
         <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 rounded-lg transition-colors"
+            disabled={isSubmitting}
+            className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
-            disabled={!content.trim()}
-            className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            disabled={isSubmitting || !content.trim() || !selectedFile}
+            className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+            title={`Debug: isSubmitting=${isSubmitting}, hasContent=${!!content.trim()}, hasFile=${!!selectedFile}, content="${content.substring(0, 20)}...", fileName="${selectedFile?.name || 'none'}"`}
           >
-            Submit Assignment
+            {isSubmitting ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span>Submitting...</span>
+              </>
+            ) : (
+              <>
+                <span>📤</span>
+                <span>Submit Assignment</span>
+              </>
+            )}
           </button>
         </div>
       </div>
