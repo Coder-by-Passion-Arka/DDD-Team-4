@@ -12,7 +12,7 @@
 
 //   constructor() {
 //     this.axiosInstance = axios.create({
-//       baseURL: import.meta.env.VITE_API_URL || "http://localhost:8024/api", // Fixed port
+//       baseURL: import.meta.env.VITE_API_URL || "http://localhost:8024/api/v1", // Fixed port and path
 //       timeout: 10000,
 //       withCredentials: true, // Include cookies
 //       headers: {

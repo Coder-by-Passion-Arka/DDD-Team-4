@@ -45,16 +45,19 @@ const Register: React.FC = () => {
     if (state.isAuthenticated && state.user && !state.isLoading) {
       console.log("✅ Redirecting user after registration...");
 
-      // Check if profile completion is needed
-      if (state.needsProfileCompletion) {
-        console.log(
-          "📋 Profile completion needed, redirecting to complete-profile"
-        );
-        navigate("/complete-profile", { replace: true });
-      } else {
-        console.log("🏠 Redirecting to dashboard");
-        navigate("/dashboard", { replace: true });
-      }
+      // Add a small delay to ensure state is fully updated
+      setTimeout(() => {
+        // Check if profile completion is needed
+        if (state.needsProfileCompletion) {
+          console.log(
+            "📋 Profile completion needed, redirecting to complete-profile"
+          );
+          navigate("/complete-profile", { replace: true });
+        } else {
+          console.log("🏠 Redirecting to dashboard");
+          navigate("/dashboard", { replace: true });
+        }
+      }, 100);
     }
   }, [
     state.isAuthenticated,
@@ -64,7 +67,19 @@ const Register: React.FC = () => {
     navigate,
   ]);
 
-  // Redirect if already authenticated
+  // Show loading state while authenticating
+  if (state.isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Early redirect if already authenticated (but not during loading)
   if (state?.isAuthenticated && !state.isLoading) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -161,9 +176,15 @@ const Register: React.FC = () => {
       console.log("🔍 Submitting registration form...");
 
       await register(formData);
+      console.log("✅ Registration completed successfully");
 
-      console.log("✅ Registration function completed successfully");
-      // Note: The redirect will happen automatically via useEffect above
+      // Direct redirect after successful registration
+      toast.success("Registration successful! Redirecting to dashboard...");
+      
+      setTimeout(() => {
+        navigate("/dashboard", { replace: true });
+      }, 1000);
+
     } catch (error) {
       console.error("❌ Registration form submission error:", error);
 

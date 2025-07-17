@@ -430,9 +430,6 @@ const SocialProfileCompletion: React.FC<SocialProfileCompletionProps> = ({
       await onComplete(formData);
 
       console.log("✅ Profile completion successful through onComplete");
-      
-      // Note: Don't manually hide the modal here - let the parent component handle it
-      // based on the updated needsProfileCompletion state
     } catch (error) {
       console.error("❌ Error completing profile:", error);
       toast.error("Failed to complete profile. Please try again.", {

@@ -6,6 +6,7 @@ import ThemeToggle from './ThemeToggle';
 import FloatingChatbot from './FloatingChatbot';
 import LeaderboardPanel from './LeaderboardPanel';
 import GameModal from "./GameModal";
+import { useStreak } from '../contexts/StreakContext';
 
 const Breadcrumb: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -20,8 +21,9 @@ const Breadcrumb: React.FC = () => {
   const streakTooltipTimeout = useRef<NodeJS.Timeout | null>(null);
   const navigate = useNavigate();
   
-  // Current user's streak - this could come from props or context in a real app
-  const currentStreak = 12;
+  // Get current user's streak from StreakContext
+  const { streakData } = useStreak();
+  const currentStreak = streakData.currentStreak;
 
   const handleStreakClick = (e?: React.MouseEvent) => {
     if (e) {

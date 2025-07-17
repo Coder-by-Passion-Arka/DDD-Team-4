@@ -137,6 +137,7 @@ import ProgressChart from "../components/ProgressChart";
 import StreakCounter from "../components/StreakCounter";
 import RecentAssignments from "../components/RecentAssignments";
 import { useAuth } from "../contexts/AuthContext";
+import { useStreak } from "../contexts/StreakContext";
 // import { apiService } from "../services/api";
 import {
   GoogleLogin,
@@ -173,12 +174,11 @@ interface DashboardData {
     submissions: number;
     evaluations: number;
   }>;
-  currentStreak: number;
-  bestStreak: number;
 }
 
 const Dashboard: React.FC = () => {
   const { state, googleLogin, googleLogout } = useAuth();
+  const { streakData } = useStreak();
   const toast = useToast();
   const [showProfileCompletion, setShowProfileCompletion] = useState(false);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
@@ -226,8 +226,6 @@ const Dashboard: React.FC = () => {
                   { day: "Sat", submissions: Math.floor(Math.random() * 8) + 3, evaluations: Math.floor(Math.random() * 5) + 2 },
                   { day: "Sun", submissions: Math.floor(Math.random() * 10) + 4, evaluations: Math.floor(Math.random() * 6) + 3 },
                 ],
-                currentStreak: Math.floor(Math.random() * 25) + 10,  // 10-35 day streak
-                bestStreak: Math.floor(Math.random() * 60) + 30,     // 30-90 day best streak
               };
               break;
 
@@ -248,8 +246,6 @@ const Dashboard: React.FC = () => {
                   { day: "Sat", submissions: Math.floor(Math.random() * 20) + 15, evaluations: Math.floor(Math.random() * 15) + 12 },
                   { day: "Sun", submissions: Math.floor(Math.random() * 22) + 18, evaluations: Math.floor(Math.random() * 18) + 15 },
                 ],
-                currentStreak: Math.floor(Math.random() * 40) + 20,  // 20-60 day streak
-                bestStreak: Math.floor(Math.random() * 70) + 50,     // 50-120 day best streak
               };
               break;
 
@@ -394,8 +390,6 @@ const Dashboard: React.FC = () => {
                   // { day: "Sat", submissions: 2, evaluations: 1 },
                   // { day: "Sun", submissions: 3, evaluations: 2 },
                 ],
-                currentStreak: Math.floor(Math.random() * 20) + 5,  // 5-25 day streak
-                bestStreak: Math.floor(Math.random() * 50) + 25,    // 25-75 day best streak
               };
           }
 
@@ -719,7 +713,7 @@ const Dashboard: React.FC = () => {
             value={stats.completed}
             icon={BookOpenIcon}
             color="purple"
-            trend={stats.completed > 0 ? "+3%" : "0%"} // TODO: Need to retrieve them from the backend API
+            trend={stats.completed > 0 ? "+23%" : "0%"} // TODO: Need to retrieve them from the backend API
           />
         </div>
 
@@ -727,11 +721,8 @@ const Dashboard: React.FC = () => {
           <div className="lg:col-span-2">
             <ProgressChart />
           </div>
-          <div className="transition-all duration-300 rounded-2xl">
-            <StreakCounter
-              currentStreak={dashboardData.currentStreak}
-              bestStreak={dashboardData.bestStreak}
-            />
+          <div id="streak-section" className="transition-all duration-300 rounded-2xl">
+            <StreakCounter />
           </div>
         </div>
 
@@ -824,21 +815,18 @@ const Dashboard: React.FC = () => {
             value={stats.coursesManaged}
             icon={TargetIcon}
             color="purple"
-            trend="0%"
+            trend="+1"
           />
         </div>
 
-        {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
           <div className="lg:col-span-2">
-            <ProgressChart data={dashboardData.dailyProgress} />
+            <ProgressChart />
           </div>
-          <div className="transition-all duration-300 rounded-2xl">
-            <StreakCounter
-              currentStreak={dashboardData.currentStreak}
-              bestStreak={dashboardData.bestStreak}
-            />
+          <div id="streak-section" className="transition-all duration-300 rounded-2xl">
+            <StreakCounter />
           </div>
-        </div> */}
+        </div>
 
         {/* Teacher-specific features */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -881,7 +869,7 @@ const Dashboard: React.FC = () => {
               <p>
                 • {stats.pendingEvaluations} evaluations awaiting your review
               </p>
-              <p>• {dashboardData.currentStreak} day teaching streak!</p>
+              <p>• {streakData.currentStreak} day teaching streak!</p>
             </div>
           </div>
         </div>
@@ -931,7 +919,7 @@ const Dashboard: React.FC = () => {
             value={stats.systemHealth}
             icon={BarChartIcon}
             color="amber"
-            trend="+2%"
+            trend="+1%"
           />
         </div>
 
@@ -939,11 +927,8 @@ const Dashboard: React.FC = () => {
           <div className="lg:col-span-2">
             <ProgressChart />
           </div>
-          <div className="transition-all duration-300 rounded-2xl">
-            <StreakCounter
-              currentStreak={dashboardData.currentStreak}
-              bestStreak={dashboardData.bestStreak}
-            />
+          <div id="streak-section" className="transition-all duration-300 rounded-2xl">
+            <StreakCounter />
           </div>
         </div>
 

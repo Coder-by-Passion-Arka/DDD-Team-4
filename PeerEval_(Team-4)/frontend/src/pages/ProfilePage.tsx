@@ -586,11 +586,13 @@ import {
   Loader2,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import { useStreak } from "../contexts/StreakContext";
 import { apiService } from "../services/api";
 
 const ProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const { state: authState, updateProfile, getCurrentUser } = useAuth();
+  const { streakData } = useStreak();
 
   // Determine if viewing own profile or another user's profile
   const isOwnProfile = !userId || userId === authState.user?._id;
@@ -754,7 +756,7 @@ const ProfilePage: React.FC = () => {
     },
     {
       label: "Current Streak",
-      value: "12 days",
+      value: `${streakData.currentStreak} day${streakData.currentStreak !== 1 ? 's' : ''}`,
       icon: Calendar,
       color: "text-purple-600 dark:text-purple-400",
     },

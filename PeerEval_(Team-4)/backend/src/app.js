@@ -12,7 +12,7 @@ connectDB()
   .then(() => {
     const port = process.env.PORT || 8024;
     server.listen(port, () => {
-      console.log(`Server running on https://localhost:${port}`);
+      console.log(`Server running on http://localhost:${port}`);
       console.log("Connected to MongoDB successfully.");
     });
   })// Execute immediately asynchronously //

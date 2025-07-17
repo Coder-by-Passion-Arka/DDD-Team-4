@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Network Connection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>🌐 Network Connection Diagnostics</h1>
+    
+    <div>
+        <button onclick="testBackendHealth()">Test Backend Health</button>
+        <button onclick="testCORS()">Test CORS Policy</button>
+        <button onclick="testAuthEndpoint()">Test Auth Endpoint</button>
+        <button onclick="runAllTests()">Run All Tests</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <script>
+        const resultsDiv = document.getElementById('results');
+        
+        function addResult(type, title, message, details = '') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `
+                <h3>${title}</h3>
+                <p>${message}</p>
+                ${details ? `<pre>${details}</pre>` : ''}
+            `;
+            resultsDiv.appendChild(div);
+        }
+        
+        async function testBackendHealth() {
+            try {
+                const response = await fetch('http://localhost:8024/api/v1/health');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addResult('success', '✅ Backend Health Check', 
+                        'Backend server is running correctly!', 
+                        JSON.stringify(data, null, 2));
+                } else {
+                    addResult('error', '❌ Backend Health Check Failed', 
+                        `Server responded with status: ${response.status}`, 
+                        JSON.stringify(data, null, 2));
+                }
+            } catch (error) {
+                addResult('error', '❌ Backend Connection Failed', 
+                    'Cannot connect to backend server. Make sure it\'s running on port 8024.', 
+                    error.message);
+            }
+        }
+        
+        async function testCORS() {
+            try {
+                const response = await fetch('http://localhost:8024/api/v1/health', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    addResult('success', '✅ CORS Policy Check', 
+                        'CORS is configured correctly. Cross-origin requests are allowed.');
+                } else {
+                    addResult('warning', '⚠️ CORS Policy Issue', 
+                        `CORS request failed with status: ${response.status}`);
+                }
+            } catch (error) {
+                if (error.message.includes('CORS')) {
+                    addResult('error', '❌ CORS Policy Error', 
+                        'CORS policy is blocking requests from frontend to backend.', 
+                        error.message);
+                } else {
+                    addResult('error', '❌ Network Error', 
+                        'General network error occurred.', 
+                        error.message);
+                }
+            }
+        }
+        
+        async function testAuthEndpoint() {
+            try {
+                const response = await fetch('http://localhost:8024/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        userEmail: 'test@test.com',
+                        userPassword: 'wrongpassword'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.status === 400 || response.status === 401) {
+                    addResult('success', '✅ Auth Endpoint Accessible', 
+                        'Auth endpoint is working (expected failure for wrong credentials).', 
+                        JSON.stringify(data, null, 2));
+                } else if (response.ok) {
+                    addResult('warning', '⚠️ Unexpected Success', 
+                        'Auth endpoint responded with success (unexpected for test credentials).', 
+                        JSON.stringify(data, null, 2));
+                } else {
+                    addResult('error', '❌ Auth Endpoint Error', 
+                        `Auth endpoint failed with status: ${response.status}`, 
+                        JSON.stringify(data, null, 2));
+                }
+            } catch (error) {
+                addResult('error', '❌ Auth Endpoint Connection Failed', 
+                    'Cannot connect to auth endpoint.', 
+                    error.message);
+            }
+        }
+        
+        async function runAllTests() {
+            resultsDiv.innerHTML = '';
+            addResult('warning', '🔄 Running Network Diagnostics...', 
+                'Testing all endpoints and connections...');
+            
+            await testBackendHealth();
+            await testCORS();
+            await testAuthEndpoint();
+            
+            addResult('success', '📋 Diagnostics Complete', 
+                'All network tests have been completed. Check results above.');
+        }
+        
+        // Auto-run basic test on page load
+        window.addEventListener('load', () => {
+            addResult('warning', '🚀 Network Diagnostics Started', 
+                'Click the buttons above to test different aspects of the network connection.');
+        });
+    </script>
+</body>
+</html>

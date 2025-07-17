@@ -31,6 +31,8 @@ import Courses from "./pages/Courses";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ToastProvider } from "./contexts/ToastContext";
+import { AnalyticsProvider } from "./contexts/AnalyticsContext";
+import { StreakProvider } from "./contexts/StreakContext";
 import ToastContainer from "./components/ToastContainer";
 import { useAuth } from "./contexts/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -99,7 +101,11 @@ function App() {
       <ThemeProvider>
         <ToastProvider>
           <AuthProvider>
-            <AppContent />
+            <AnalyticsProvider>
+              <StreakProvider>
+                <AppContent />
+              </StreakProvider>
+            </AnalyticsProvider>
           </AuthProvider>
         </ToastProvider>
       </ThemeProvider>

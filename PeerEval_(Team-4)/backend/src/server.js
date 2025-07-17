@@ -27,7 +27,23 @@ const morganFormat =
 // Enable CORS for cross-origin requests
 server.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      // Allow localhost on any port for development
+      if (origin.match(/^http:\/\/localhost:\d+$/)) {
+        return callback(null, true);
+      }
+      
+      // Allow the specific configured origin
+      if (origin === process.env.CORS_ORIGIN) {
+        return callback(null, true);
+      }
+      
+      // Reject other origins
+      return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
     optionsSuccessStatus: 200,
     allowedHeaders: ["Content-Type", "Authorization"],

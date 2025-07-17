@@ -396,6 +396,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       dispatch({ type: "SET_LOADING", payload: true });
       dispatch({ type: "CLEAR_ERROR" });
 
+      console.log("🔍 Starting registration process...");
+
       // Create FormData for file upload
       const formData = new FormData();
 
@@ -425,6 +427,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         },
       });
 
+      console.log("🔍 Registration response received:", response);
+
       if (response.user && response.accessToken) {
         // Store tokens
         localStorage.setItem("accessToken", response.accessToken);
@@ -441,8 +445,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           },
         });
 
+        console.log("✅ Registration state updated successfully");
         toast.success(`Welcome to the platform, ${response.user.userName}!`);
+        
+        // Force a small delay to ensure state propagation
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        return Promise.resolve();
       } else {
+        console.error("❌ Invalid response structure:", response);
         throw new Error("Invalid response from server");
       }
     } catch (error: any) {

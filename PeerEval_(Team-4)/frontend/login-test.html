@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 5px; white-space: pre-wrap; }
+        .error { background: #f8d7da; color: #721c24; }
+        .success { background: #d4edda; color: #155724; }
+        input { padding: 8px; margin: 5px; border: 1px solid #ddd; border-radius: 4px; width: 200px; }
+        .form-group { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Login Test</h1>
+        
+        <div class="form-group">
+            <label>Email:</label><br>
+            <input type="email" id="email" value="test@example.com" placeholder="Enter email">
+        </div>
+        
+        <div class="form-group">
+            <label>Password:</label><br>
+            <input type="password" id="password" value="password123" placeholder="Enter password">
+        </div>
+        
+        <button onclick="testAPI()">🏥 Test API Health</button>
+        <button onclick="testLogin()">🔑 Test Login</button>
+        <button onclick="testGoogleAuth()">🌐 Test Google Auth Info</button>
+        
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8024/api/v1';
+        
+        async function testAPI() {
+            const result = document.getElementById('result');
+            try {
+                result.innerHTML = '⏳ Testing API health...';
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                result.className = 'result success';
+                result.innerHTML = '✅ API Health Test Successful:\n' + JSON.stringify(data, null, 2);
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = '❌ API Health Test Error:\n' + error.message;
+            }
+        }
+
+        async function testLogin() {
+            const result = document.getElementById('result');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                result.innerHTML = '⏳ Testing login...';
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        userEmail: email,
+                        userPassword: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.className = 'result success';
+                    result.innerHTML = '✅ Login Test Response:\n' + JSON.stringify(data, null, 2);
+                } else {
+                    result.className = 'result error';
+                    result.innerHTML = '⚠️ Login Failed (Expected):\n' + JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = '❌ Login Test Error:\n' + error.message + '\n\nThis could indicate CORS or network issues.';
+            }
+        }
+        
+        async function testGoogleAuth() {
+            const result = document.getElementById('result');
+            try {
+                result.innerHTML = '⏳ Testing Google auth configuration...';
+                result.className = 'result';
+                result.innerHTML = '🌐 Google Auth Configuration:\nClient ID: ' + (window.VITE_GOOGLE_CLIENT_ID || 'Not configured in test') + '\nAPI Base: ' + API_BASE;
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = '❌ Google Auth Test Error:\n' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

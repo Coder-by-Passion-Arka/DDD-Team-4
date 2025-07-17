@@ -131,8 +131,7 @@ const googleAuth = asyncHandler(async (request, response) => {
               user: loggedInUser,
               accessToken,
               refreshToken,
-              needsProfileCompletion:false,
-              needsProfileCompletion:true
+              needsProfileCompletion: false,
             },
             "Google login successful."
           )
@@ -441,6 +440,9 @@ const registerUser = asyncHandler(async (request, response) => {
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
   };
 
+  // Check if profile completion is needed (for regular registration, usually false since they provided all details)
+  const needsProfileCompletion = false; // Regular registration includes all required fields
+
   console.log("User registered successfully:", createdUser.userName);
 
   return response
@@ -457,6 +459,7 @@ const registerUser = asyncHandler(async (request, response) => {
           user: createdUser,
           accessToken,
           refreshToken,
+          needsProfileCompletion,
         },
         "User has been registered successfully."
       )
@@ -528,6 +531,12 @@ const loginUser = asyncHandler(async (request, response) => {
 
     console.log(" ====================================================== ");
 
+    // Check if profile completion is needed
+    const needsProfileCompletion =
+      !loggedInUser.userPhoneNumber ||
+      !loggedInUser.userLocation?.homeAddress ||
+      !loggedInUser.userLocation?.currentAddress;
+
     return response
       .status(200)
       .cookie("accessToken", accessToken, cookieOptions)
@@ -539,6 +548,7 @@ const loginUser = asyncHandler(async (request, response) => {
             user: loggedInUser,
             accessToken,
             refreshToken,
+            needsProfileCompletion,
           },
           "User has been logged in successfully."
         )
