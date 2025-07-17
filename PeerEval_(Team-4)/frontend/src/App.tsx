@@ -28,7 +28,13 @@ import SettingsPage from "./pages/SettingsPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import GoToStudentProfile from "./pages/GoToStudentProfile";
+import GoToTeacherProfile from "./pages/GoToTeacherProfile";
 import Courses from "./pages/Courses";
+import StudentsPage from "./pages/Students";
+
+// Admin Components
+import AdminUserManagement from "./pages/AdminUserManagement";
+import AdminSystemSettings from "./pages/AdminSystemSettings";
 
 // Context Imports
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -39,33 +45,6 @@ import { StreakProvider } from "./contexts/StreakContext";
 import ToastContainer from "./components/ToastContainer";
 import { useAuth } from "./contexts/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-
-// Admin Components
-const AdminUserManagement: React.FC = () => (
-  <div className="p-6">
-    <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-      User Management
-    </h1>
-    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-100 dark:border-gray-700">
-      <p className="text-gray-600 dark:text-gray-400">
-        Admin user management interface - coming soon...
-      </p>
-    </div>
-  </div>
-);
-
-const AdminSystemSettings: React.FC = () => (
-  <div className="p-6">
-    <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-      System Settings
-    </h1>
-    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-100 dark:border-gray-700">
-      <p className="text-gray-600 dark:text-gray-400">
-        System settings interface - coming soon...
-      </p>
-    </div>
-  </div>
-);
 
 //  NEW: Complete Profile Page component
 const CompleteProfilePage: React.FC = () => (
@@ -222,6 +201,7 @@ const AppContent: React.FC = () => {
               <Route path="dashboard" element={<DashboardHome />} />
               <Route path="courses" element={<Courses />} />
               <Route path="find-student" element={<GoToStudentProfile />} />
+              <Route path="find-teacher" element={<GoToTeacherProfile />} />
               <Route path="assignments" element={<AssignmentPage />} />
               <Route path="evaluations" element={<EvaluationsPage />} />
               <Route path="analytics" element={<AnalyticsPage />} />
@@ -229,6 +209,7 @@ const AppContent: React.FC = () => {
               <Route path="profile" element={<ProfilePage />} />
               <Route path="profile/:userId" element={<ProfilePage />} />
               <Route path="settings" element={<SettingsPage />} />
+              <Route path="students" element={<StudentsPage />} />
 
               {/* Admin-only routes */}
               <Route
