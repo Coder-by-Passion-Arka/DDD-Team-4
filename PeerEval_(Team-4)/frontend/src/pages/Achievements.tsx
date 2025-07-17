@@ -354,8 +354,8 @@ const Achievements: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const userRole = state.user?.userRole || "student";
-  // Call static methods from the AchievementApiService class
 
+  // Call static methods from the AchievementApiService class
   const canManageAchievements = AchievementApiService.canManageAchievements(userRole);
   const canDeleteAchievements = 
     AchievementApiService.canDeleteAchievements(userRole);(userRole);
@@ -390,7 +390,7 @@ const Achievements: React.FC = () => {
     }
   }, [state.user, currentPage, selectedCategory]);
 
-  // Award achievement
+  // Award achievement (from Teacher to Student)
   const handleAwardAchievement = async (data: CreateAchievementData) => {
     try {
       setIsAwardingAchievement(true);
@@ -406,6 +406,8 @@ const Achievements: React.FC = () => {
       } else {
         newAchievement = await achievementApi.createAchievement(data);
       }
+
+      console.log("New achievement:", newAchievement);
 
       // Refresh achievements list
       await fetchAchievements();
@@ -717,6 +719,15 @@ const Achievements: React.FC = () => {
         </div>
       )}
 
+      {/* Functionality for Teachers only*/}
+      {userRole === "teacher" && (
+        <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-6 border border-blue-200 dark:border-blue-800">
+          <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-3">
+            📊 Class Overview
+          </h3>
+          {/* Teachers can select a particular course from the course list and then see its stats*/}
+        </div>
+      )}
       {/* Award Achievement Modal */}
       <AchievementModal
         isOpen={showAwardModal}

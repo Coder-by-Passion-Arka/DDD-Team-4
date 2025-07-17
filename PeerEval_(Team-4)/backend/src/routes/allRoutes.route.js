@@ -11,6 +11,10 @@ import dailyActivityRoutes from "./dailyActivity.route.js";
 import leaderboardRoutes from "./leaderboard.route.js";
 import preferencesRoutes from "./preferences.route.js";
 // import dashboardRoutes from "./dashboard.routes.js";
+// import {
+//   findStudent,
+//   findTeacher,
+// } from "../controllers/findUser.controller.js";
 import uploadRoutes from "./upload.route.js";
 import {
   corsMiddleware,
@@ -50,6 +54,8 @@ router.use("/leaderboard", leaderboardRoutes);
 router.use("/preferences", preferencesRoutes);
 // router.use("/dashboard");
 router.use("/upload", uploadRoutes);
+// router.use("/find-student", findStudent);
+// router.use("/find-teacher", findTeacher);
 
 // Add health check
 router.get("/health", (request, response) => {
@@ -85,6 +91,8 @@ router.get("/", (request, response) => {
       leaderboard: "/api/v1/leaderboard",
       preferences: "/api/v1/preferences",
       upload: "/api/v1/upload",
+      // findStudent: "/api/v1/find-student",
+      // findTeacher: "/api/v1/find-teacher",
     },
     supportedVersions: ["v1"],
   });
