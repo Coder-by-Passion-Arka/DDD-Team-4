@@ -1512,6 +1512,7 @@ import {
 import SkillSuggestionModal from "../components/SkillSuggestionModal";
 import { useSkillSuggestion } from "../hooks/useSkillSuggestion";
 import { useAuth } from "../contexts/AuthContext";
+//import axios from "axios";
 // import { apiService } from "../services/api";
 
 interface Assignment {
@@ -1624,7 +1625,22 @@ const AssignmentPage: React.FC = () => {
   useEffect(() => {
     fetchAssignments();
   }, [state.user, userRole]);
+// const completeEvaluation = async (assignmentId: string) => {
+//   try {
+//     const res = await axios.patch(`/api/v1/assignments/${assignmentId}`, {
+//       status: "completed",
+//     });
+//     console.log("Marked as completed:", res.data);
 
+//     // OPTIONAL: refresh assignment list if needed
+//     // await fetchAssignments();  ← only if you have such a function
+
+//   } catch (error) {
+//     console.error("Error completing evaluation:", error);
+//   }
+// };
+
+  
   const fetchAssignments = async () => {
     if (!state.user) return;
 
@@ -2258,6 +2274,13 @@ const AssignmentPage: React.FC = () => {
                     >
                       Complete Evaluations
                     </button>
+                    {/* <button
+  onClick={() => completeEvaluation(assignment._id)}
+  className="px-4 py-2 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
+>
+  Complete Evaluation
+</button>
+ */}
                   )}
               </div>
             </div>
