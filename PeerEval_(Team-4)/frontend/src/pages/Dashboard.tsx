@@ -903,19 +903,19 @@ const Dashboard: React.FC = () => {
             </h3>
             <div className="space-y-3">
               <button
-                onClick={() => (window.location.href = "/assignments/create")}
+                onClick={() => { window.location.href = "/assignments/create"; }}
                 className="w-full text-left px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Create New Assignment
               </button>
               <button
-                onClick={() => (window.location.href = "/students")}
+                onClick={() => { window.location.href = "/students"; }}
                 className="w-full text-left px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
               >
                 Manage Students
               </button>
               <button
-                onClick={() => (window.location.href = "/evaluations/pending")}
+                onClick={() => { window.location.href = "/evaluations/pending"; }}
                 className="w-full text-left px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
               >
                 Review Pending Evaluations
