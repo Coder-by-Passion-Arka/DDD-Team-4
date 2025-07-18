@@ -834,7 +834,7 @@ const Dashboard: React.FC = () => {
 
     return (
       <>
-        {/* Enable Google Login */}
+        {/* Enable Google Login 
         <GoogleLogin
           // clientId={process.env.GOOGLE_CLIENT_ID}
           // clientSecret={process.env.GOOGLE_CLIENT_SECRET}
@@ -844,7 +844,7 @@ const Dashboard: React.FC = () => {
           }} //  TODO: Make a Toast of login failure here
           // cookiePolicy={"single_host_origin"}
           // isSignedIn={true}
-        />
+        />*/}
 
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-900 to-blue-600 dark:from-blue-300 dark:to-blue-100 bg-clip-text text-transparent mb-2 sm:mb-3">
