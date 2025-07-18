@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   // ArrowLeft,
   User,
@@ -644,7 +645,7 @@ const AssignmentPage: React.FC = () => {
   const [showCreateAssignmentModal, setShowCreateAssignmentModal] = useState(false);
   const [showEvaluationsModal, setShowEvaluationsModal] = useState(false);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
-
+  const navigate = useNavigate();
   const userRole = state.user?.userRole || "student";
 
   // Skill suggestion hook
@@ -687,18 +688,7 @@ const AssignmentPage: React.FC = () => {
   }, [state.user, userRole]);
 
   const completeEvaluation = async (assignmentId: string) => {
-    try {
-      const res = await axios.patch(`/api/v1/assignments/${assignmentId}`, {
-        status: "completed",
-      });
-      console.log("Marked as completed:", res.data);
-
-      // OPTIONAL: refresh assignment list if needed
-      // await fetchAssignments();  ← only if you have such a function
-
-    } catch (error) {
-      console.error("Error completing evaluation:", error);
-    }
+    navigate("/evaluations");
   };
 
   const fetchAssignments = async () => {
