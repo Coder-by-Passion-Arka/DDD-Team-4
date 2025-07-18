@@ -246,6 +246,10 @@ export const getLeaderboard = async (req, res, next) => {
         userName: 1,
         userProfileImage: 1,
         "statistics.averageScore": 1,
+        // Add these fields to be included in the response
+        "statistics.completedAssignments": 1,
+        "statistics.totalEvaluations": 1,
+        displayName: 1, // Include displayName for frontend mapping
       }
     )
       .sort({ "statistics.averageScore": -1 })

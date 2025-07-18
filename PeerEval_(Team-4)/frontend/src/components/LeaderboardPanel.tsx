@@ -403,13 +403,15 @@ interface LeaderboardEntry {
   score: number;
   rank: number; // This will be calculated on the client side
   change: number; // This will be simulated or removed if not available from the API
-  evaluationsCompleted: number; // This will be simulated or removed if not available from the API
-  assignmentsSubmitted: number; // This will be simulated or removed if not available from the API
+  evaluationsCompleted: number; // This will now come from the API
+  assignmentsSubmitted: number; // This will now come from the API
 }
 
 interface BackendLeaderboardEntry {
   statistics: {
     averageScore: number;
+    completedAssignments: number; // Add this field
+    totalEvaluations: number; // Add this field
   };
   _id: string;
   userName: string;
@@ -448,8 +450,9 @@ const LeaderBoardService = {
           score: entry.statistics.averageScore,
           rank: 0, // Will be set after sorting
           change: 0, // Placeholder, as change is not in the provided API response
-          evaluationsCompleted: 0, // Placeholder, as not in the provided API response
-          assignmentsSubmitted: 0, // Placeholder, as not in the provided API response
+          // Map these directly from the backend response
+          evaluationsCompleted: entry.statistics.totalEvaluations, // Changed to map from totalEvaluations
+          assignmentsSubmitted: entry.statistics.completedAssignments, // Changed to map from completedAssignments
         }))
         .sort((a, b) => b.score - a.score) // Sort by score in descending order
         .map((entry, index) => ({
@@ -679,6 +682,12 @@ const LeaderboardPanel: React.FC<LeaderboardPanelProps> = ({
                           <p className="text-xs text-gray-600 dark:text-gray-400">
                             {entry.score.toLocaleString()} pts
                           </p>
+                           {/* Display evaluationsCompleted and assignmentsSubmitted */}
+                          <div className="flex items-center space-x-2 text-xs text-gray-600 dark:text-gray-400">
+                            <span>Evaluations: {entry.evaluationsCompleted}</span>
+                            <span>•</span>
+                            <span>Assignments: {entry.assignmentsSubmitted}</span>
+                          </div>
                         </div>
                         <div className="text-right">
                           {getChangeIndicator(entry.change)}
@@ -727,9 +736,9 @@ const LeaderboardPanel: React.FC<LeaderboardPanelProps> = ({
                         {entry.name}
                       </p>
                       <div className="flex items-center space-x-2 text-xs text-gray-600 dark:text-gray-400">
-                        <span>{entry.evaluationsCompleted}</span>
+                        <span>Evaluations: {entry.evaluationsCompleted}</span>
                         <span>•</span>
-                        <span>{entry.assignmentsSubmitted}</span>
+                        <span>Assignments: {entry.assignmentsSubmitted}</span>
                       </div>
                     </div>
 
