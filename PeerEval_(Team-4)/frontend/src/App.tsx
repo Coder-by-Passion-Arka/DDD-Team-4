@@ -192,9 +192,9 @@ const AppContent: React.FC = () => {
               }
             />
 
+
             {/* Public routes for teacher dashboard buttons */}
             <Route path="assignments/create" element={<AssignmentPage />} />
-            <Route path="students" element={<StudentsPage />} />
             <Route path="evaluations/pending" element={<EvaluationsPage />} />
 
             {/* Protected routes with layout */}
@@ -208,6 +208,7 @@ const AppContent: React.FC = () => {
             >
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<DashboardHome />} />
+
               <Route path="courses" element={<Courses />} />
               <Route path="find-student" element={<GoToStudentProfile />} />
               <Route path="find-teacher" element={<GoToTeacherProfile />} />
@@ -218,6 +219,8 @@ const AppContent: React.FC = () => {
               <Route path="profile" element={<ProfilePage />} />
               <Route path="profile/:userId" element={<ProfilePage />} />
               <Route path="settings" element={<SettingsPage />} />
+              {/* Students page now inside layout for sidebar visibility */}
+              <Route path="students" element={<StudentsPage />} />
 
               {/* Admin-only routes */}
               <Route
