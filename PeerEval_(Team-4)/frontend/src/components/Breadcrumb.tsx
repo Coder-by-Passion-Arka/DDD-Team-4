@@ -240,7 +240,6 @@ const Breadcrumb: React.FC = () => {
               {currentStreak}
             </span>
           </div>
-
           {/* Streak tooltip */}
           <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
             {currentStreak} day streak - Click to view details
@@ -254,10 +253,22 @@ const Breadcrumb: React.FC = () => {
           aria-label="Open games"
         >
           <Gamepad2 className="w-6 h-6 text-purple-500 group-hover:text-purple-600 transition-colors duration-200" />
-
           {/* Games tooltip */}
           <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
             Play games
+          </div>
+        </button>
+
+        {/* Recent Assignments Button (Desktop) */}
+        <button
+          onClick={handleRecentAssignmentsClick}
+          className="relative p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group"
+          aria-label="View recent assignments"
+        >
+          <BookOpenText className="w-6 h-6 text-blue-500 group-hover:text-blue-600 transition-colors duration-200" />
+          {/* Recent Assignments tooltip */}
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+            Recent Assignments
           </div>
         </button>
 
@@ -268,12 +279,10 @@ const Breadcrumb: React.FC = () => {
           aria-label="View leaderboard"
         >
           <Trophy className="w-6 h-6 text-amber-500 group-hover:text-amber-600 transition-colors duration-200" />
-
           {/* Notification Badge */}
           <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
             <span className="text-xs font-bold text-white">!</span>
           </div>
-
           {/* Leaderboard tooltip */}
           <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
             View leaderboard
@@ -308,6 +317,22 @@ const Breadcrumb: React.FC = () => {
           </div>
         </main>
       </div>
+
+      {/* Recent Assignments Modal/Panel */}
+      {isRecentAssignmentsOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="relative w-full max-w-2xl mx-auto">
+            <button
+              onClick={() => setIsRecentAssignmentsOpen(false)}
+              className="absolute top-2 right-2 z-10 p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200"
+              aria-label="Close recent assignments"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <RecentAssignments />
+          </div>
+        </div>
+      )}
 
       <FloatingChatbot />
       <LeaderboardPanel
