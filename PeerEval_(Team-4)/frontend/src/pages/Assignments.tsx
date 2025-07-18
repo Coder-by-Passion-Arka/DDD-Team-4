@@ -644,6 +644,7 @@ const AssignmentPage: React.FC = () => {
   const [showEvaluationSetup, setShowEvaluationSetup] = useState(false);
   const [showCreateAssignmentModal, setShowCreateAssignmentModal] = useState(false);
   const [showEvaluationsModal, setShowEvaluationsModal] = useState(false);
+  const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const navigate = useNavigate();
   const userRole = state.user?.userRole || "student";
@@ -1768,14 +1769,78 @@ const AssignmentPage: React.FC = () => {
             <span>Create Assignment</span>
           </button>
           <button
-            onClick={() => (window.location.href = "/evaluations")}
+            onClick={() => {
+              setEvaluations([
+                {
+                  _id: "eval1",
+                  assignmentId: "assign1",
+                  assignmentTitle: "React Component Architecture",
+                  evaluatorId: "student1",
+                  evaluatorName: "Alice Johnson",
+                  submissionId: "sub1",
+                  submitterName: "Bob Smith",
+                  score: 85,
+                  maxScore: 100,
+                  feedback: "Great implementation with clean code structure. Could improve error handling.",
+                  criteria: [
+                    { name: "Code Quality", score: 18, maxScore: 20, feedback: "Well-structured and readable code" },
+                    { name: "Functionality", score: 25, maxScore: 30, feedback: "All requirements met with good performance" },
+                    { name: "Documentation", score: 15, maxScore: 20, feedback: "Good documentation but could be more detailed" },
+                    { name: "Innovation", score: 27, maxScore: 30, feedback: "Creative solutions and modern approaches" }
+                  ],
+                  status: "submitted",
+                  submittedAt: "2025-07-18T14:30:00Z",
+                  dueDate: "2025-07-22T23:59:59Z",
+                },
+                {
+                  _id: "eval2",
+                  assignmentId: "assign1",
+                  assignmentTitle: "React Component Architecture",
+                  evaluatorId: "student2",
+                  evaluatorName: "Charlie Davis",
+                  submissionId: "sub2",
+                  submitterName: "Diana Wilson",
+                  score: 92,
+                  maxScore: 100,
+                  feedback: "Excellent work with innovative approach and comprehensive testing.",
+                  criteria: [
+                    { name: "Code Quality", score: 20, maxScore: 20, feedback: "Perfect code structure and best practices" },
+                    { name: "Functionality", score: 28, maxScore: 30, feedback: "All requirements exceeded expectations" },
+                    { name: "Documentation", score: 19, maxScore: 20, feedback: "Comprehensive and clear documentation" },
+                    { name: "Innovation", score: 25, maxScore: 30, feedback: "Good use of modern techniques" }
+                  ],
+                  status: "submitted",
+                  submittedAt: "2025-07-17T16:45:00Z",
+                  dueDate: "2025-07-22T23:59:59Z",
+                },
+              ]);
+              setShowEvaluationsModal(true);
+            }}
             className="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
           >
             <Users className="w-4 h-4" />
             <span>Review Evaluations</span>
           </button>
           <button
-            onClick={() => (window.location.href = "/students")}
+            onClick={() => {
+              setAnalyticsData({
+                totalStudents: 30,
+                submitted: 25,
+                pending: 5,
+                late: 2,
+                averageScore: 82.5,
+                topPerformers: [
+                  { name: "Alice Johnson", score: 98 },
+                  { name: "Bob Smith", score: 95 },
+                  { name: "Charlie Davis", score: 93 },
+                ],
+                lowPerformers: [
+                  { name: "Eva Martinez", score: 65 },
+                  { name: "Frank Brown", score: 68 },
+                ],
+              });
+              setShowAnalyticsModal(true);
+            }}
             className="flex items-center space-x-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
           >
             <BarChart3 className="w-4 h-4" />
@@ -1783,6 +1848,61 @@ const AssignmentPage: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Analytics Modal */}
+      {showAnalyticsModal && analyticsData && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">📊 Student Analytics</h2>
+              <button
+                onClick={() => setShowAnalyticsModal(false)}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <span className="block text-xs text-gray-500 dark:text-gray-400">Total Students</span>
+                <span className="text-lg font-bold text-indigo-700 dark:text-indigo-300">{analyticsData.totalStudents}</span>
+              </div>
+              <div>
+                <span className="block text-xs text-gray-500 dark:text-gray-400">Submitted</span>
+                <span className="text-lg font-bold text-green-700 dark:text-green-300">{analyticsData.submitted}</span>
+              </div>
+              <div>
+                <span className="block text-xs text-gray-500 dark:text-gray-400">Pending</span>
+                <span className="text-lg font-bold text-amber-700 dark:text-amber-300">{analyticsData.pending}</span>
+              </div>
+              <div>
+                <span className="block text-xs text-gray-500 dark:text-gray-400">Late</span>
+                <span className="text-lg font-bold text-red-700 dark:text-red-300">{analyticsData.late}</span>
+              </div>
+              <div className="col-span-2">
+                <span className="block text-xs text-gray-500 dark:text-gray-400">Average Score</span>
+                <span className="text-lg font-bold text-blue-700 dark:text-blue-300">{analyticsData.averageScore}</span>
+              </div>
+            </div>
+            <div className="mb-4">
+              <h3 className="text-md font-semibold text-gray-800 dark:text-white mb-2">Top Performers</h3>
+              <ul className="list-disc pl-5">
+                {analyticsData.topPerformers.map((student: any, idx: number) => (
+                  <li key={idx} className="text-green-700 dark:text-green-300">{student.name} - {student.score}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-md font-semibold text-gray-800 dark:text-white mb-2">Low Performers</h3>
+              <ul className="list-disc pl-5">
+                {analyticsData.lowPerformers.map((student: any, idx: number) => (
+                  <li key={idx} className="text-red-700 dark:text-red-300">{student.name} - {student.score}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Content based on active tab */}
       {activeTab === "created" && (
