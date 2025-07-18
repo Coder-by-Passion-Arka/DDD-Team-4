@@ -621,7 +621,7 @@ const Dashboard: React.FC = () => {
             </div>
           )}
 
-          {/* User Info and Logout */}
+          {/* User Info and Logout 
           {state.isAuthenticated && (
             <div className="flex items-center space-x-4">
               {state.user?.userProfileImage && (
@@ -641,10 +641,10 @@ const Dashboard: React.FC = () => {
                 Logout
               </button>
             </div>
-          )}
+          )} */}
         </div>
 
-        {/* User Status Info */}
+        {/* User Status Info
         {state.user && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-6 m-1">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
@@ -697,7 +697,7 @@ const Dashboard: React.FC = () => {
               )}
             </div>
           </div>
-        )}
+        )}  */}
 
         {/* Quick Actions for Mobile Google Login */}
         {!state.isAuthenticated && (
